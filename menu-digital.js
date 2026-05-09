@@ -146,9 +146,13 @@ async function confirmOrder() {
     if (cart.length === 0) { alert('⚠️ Agrega productos'); return; }
     const total = calculateTotal();
     const pedido = {
-        cliente: { nombre: 'Mesero', mesa: mesaActual, tipoPedido: 'mesa' },
-        items: cart.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad })),
-        total
+       cliente: { 
+    nombre: selectedType === 'mesa' ? 'Cliente Mesa ' + document.getElementById('typeMesa')?.value : document.getElementById('typeNombre')?.value || 'Cliente',
+    mesa: selectedType === 'mesa' ? document.getElementById('typeMesa')?.value || '1' : 'Delivery',
+    tipoPedido: selectedType,
+    telefono: document.getElementById('typeTelefono')?.value || '',
+    direccion: document.getElementById('typeDireccion')?.value || ''
+},
     };
     
     // Enviar a API
@@ -164,7 +168,12 @@ async function confirmOrder() {
     
     // Marcar mesa como ocupada
     const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
-    const mesa = mesasLocal.find(m => m.numero === parseInt(mesaActual));
+  if (selectedType === 'mesa') {
+    const mesaNum = document.getElementById('typeMesa')?.value || '1';
+    const mesa = mesasLocal.find(m => m.numero === parseInt(mesaNum));
+    if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; }
+    localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
+}
     if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; }
     localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
     

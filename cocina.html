@@ -146,10 +146,14 @@
             renderizar();
         }
 
-      function actualizarTemporizadores() {
-    document.querySelectorAll('.order-card').forEach(card => {
+  function actualizarTemporizadores() {
+    const cards = document.querySelectorAll('.order-card');
+    console.log('Tarjetas encontradas:', cards.length);
+    
+    cards.forEach((card, index) => {
         const timerEl = card.querySelector('.timer-minutes');
         const fechaAttr = card.getAttribute('data-fecha');
+        if (index === 0) console.log('Fecha raw:', fechaAttr, 'Timer:', timerEl);
         if (timerEl && fechaAttr) { 
             const t = calcularTiempo(fechaAttr); 
             timerEl.textContent = `${t.min}:${String(t.seg).padStart(2, '0')}`; 

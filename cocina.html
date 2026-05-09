@@ -148,7 +148,14 @@
         }
 
         function playSound(tipo) {
-            if (!sonidoActivado) return;
+            if (activos.length > pedidosAnteriores) {
+    playSound('nuevo');
+    console.log('🔔 Sonido nuevo pedido');
+}if (p.estado !== 'listo' && calcularTiempo(p.fecha).retrasado) { 
+    retrasados++; 
+    playSound('retraso');
+    console.log('🔴 Sonido retraso');
+}
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const o = audioCtx.createOscillator();
@@ -259,7 +266,15 @@
                     </div>`;
             }).join('');
         }
-
+// Activar audio al primer clic
+document.addEventListener('click', function initAudio() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    g.gain.value = 0; o.start(); o.stop(0.001);
+    document.removeEventListener('click', initAudio);
+}, { once: true });
         setInterval(actualizarTemporizadores, 1000);
 setInterval(renderizar, 5000);
 renderizar();

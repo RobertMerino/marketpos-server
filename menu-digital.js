@@ -179,7 +179,7 @@ async function confirmOrder() {
     
     alert('✅ Pedido enviado a cocina');
     cart = []; updateCartCount(); updateCartFloat();
-    window.location.href = 'mesero.html';
+    window.location.href = 'menu-digital.html';
 }
 
 let selectedType = 'mesa';

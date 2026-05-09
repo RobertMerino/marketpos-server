@@ -83,7 +83,7 @@ function renderProducts() {
     const grid = document.getElementById('productsGrid');
     if (!grid) return;
     grid.innerHTML = products.map(p => `
-        <div class="product-card-premium" onclick="addToCart(${p.id})">
+        <div class="product-item" onclick="addToCart(${p.id})">
             <img src="${p.img}" alt="${p.nombre}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;margin-right:10px;">
             <div class="product-info">
                 <div class="product-name">${p.emoji} ${p.nombre}</div>
@@ -175,7 +175,7 @@ async function confirmOrder() {
 
 // Inicio
 document.getElementById('categoriesContainer').innerHTML = categories.map(c => `
-    <button class="cat-item ${c.key === activeCategory ? 'active' : ''}" 
+    <button class="cat-btn ${c.key === activeCategory ? 'active' : ''}" 
             onclick="changeCategory('${c.key}', this)">${c.label}</button>
 `).join('');
 renderProducts();

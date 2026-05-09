@@ -161,9 +161,25 @@ async function confirmOrder() {
         total
     };
     
-    try {
-        await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
-    } catch(e) {}
+    // Intentar API primero, si falla guardar en localStorage
+try {
+    await fetch('/api/pedidos', { 
+        method: 'POST', 
+    
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(pedido) 
+    });
+} catch(e) {
+    console.log('API no disponible, guardando en localStorage');
+}
+
+// SIEMPRE guardar en localStorage como respaldo
+const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+pedido.id = Date.now(); 
+pedido.fecha = new Date().toISOString(); 
+pedido.estado = 'nuevo';
+pedidosLocal.unshift(pedido);
+localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));catch(e) {}
     
     const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
     pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';

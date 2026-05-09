@@ -73,7 +73,7 @@ function updateCartCount() { const el = document.getElementById('cartCount'); if
 
 function changeCategory(cat, el) {
     activeCategory = cat;
-    document.querySelectorAll('.cat-item, .cat-pill').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.cat-item, .cat-pill, .cat-btn').forEach(c => c.classList.remove('active'));
     if (el) el.classList.add('active');
     renderProducts();
 }
@@ -111,13 +111,9 @@ function updateCartFloat() {
     if (!floatEl) return;
     if (count > 0) {
         floatEl.style.display = 'flex';
-        const countEl = document.getElementById('cartFloatCount');
-        const totalEl = document.getElementById('cartFloatTotal');
-        if (countEl) countEl.textContent = count;
-        if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
-    } else {
-        floatEl.style.display = 'none';
-    }
+        document.getElementById('cartFloatCount').textContent = count;
+        document.getElementById('cartFloatTotal').textContent = '$' + total.toFixed(2);
+    } else { floatEl.style.display = 'none'; }
 }
 
 function goToCart() { renderCartItems(); document.getElementById('modalCart').style.display = 'flex'; }
@@ -125,8 +121,7 @@ function closeCart() { document.getElementById('modalCart').style.display = 'non
 
 function renderCartItems() {
     const total = calculateTotal();
-    const totalEl = document.getElementById('cartTotal');
-    if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
+    document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
     const itemsEl = document.getElementById('cartItems');
     if (!itemsEl) return;
     if (cart.length === 0) { itemsEl.innerHTML = '<p style="text-align:center;color:#999;">Vacío</p>'; return; }
@@ -150,36 +145,12 @@ async function confirmOrder() {
     const nombre = selectedType === 'mesa' ? 'Cliente Mesa ' + mesaNum : document.getElementById('typeNombre')?.value || 'Cliente';
     
     const pedido = {
-        cliente: { 
-            nombre: nombre,
-            mesa: mesaNum, 
-            tipoPedido: selectedType,
-            telefono: document.getElementById('typeTelefono')?.value || '',
-            direccion: document.getElementById('typeDireccion')?.value || ''
-        },
+        cliente: { nombre, mesa: mesaNum, tipoPedido: selectedType, telefono: document.getElementById('typeTelefono')?.value || '', direccion: document.getElementById('typeDireccion')?.value || '' },
         items: cart.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad })),
         total
     };
     
-    // Intentar API primero, si falla guardar en localStorage
-try {
-    await fetch('/api/pedidos', { 
-        method: 'POST', 
-    
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify(pedido) 
-    });
-} catch(e) {
-    console.log('API no disponible, guardando en localStorage');
-}
-
-// SIEMPRE guardar en localStorage como respaldo
-const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-pedido.id = Date.now(); 
-pedido.fecha = new Date().toISOString(); 
-pedido.estado = 'nuevo';
-pedidosLocal.unshift(pedido);
-localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));catch(e) {}
+    try { await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) }); } catch(e) {}
     
     const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
     pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';
@@ -205,12 +176,12 @@ function selectType(tipo, el) {
     selectedType = tipo;
     document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
     el.classList.add('active');
-    
     document.getElementById('typeMesa').style.display = tipo === 'mesa' ? 'block' : 'none';
     document.getElementById('typeNombre').style.display = tipo !== 'mesa' ? 'block' : 'none';
     document.getElementById('typeTelefono').style.display = tipo !== 'mesa' ? 'block' : 'none';
     document.getElementById('typeDireccion').style.display = tipo === 'delivery' ? 'block' : 'none';
 }
+
 // Inicio
 document.getElementById('categoriesContainer').innerHTML = categories.map(c => `
     <button class="cat-btn ${c.key === activeCategory ? 'active' : ''}" 

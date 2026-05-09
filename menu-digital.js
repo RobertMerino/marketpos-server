@@ -173,6 +173,18 @@ async function confirmOrder() {
     window.location.href = 'mesero.html';
 }
 
+let selectedType = 'mesa';
+
+function selectType(tipo, el) {
+    selectedType = tipo;
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    
+    document.getElementById('typeMesa').style.display = tipo === 'mesa' ? 'block' : 'none';
+    document.getElementById('typeNombre').style.display = tipo !== 'mesa' ? 'block' : 'none';
+    document.getElementById('typeTelefono').style.display = tipo !== 'mesa' ? 'block' : 'none';
+    document.getElementById('typeDireccion').style.display = tipo === 'delivery' ? 'block' : 'none';
+}
 // Inicio
 document.getElementById('categoriesContainer').innerHTML = categories.map(c => `
     <button class="cat-btn ${c.key === activeCategory ? 'active' : ''}" 

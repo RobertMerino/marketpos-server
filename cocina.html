@@ -186,19 +186,29 @@
         }
 
         async function entregarPedido(id) {
-            try {
-                const res = await fetch('/api/pedidos'); const todos = await res.json();
-                const pedido = todos.find(p => p.id === id);
-                if (pedido?.cliente?.mesa) {
-                    const mesas = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
-                    const mesa = mesas.find(m => m.numero === parseInt(pedido.cliente.mesa));
-                    if (mesa) { mesa.estado = 'libre'; mesa.orden = []; }
-                    localStorage.setItem('marketpos_mesas', JSON.stringify(mesas));
-                }
-            } catch(e) {}
-            await fetch('/api/pedidos/' + id, { method: 'DELETE' }).catch(() => {});
-            renderizar();
+    // Liberar mesa
+    try {
+        const res = await fetch('/api/pedidos');
+        const todos = await res.json();
+        const pedido = todos.find(p => p.id === id);
+        if (pedido?.cliente?.mesa && pedido.cliente.tipoPedido === 'mesa') {
+            const mesas = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+            const mesa = mesas.find(m => m.numero === parseInt(pedido.cliente.mesa));
+            if (mesa) { mesa.estado = 'libre'; mesa.orden = []; }
+            localStorage.setItem('marketpos_mesas', JSON.stringify(mesas));
         }
+    } catch(e) {}
+    
+    // Eliminar de API
+    await fetch('/api/pedidos/' + id, { method: 'DELETE' }).catch(() => {});
+    
+    // También eliminar de localStorage
+    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    const filtrados = pedidosLocal.filter(p => p.id != id);
+    localStorage.setItem('marketpos_pedidos_online', JSON.stringify(filtrados));
+    
+    renderizar();
+}
 
         function actualizarTemporizadores() {
             document.querySelectorAll('.order-card').forEach(card => {

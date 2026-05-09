@@ -144,48 +144,43 @@ function renderCartItems() {
 
 async function confirmOrder() {
     if (cart.length === 0) { alert('⚠️ Agrega productos'); return; }
+    
     const total = calculateTotal();
+    const mesaNum = selectedType === 'mesa' ? document.getElementById('typeMesa')?.value || '1' : 'Delivery';
+    const nombre = selectedType === 'mesa' ? 'Cliente Mesa ' + mesaNum : document.getElementById('typeNombre')?.value || 'Cliente';
+    
     const pedido = {
-       cliente: { 
-    nombre: selectedType === 'mesa' ? 'Cliente Mesa ' + document.getElementById('typeMesa')?.value : document.getElementById('typeNombre')?.value || 'Cliente',
-    mesa: selectedType === 'mesa' ? document.getElementById('typeMesa')?.value || '1' : 'Delivery',
-    tipoPedido: selectedType,
-    telefono: document.getElementById('typeTelefono')?.value || '',
-    direccion: document.getElementById('typeDireccion')?.value || ''
-},
+        cliente: { 
+            nombre: nombre,
+            mesa: mesaNum, 
+            tipoPedido: selectedType,
+            telefono: document.getElementById('typeTelefono')?.value || '',
+            direccion: document.getElementById('typeDireccion')?.value || ''
+        },
+        items: cart.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad })),
+        total
     };
     
-    // Enviar a API
     try {
         await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
     } catch(e) {}
     
-    // Guardar en localStorage como respaldo
     const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
     pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';
     pedidosLocal.unshift(pedido);
     localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
     
-    // Marcar mesa como ocupada
-    const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
-  if (selectedType === 'mesa') {
-    const mesaNum = document.getElementById('typeMesa')?.value || '1';
-    const mesa = mesasLocal.find(m => m.numero === parseInt(mesaNum));
-    if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; }
-    localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
-}
-    if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; }
-    localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
+    if (selectedType === 'mesa') {
+        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+        const mesa = mesasLocal.find(m => m.numero === parseInt(mesaNum));
+        if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; }
+        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
+    }
     
     alert('✅ Pedido enviado a cocina');
     cart = []; updateCartCount(); updateCartFloat();
-    // Redirigir al inicio del menú digital
-cart = []; 
-updateCartCount(); 
-updateCartFloat();
-renderProducts();
-document.getElementById('modalCart').style.display = 'none';
-document.getElementById('modalConfirm').style.display = 'flex';
+    document.getElementById('modalCart').style.display = 'none';
+    renderProducts();
 }
 
 let selectedType = 'mesa';

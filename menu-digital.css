@@ -1,3 +1,7 @@
+/* ============================================ */
+/* TITO BURGER - MENÚ DIGITAL (ESTILO OSCURO) */
+/* ============================================ */
+
 :root {
     --fire: #ff6b35;
     --fire-dark: #d4380d;
@@ -10,6 +14,7 @@
     --text-light: #999;
     --danger: #dc2626;
     --success: #10b981;
+    --warning: #f59e0b;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -93,6 +98,7 @@ body {
     cursor: pointer; 
     transition: all 0.3s;
     border-radius: 4px;
+    color: var(--text);
 }
 .type-option.active { 
     background: var(--fire); 
@@ -128,7 +134,7 @@ body {
     border-bottom: 1px solid var(--ash);
 }
 .categories-row::-webkit-scrollbar { display: none; }
-.cat-btn, .cat-pill {
+.cat-btn, .cat-pill, .cat-item {
     padding: 8px 14px; 
     background: transparent; 
     border: 1px solid var(--ash);
@@ -143,7 +149,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     border-radius: 4px;
 }
-.cat-btn.active, .cat-pill.active { 
+.cat-btn.active, .cat-pill.active, .cat-item.active { 
     background: var(--fire); 
     color: var(--white); 
     border-color: var(--fire); 
@@ -154,9 +160,8 @@ body {
 /* PRODUCTS */
 /* ============================================ */
 .products-feed, .products-grid { padding: 10px 12px; }
-.product-item, .product-card {
+.product-item, .product-card, .product-card-premium {
     display: flex; 
-    justify-content: space-between; 
     align-items: center;
     background: var(--coal-light); 
     padding: 14px 14px; 
@@ -166,7 +171,7 @@ body {
     transition: all 0.3s;
     border-radius: 4px;
 }
-.product-item:hover, .product-card:hover { 
+.product-item:hover, .product-card:hover, .product-card-premium:hover { 
     border-left-color: var(--fire); 
     background: #1f1f1f; 
 }
@@ -177,6 +182,7 @@ body {
     font-size: 0.9rem; 
     color: var(--white); 
     margin-bottom: 3px;
+    text-transform: uppercase;
 }
 .product-desc { font-size: 0.7rem; color: var(--text-light); line-height: 1.3; }
 .product-price { 
@@ -197,7 +203,7 @@ body {
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    border-radius: 4px;
+    border-radius: 50%;
     transition: all 0.3s;
     flex-shrink: 0;
 }

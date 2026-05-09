@@ -111,13 +111,17 @@
 
         function toggleSound() { sonidoActivado = !sonidoActivado; document.querySelector('.sound-btn').textContent = sonidoActivado ? '🔊' : '🔇'; }
 
-        function calcularTiempo(f) { 
-            const ahora = new Date(); const fechaPedido = new Date(f);
-            const d = ahora - fechaPedido; 
-            if (d < 0) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
-            const min = Math.floor(d / 60000); const seg = Math.floor((d % 60000) / 1000); 
-            return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) }; 
-        }
+       function calcularTiempo(f) { 
+    if (!f) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
+    const ahora = new Date();
+    const fechaPedido = new Date(f);
+    if (isNaN(fechaPedido.getTime())) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
+    const d = ahora - fechaPedido; 
+    if (d < 0) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
+    const min = Math.floor(d / 60000); 
+    const seg = Math.floor((d % 60000) / 1000); 
+    return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) }; 
+}
 
         async function cambiarEstado(id, estado) {
             await fetch('/api/pedidos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado }) }).catch(() => {});
@@ -142,13 +146,16 @@
             renderizar();
         }
 
-        function actualizarTemporizadores() {
-            document.querySelectorAll('.order-card').forEach(card => {
-                const timerEl = card.querySelector('.timer-minutes');
-                const fechaAttr = card.getAttribute('data-fecha');
-                if (timerEl && fechaAttr) { const t = calcularTiempo(fechaAttr); timerEl.textContent = `${t.min}:${String(t.seg).padStart(2, '0')}`; }
-            });
+      function actualizarTemporizadores() {
+    document.querySelectorAll('.order-card').forEach(card => {
+        const timerEl = card.querySelector('.timer-minutes');
+        const fechaAttr = card.getAttribute('data-fecha');
+        if (timerEl && fechaAttr) { 
+            const t = calcularTiempo(fechaAttr); 
+            timerEl.textContent = `${t.min}:${String(t.seg).padStart(2, '0')}`; 
         }
+    });
+}
 
         async function renderizar() {
             const pedidos = await getPedidosOnline();

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantalla de Cocina - MarketPOS Pro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { --danger: #ef4444; --warning: #f59e0b; --success: #10b981; --dark: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { background: var(--dark); min-height: 100vh; padding: 15px; color: var(--text); }
+        .kitchen-screen { max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; height: 95vh; }
+        .kitchen-header { background: linear-gradient(135deg, #1e293b, #334155); padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0; flex-wrap: wrap; gap: 15px; }
+        .kitchen-header h1 { font-size: 1.5rem; font-weight: 800; }
+        .kitchen-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+        .stat-badge { background: rgba(255,255,255,0.08); padding: 10px 15px; border-radius: 12px; text-align: center; }
+        .stat-number { font-size: 1.5rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.65rem; text-transform: uppercase; opacity: 0.7; }
+        .orders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 15px; overflow-y: auto; flex: 1; padding: 5px; }
+        .orders-grid::-webkit-scrollbar { width: 6px; }
+        .orders-grid::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        .order-card { background: var(--card); border-radius: 16px; padding: 18px; border: 2px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; max-height: 500px; }
+        .order-card.nuevo { border-color: #ef4444; animation: pulseNuevo 1s ease; }
+        .order-card.preparando { border-color: #f59e0b; }
+        .order-card.listo { border-color: #10b981; opacity: 0.9; }
+        .order-card.retrasado { border-color: #ef4444 !important; box-shadow: 0 0 30px rgba(239,68,68,0.5) !important; background: #1a0a0a; }
+        @keyframes pulseNuevo { 0%{transform:scale(1.02)} 100%{transform:scale(1)} }
+        .order-card-content { overflow-y: auto; flex: 1; padding-right: 5px; }
+        .order-card-content::-webkit-scrollbar { width: 4px; }
+        .order-card-content::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .order-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+        .order-card-header h3 { font-size: 1rem; font-weight: 700; }
+        .order-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+        .badge-nuevo { background: #ef4444; color: white; }
+        .badge-preparando { background: #f59e0b; color: #1e293b; }
+        .badge-listo { background: #10b981; color: white; }
+        .badge-retrasado { background: #ff0000; color: white; }
+        .timer-container { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 10px; font-size: 0.8rem; }
+        .timer-container.retrasado { background: rgba(239,68,68,0.2); }
+        .customer-info-mini { font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .order-items { list-style: none; margin-bottom: 8px; }
+        .order-item { display: flex; justify-content: space-between; padding: 8px 10px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 4px; font-size: 0.85rem; }
+        .item-notas { font-size: 0.7rem; color: #fcd34d; margin-top: 2px; font-style: italic; }
+        .item-cantidad { background: #334155; padding: 3px 10px; border-radius: 15px; font-weight: 700; font-size: 0.8rem; }
+        .order-actions { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+        .btn-action { flex: 1; padding: 10px; border: none; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; }
+        .btn-start { background: #f59e0b; color: #1e293b; }
+        .btn-ready { background: #10b981; color: white; }
+        .btn-deliver { background: #3b82f6; color: white; }
+        .btn-reject { background: #6b7280; color: white; }
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: #64748b; }
+        .empty-state .emoji { font-size: 5rem; display: block; margin-bottom: 15px; }
+        .sound-btn { position:fixed;bottom:20px;right:20px;background:#334155;color:white;border:none;width:50px;height:50px;border-radius:50%;font-size:1.5rem;cursor:pointer;z-index:100; }
+    </style>
+</head>
+<body>
+    <div class="kitchen-screen">
+        <div class="kitchen-header">
+            <h1>👨‍🍳 Cocina en Vivo</h1>
+            <div class="kitchen-stats">
+                <div class="stat-badge"><span class="stat-number" id="pendientesCount">0</span><span class="stat-label">Pendientes</span></div>
+                <div class="stat-badge"><span class="stat-number" id="preparandoCount">0</span><span class="stat-label">Preparando</span></div>
+                <div class="stat-badge"><span class="stat-number" id="retrasadosCount">0</span><span class="stat-label">⏰ Retrasados</span></div>
+                <div class="stat-badge"><span class="stat-number" id="listosCount">0</span><span class="stat-label">Listos</span></div>
+            </div>
+        </div>
+        <div class="orders-grid" id="ordersGrid"></div>
+    </div>
+    <button class="sound-btn" onclick="toggleSound()" title="Sonido">🔊</button>
+
+    <script>
+        const TIEMPO_LIMITE = 10;
+        let sonidoActivado = true;
+        let pedidosAnteriores = 0;
+
+        async function getPedidosOnline() {
+            try {
+                const res = await fetch('/api/pedidos');
+                return await res.json();
+            } catch(e) {
+                return JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+            }
+        }
+
+        function playSound(tipo) {
+            if (!sonidoActivado) return;
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                if (tipo === 'nuevo') { o.frequency.value = 800; o.type = 'square'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.2); }
+                else if (tipo === 'listo') { o.frequency.value = 600; o.type = 'sine'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.4); }
+                else if (tipo === 'retraso') { o.frequency.value = 400; o.type = 'sawtooth'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.3); }
+            } catch(e) {}
+        }
+
+        function toggleSound() {
+            sonidoActivado = !sonidoActivado;
+            document.querySelector('.sound-btn').textContent = sonidoActivado ? '🔊' : '🔇';
+        }
+
+        function calcularTiempo(f) {
+            const d = new Date() - new Date(f);
+            const min = Math.floor(d / 60000);
+            const seg = Math.floor((d % 60000) / 1000);
+            return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) };
+        }
+
+        async function cambiarEstado(id, estado) {
+            await fetch('/api/pedidos/' + id, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ estado: estado })
+            }).catch(() => {});
+            if (estado === 'listo') playSound('listo');
+            renderizar();
+        }
+
+        async function entregarPedido(id) {
+            // Liberar mesa
+            try {
+                const res = await fetch('/api/pedidos');
+                const todos = await res.json();
+                const pedido = todos.find(p => p.id === id);
+                if (pedido?.cliente?.mesa) {
+                    const mesas = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+                    const mesa = mesas.find(m => m.numero === parseInt(pedido.cliente.mesa));
+                    if (mesa) { mesa.estado = 'libre'; mesa.orden = []; }
+                    localStorage.setItem('marketpos_mesas', JSON.stringify(mesas));
+                }
+            } catch(e) {}
+
+            // Eliminar de API
+            await fetch('/api/pedidos/' + id, { method: 'DELETE' }).catch(() => {});
+            renderizar();
+        }
+function actualizarTemporizadores() {
+    document.querySelectorAll('.order-card').forEach(card => {
+        const timerEl = card.querySelector('.timer-minutes');
+        const fechaAttr = card.getAttribute('data-fecha');
+        if (timerEl && fechaAttr) {
+            const t = calcularTiempo(fechaAttr);
+            timerEl.textContent = `${t.min}:${String(t.seg).padStart(2, '0')}`;
+        }
+    });
+}
+        async function renderizar() {
+            const pedidos = await getPedidosOnline();
+            console.log('Pedidos:', pedidos);
+            
+            const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
+            const grid = document.getElementById('ordersGrid');
+
+            if (activos.length > pedidosAnteriores) playSound('nuevo');
+            pedidosAnteriores = activos.length;
+
+            document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
+            document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
+            document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
+
+            let retrasados = 0;
+            activos.forEach(p => { if (p.estado !== 'listo' && calcularTiempo(p.fecha).retrasado) { retrasados++; playSound('retraso'); } });
+            document.getElementById('retrasadosCount').textContent = retrasados;
+
+            if (activos.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><span class="emoji">🍳</span><h2>Cocina en Espera</h2></div>`;
+                return;
+            }
+
+            activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+            grid.innerHTML = activos.map(p => {
+                const t = calcularTiempo(p.fecha);
+                const ret = t.retrasado && p.estado !== 'listo';
+                const tipo = p.cliente?.tipoPedido || 'mesa';
+                const tipoTexto = tipo === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : tipo === 'llevar' ? '🛵 Llevar' : '🚀 Delivery';
+
+                return `
+                   <div class="order-card ${ret ? 'retrasado' : p.estado}" data-fecha="${p.fecha}">
+                            <div class="order-card-header">
+                                <h3>${tipoTexto}</h3>
+                                <span class="order-badge ${ret ? 'badge-retrasado' : 'badge-' + p.estado}">${ret ? '⏰ RETRASADO' : p.estado.toUpperCase()}</span>
+                            </div>
+                            <div class="timer-container ${ret ? 'retrasado' : ''}">
+                                <span>⏱️</span> <span class="timer-text"><strong>${t.min}:${String(t.seg).padStart(2,'0')}</strong> min</span>
+                                ${ret ? `<span style="color:#ef4444;font-weight:800;margin-left:auto;">+${t.retrasoMin} min</span>` : ''}
+                            </div>
+                            <div class="customer-info-mini">
+                                <span>👤 ${p.cliente?.nombre || 'Cliente'}</span>
+                                ${p.cliente?.telefono ? `<span>📱 ${p.cliente.telefono}</span>` : ''}
+                            </div>
+                            <ul class="order-items">
+                                ${(p.items || []).map(i => `
+                                    <li class="order-item">
+                                        <span>${i.emoji || '🍽️'} ${i.nombre}</span>
+                                        <span class="item-cantidad">x${i.cantidad}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <div class="order-actions">
+                            ${p.estado === 'nuevo' ? `
+                                <button class="btn-action btn-start" onclick="cambiarEstado('${p.id}','preparando')">👨‍🍳 Iniciar</button>
+                                <button class="btn-action btn-reject" onclick="entregarPedido('${p.id}')">❌ Rechazar</button>
+                            ` : ''}
+                            ${p.estado === 'preparando' ? `
+                                <button class="btn-action btn-ready" onclick="cambiarEstado('${p.id}','listo')">✅ ¡Listo!</button>
+                            ` : ''}
+                            ${p.estado === 'listo' ? `
+                                <button class="btn-action btn-deliver" onclick="entregarPedido('${p.id}')">🤝 Entregado</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        setInterval(renderizar, 1000);
+        setInterval(renderizar, 5000); // Cada 10 segundos para actualizar tiempos y retrasos
+        renderizar();
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura - La Buena Mesa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page { size: 80mm auto; margin: 0; }
+        :root { --gold: #c9a96e; --dark: #1a1814; --text: #3d3929; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            width: 80mm; margin: 0 auto; padding: 8mm 5mm; font-size: 10px; 
+            font-family: 'Montserrat', sans-serif; background: #fff; color: var(--text); 
+            line-height: 1.5;
+        }
+        .header { text-align: center; border-bottom: 1px dashed var(--gold); padding-bottom: 4mm; margin-bottom: 4mm; }
+        .header .logo { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; letter-spacing: 3px; color: var(--dark); }
+        .header .sub { font-size: 6px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); }
+        .header .info { font-size: 7px; color: #888; margin-top: 2mm; }
+        .divider { border-top: 1px dashed var(--gold); margin: 3mm 0; }
+        .row { display: flex; justify-content: space-between; font-size: 9px; }
+        .row strong { font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin: 3mm 0; }
+        table th { text-align: left; font-size: 8px; border-bottom: 1px solid var(--gold); padding-bottom: 2px; color: var(--gold); letter-spacing: 1px; }
+        table th:last-child { text-align: right; }
+        table td { font-size: 9px; padding: 2px 0; }
+        table td:last-child { text-align: right; font-weight: 600; }
+        .total-row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-top: 2mm; padding-top: 2mm; border-top: 2px solid var(--dark); font-family: 'Cormorant Garamond', serif; }
+        .total-row span:last-child { color: var(--gold); font-size: 14px; }
+        .footer { text-align: center; margin-top: 5mm; font-size: 7px; color: #888; border-top: 1px dashed var(--gold); padding-top: 3mm; }
+        .btn { display: block; width: 100%; padding: 8px; background: var(--dark); color: var(--gold); border: 1px solid var(--gold); text-align: center; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin: 10px 0; font-family: 'Montserrat', sans-serif; }
+        @media print { .btn { display: none; } body { width: 80mm; padding: 5mm; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">LA BUENA MESA</div>
+        <div class="sub">Cocina de Autor</div>
+        <div class="info">Av. Principal 123, Ciudad · Tel: (02) 123-4567</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row"><strong>Factura N°:</strong> <span id="facNum">001-001-00000001</span></div>
+    <div class="row"><strong>Fecha:</strong> <span id="facFecha"></span></div>
+    <div class="row"><strong>Cliente:</strong> <span id="facCliente"></span></div>
+    <div class="row"><strong>RUC/CI:</strong> <span id="facRUC"></span></div>
+    <div class="row"><strong>Mesa:</strong> <span id="facMesa"></span></div>
+    <div class="row"><strong>Tipo:</strong> <span id="facTipo"></span></div>
+
+    <div class="divider"></div>
+
+    <table>
+        <thead><tr><th>Producto</th><th>Cant</th><th>P.Unit</th><th>Total</th></tr></thead>
+        <tbody id="itemsBody"></tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <div class="row"><span>Subtotal:</span> <span id="subtotal">$0.00</span></div>
+    <div class="row"><span>IVA (12%):</span> <span id="iva">$0.00</span></div>
+    <div class="row"><span>Servicio (10%):</span> <span id="servicio">$0.00</span></div>
+
+    <div class="total-row"><span>TOTAL</span><span id="total">$0.00</span></div>
+
+    <div class="divider"></div>
+
+    <div class="footer">
+        <p>¡Gracias por su visita!</p>
+        <p>MarketPOS Premium v2.0</p>
+        <p id="facEmail"></p>
+    </div>
+
+    <button class="btn" onclick="window.print()">🖨️ Imprimir Factura</button>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const data = params.get('data');
+        if (data) {
+            const p = JSON.parse(decodeURIComponent(data));
+            const ahora = new Date();
+            
+            document.getElementById('facNum').textContent = '001-001-' + String(Math.floor(Math.random()*99999999)).padStart(8,'0');
+            document.getElementById('facFecha').textContent = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString();
+            document.getElementById('facCliente').textContent = p.factura?.nombre || p.cliente?.nombre || 'Consumidor Final';
+            document.getElementById('facRUC').textContent = p.factura?.ruc || p.cliente?.ruc || '9999999999999';
+            document.getElementById('facMesa').textContent = p.cliente?.mesa || 'N/A';
+            document.getElementById('facTipo').textContent = p.cliente?.tipoPedido === 'mesa' ? 'En Mesa' : p.cliente?.tipoPedido === 'llevar' ? 'Para Recoger' : 'Delivery';
+            document.getElementById('facEmail').textContent = p.factura?.email || p.cliente?.email || '';
+            
+            const tbody = document.getElementById('itemsBody');
+            p.items?.forEach(i => {
+                tbody.innerHTML += `<tr><td>${i.emoji||''} ${i.nombre}</td><td>x${i.cantidad}</td><td>$${i.precio.toFixed(2)}</td><td>$${(i.precio*i.cantidad).toFixed(2)}</td></tr>`;
+            });
+            
+            const subtotal = p.total || 0;
+            const iva = subtotal * 0.12;
+            const servicio = subtotal * 0.10;
+            const total = subtotal + iva + servicio;
+            
+            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('iva').textContent = '$' + iva.toFixed(2);
+            document.getElementById('servicio').textContent = '$' + servicio.toFixed(2);
+            document.getElementById('total').textContent = '$' + total.toFixed(2);
+        }
+    </script>
+</body>
+</html>

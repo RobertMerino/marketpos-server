@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MarketPOS - Mesero Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #06060d; min-height: 100vh; color: white; }
+        .mesero-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #0a0a14; }
+        
+        .header { 
+            background: linear-gradient(135deg, #ff6b35 0%, #d4380d 100%);
+            padding: 35px 20px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .header::after {
+            content: ''; position: absolute; bottom: -20px; left: 0; right: 0;
+            height: 40px; background: #0a0a14; border-radius: 50% 50% 0 0;
+        }
+        .header * { position: relative; z-index: 1; }
+        .header .icon { font-size: 3.5rem; display: block; margin-bottom: 10px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        .header h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; }
+        .header .subtitle { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
+        
+        .stats-row { display: flex; gap: 12px; padding: 25px 20px 15px; }
+        .stat-card {
+            flex: 1; background: #141428; border-radius: 18px;
+            padding: 18px 15px; text-align: center; border: 1px solid #1e1e3a;
+            transition: all 0.3s;
+        }
+        .stat-card:active { transform: scale(0.97); }
+        .stat-card .stat-num { font-size: 2rem; font-weight: 800; }
+        .stat-card .stat-label { font-size: 0.7rem; color: #777; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; }
+        .stat-card.libre .stat-num { color: #10b981; }
+        .stat-card.ocupada .stat-num { color: #f59e0b; }
+        .stat-card.total .stat-num { color: #3b82f6; }
+        
+        .section-title {
+            padding: 5px 20px 12px; font-size: 0.95rem; font-weight: 700;
+            display: flex; align-items: center; gap: 10px; color: #aaa;
+        }
+        .section-title .dot { width: 8px; height: 8px; background: #ff6b35; border-radius: 50%; box-shadow: 0 0 10px #ff6b35; }
+        
+        .mesas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 15px; }
+        
+        .mesa-card {
+            background: #141428; border: 2px solid #1e1e3a; border-radius: 20px;
+            padding: 24px 12px; text-align: center; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .mesa-card:hover { transform: translateY(-4px); }
+        .mesa-card:active { transform: scale(0.94); }
+        .mesa-card.libre {
+            border-color: #10b981;
+            background: linear-gradient(180deg, #0a2a1a 0%, #141428 100%);
+        }
+        .mesa-card.libre:hover { border-color: #34d399; box-shadow: 0 0 40px rgba(16,185,129,0.25); }
+        .mesa-card.ocupada {
+            border-color: #f59e0b;
+            background: linear-gradient(180deg, #2d2010 0%, #141428 100%);
+        }
+        .mesa-card.ocupada:hover { border-color: #fbbf24; box-shadow: 0 0 40px rgba(245,158,11,0.25); }
+        .mesa-card .mesa-num { font-size: 2.4rem; font-weight: 800; display: block; letter-spacing: -1px; }
+        .mesa-card.libre .mesa-num { color: #10b981; }
+        .mesa-card.ocupada .mesa-num { color: #f59e0b; }
+        .mesa-card .mesa-status {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+            margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .mesa-card .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .mesa-card.libre .status-dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .mesa-card.ocupada .status-dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+        .mesa-card .mesa-items { font-size: 0.7rem; color: #aaa; margin-top: 5px; }
+        .mesa-card .mesa-badge {
+            position: absolute; top: 8px; right: 8px;
+            width: 8px; height: 8px; border-radius: 50%;
+        }
+        .mesa-card.libre .mesa-badge { background: #10b981; animation: glowGreen 2s infinite; }
+        .mesa-card.ocupada .mesa-badge { background: #f59e0b; animation: glowOrange 2s infinite; }
+        @keyframes glowGreen { 0%,100%{box-shadow:0 0 5px #10b981} 50%{box-shadow:0 0 15px #10b981} }
+        @keyframes glowOrange { 0%,100%{box-shadow:0 0 5px #f59e0b} 50%{box-shadow:0 0 15px #f59e0b} }
+        
+        .quick-actions { padding: 0 20px 20px; display: flex; gap: 10px; }
+        .btn-quick {
+            flex: 1; padding: 14px; border-radius: 14px; border: none;
+            font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-llevar { background: #f59e0b; color: #1a1a1a; }
+        .btn-llevar:hover { background: #fbbf24; }
+        .btn-delivery { background: #8b5cf6; color: white; }
+        .btn-delivery:hover { background: #a78bfa; }
+        
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            color: white; padding: 14px 24px; border-radius: 14px; font-weight: 700;
+            z-index: 999; animation: slideDown 0.3s ease, fadeOut 0.3s ease 2.5s forwards;
+        }
+        .toast.error { background: #ef4444; box-shadow: 0 10px 30px rgba(239,68,68,0.4); }
+        .toast.success { background: #10b981; box-shadow: 0 10px 30px rgba(16,185,129,0.4); }
+        @keyframes slideDown { from { transform: translateX(-50%) translateY(-30px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; } }
+        
+        .refresh-bar { text-align: center; padding: 15px; color: #444; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .refresh-dot { width: 5px; height: 5px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); display: none; align-items: center;
+            justify-content: center; z-index: 1000; padding: 20px;
+        }
+        .modal-box {
+            background: #1a1a2e; border-radius: 20px; padding: 25px;
+            width: 100%; max-width: 400px; text-align: center;
+        }
+        .modal-box h3 { margin-bottom: 15px; font-size: 1.1rem; }
+        .modal-box .btn { 
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            font-weight: 700; cursor: pointer; margin: 5px 0; font-size: 0.95rem;
+        }
+        .btn-edit { background: #f59e0b; color: #1a1a1a; }
+        .btn-new { background: #10b981; color: white; }
+        .btn-close-modal { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <div class="mesero-app">
+        <div class="header">
+            <span class="icon">📱</span>
+            <h1>Tomar Pedido</h1>
+            <p class="subtitle">Selecciona una mesa disponible</p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card libre">
+                <span class="stat-num" id="countLibres">0</span>
+                <span class="stat-label">Libres</span>
+            </div>
+            <div class="stat-card ocupada">
+                <span class="stat-num" id="countOcupadas">0</span>
+                <span class="stat-label">Ocupadas</span>
+            </div>
+            <div class="stat-card total">
+                <span class="stat-num" id="countTotal">0</span>
+                <span class="stat-label">Total</span>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="btn-quick btn-llevar" onclick="pedidoRapido('llevar')">🛵 Para Llevar</button>
+            <button class="btn-quick btn-delivery" onclick="pedidoRapido('delivery')">🚀 Delivery</button>
+        </div>
+
+        <div class="section-title"><span class="dot"></span> Mesas del Restaurante</div>
+        <div class="mesas-grid" id="mesasGrid"></div>
+
+        <div class="refresh-bar"><span class="refresh-dot"></span> Actualización automática</div>
+    </div>
+
+    <!-- MODAL MESA OCUPADA -->
+    <div class="modal-overlay" id="modalOcupada">
+        <div class="modal-box">
+            <h3>🪑 Mesa <span id="modalMesaNum"></span> está OCUPADA</h3>
+            <p style="color:#aaa;margin-bottom:15px;">¿Qué deseas hacer?</p>
+            <button class="btn btn-edit" onclick="editarPedidoModal()">✏️ Editar Pedido</button>
+            <button class="btn btn-new" onclick="nuevoPedidoModal()">🆕 Nuevo Pedido</button>
+            <button class="btn btn-close-modal" onclick="closeModal()">❌ Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        const API = '/api/mesas';
+        let mesaSeleccionada = null;
+
+        async function cargarMesas() {
+            const grid = document.getElementById('mesasGrid');
+            try {
+                const res = await fetch(API);
+                const mesas = await res.json();
+                
+                const libres = mesas.filter(m => m.estado === 'libre').length;
+                const ocupadas = mesas.filter(m => m.estado !== 'libre').length;
+                document.getElementById('countLibres').textContent = libres;
+                document.getElementById('countOcupadas').textContent = ocupadas;
+                document.getElementById('countTotal').textContent = mesas.length;
+                
+                grid.innerHTML = mesas.map(mesa => {
+                    const libre = mesa.estado === 'libre';
+                    const itemsCount = mesa.orden?.length || 0;
+                    
+                    return `
+                        <div class="mesa-card ${mesa.estado}" 
+                             onclick="${libre ? 'tomarPedido(' + mesa.numero + ')' : 'mostrarOpciones(' + mesa.numero + ')'}">
+                            <span class="mesa-badge"></span>
+                            <span class="mesa-num">${mesa.numero}</span>
+                            <span class="mesa-status">
+                                <span class="status-dot"></span>
+                                ${libre ? 'Libre' : 'Ocupada'}
+                            </span>
+                            ${!libre && itemsCount > 0 ? `<span class="mesa-items">${itemsCount} items</span>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) {
+                grid.innerHTML = '<p style="grid-column:1/-1;color:#ef4444;text-align:center;">Error al cargar</p>';
+            }
+        }
+
+       function tomarPedido(numero) {
+    window.location.href = 'menu-mesero.html?mesa=' + numero;
+}
+function editarPedido(numero) {
+    window.location.href = 'menu-mesero.html?mesa=' + numero + '&editar=1';
+}
+
+        function editarPedido(numero) {
+            window.location.href = 'menu-digital.html?mesa=' + numero + '&modo=mesero&editar=1';
+        }
+
+        function mostrarOpciones(numero) {
+            mesaSeleccionada = numero;
+            document.getElementById('modalMesaNum').textContent = numero;
+            document.getElementById('modalOcupada').style.display = 'flex';
+        }
+
+        function editarPedidoModal() {
+            closeModal();
+            editarPedido(mesaSeleccionada);
+        }
+
+        function nuevoPedidoModal() {
+            closeModal();
+            tomarPedido(mesaSeleccionada);
+        }
+
+        function closeModal() {
+            document.getElementById('modalOcupada').style.display = 'none';
+        }
+
+        function pedidoRapido(tipo) {
+            window.location.href = 'menu-digital.html?tipo=' + tipo + '&modo=mesero';
+        }
+
+        function showToast(msg, type) {
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + (type || 'error');
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2800);
+        }
+
+        cargarMesas();
+        setInterval(cargarMesas, 3000);
+    </script>
+</body>
+</html>

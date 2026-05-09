@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>La Buena Mesa · Menú Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="menu-digital.css">
+</head>
+<body>
+    <div class="app-premium">
+        
+        <!-- HEADER HERO -->
+        <div class="hero-header">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="hero-badge">★ Restaurante Premium ★</div>
+                <h1 class="hero-title">LA BUENA MESA</h1>
+                <p class="hero-subtitle">Cocina de Autor · Parrilla Artesanal</p>
+                <div class="hero-info">
+                    <span>🕐 10-30 min</span>
+                    <span>⭐ 4.8 (200+)</span>
+                    <span>📍 Av. Principal 123</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIPO DE PEDIDO -->
+        <div class="order-type-section">
+            <h3 class="section-label">Seleccione su modalidad</h3>
+            <div class="type-selector">
+                <button class="type-option active" onclick="selectType('mesa', this)">
+                    <span class="type-icon">🪑</span>
+                    <span class="type-name">En Mesa</span>
+                </button>
+                <button class="type-option" onclick="selectType('llevar', this)">
+                    <span class="type-icon">🛵</span>
+                    <span class="type-name">Recoger</span>
+                </button>
+                <button class="type-option" onclick="selectType('delivery', this)">
+                    <span class="type-icon">🚀</span>
+                    <span class="type-name">Delivery</span>
+                </button>
+            </div>
+            <div class="type-fields" id="typeFields">
+                <input type="number" id="typeMesa" placeholder="Número de mesa" class="input-premium">
+                <input type="text" id="typeNombre" placeholder="Su nombre" class="input-premium" style="display:none;">
+                <input type="tel" id="typeTelefono" placeholder="Teléfono" class="input-premium" style="display:none;">
+                <input type="text" id="typeDireccion" placeholder="Dirección de entrega" class="input-premium" style="display:none;">
+            </div>
+        </div>
+
+        <!-- CATEGORÍAS -->
+        <div class="categories-row" id="categoriesContainer"></div>
+
+        <!-- PRODUCTOS -->
+        <div class="products-feed" id="productsGrid"></div>
+
+        <!-- CARRITO FLOTANTE -->
+        <div class="cart-float" id="cartFloat" onclick="goToCart()" style="display:none;">
+            <span class="cart-float-count" id="cartFloatCount">0</span>
+            <span>Ver pedido</span>
+            <span class="cart-float-total" id="cartFloatTotal">$0.00</span>
+        </div>
+
+        <!-- MODAL CARRITO -->
+        <div class="modal-overlay" id="modalCart" style="display:none;">
+            <div class="modal-cart-premium">
+                <button onclick="closeCart()" class="modal-close-btn">✕</button>
+                <h3>Su Pedido</h3>
+                <div id="cartItems"></div>
+                <div class="cart-total-line">
+                    <span>TOTAL</span>
+                    <strong id="cartTotal">$0.00</strong>
+                </div>
+                <button class="btn-confirm" onclick="confirmOrder()">CONFIRMAR PEDIDO</button>
+            </div>
+        </div>
+
+        <!-- MODAL CONFIRMACIÓN -->
+        <div class="modal-overlay" id="modalConfirm" style="display:none;">
+            <div class="modal-confirm-premium">
+                <span class="confirm-icon">✓</span>
+                <h2>¡Pedido Recibido!</h2>
+                <p>Su pedido está siendo preparado</p>
+                <div id="confirmDetails"></div>
+                <button class="btn-confirm" onclick="closeConfirm()">ENTENDIDO</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="menu-digital.js"></script>
+</body>
+</html>

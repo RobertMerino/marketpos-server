@@ -179,7 +179,13 @@ async function confirmOrder() {
     
     alert('✅ Pedido enviado a cocina');
     cart = []; updateCartCount(); updateCartFloat();
-    window.location.href = 'menu-digital.html';
+    // Redirigir al inicio del menú digital
+cart = []; 
+updateCartCount(); 
+updateCartFloat();
+renderProducts();
+document.getElementById('modalCart').style.display = 'none';
+document.getElementById('modalConfirm').style.display = 'flex';
 }
 
 let selectedType = 'mesa';

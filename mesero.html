@@ -3,146 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>MarketPOS - Mesero Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>TITO BURGER · Mesero</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: #06060d; min-height: 100vh; color: white; }
-        .mesero-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #0a0a14; }
-        
+        :root {
+            --fire: #ff6b35;
+            --fire-dark: #d4380d;
+            --coal: #0d0d0d;
+            --coal-light: #1a1a1a;
+            --ash: #2a2a2a;
+            --white: #ffffff;
+            --text: #e0e0e0;
+            --text-light: #999;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--coal); min-height: 100vh; color: var(--white); }
+
+        .mesero-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: var(--coal); }
+
+        /* HEADER */
         .header { 
-            background: linear-gradient(135deg, #ff6b35 0%, #d4380d 100%);
-            padding: 35px 20px 30px;
+            background: linear-gradient(180deg, #050505 0%, #1a1a1a 50%, #2d1a0a 100%);
+            padding: 30px 20px 25px;
             text-align: center;
             position: relative;
-            overflow: hidden;
+            border-bottom: 3px solid var(--fire);
         }
-        .header::before {
-            content: ''; position: absolute; top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .header::after {
-            content: ''; position: absolute; bottom: -20px; left: 0; right: 0;
-            height: 40px; background: #0a0a14; border-radius: 50% 50% 0 0;
+            content: ''; position: absolute; bottom: -12px; left: 0; right: 0;
+            height: 25px; background: var(--coal); border-radius: 50% 50% 0 0;
         }
-        .header * { position: relative; z-index: 1; }
-        .header .icon { font-size: 3.5rem; display: block; margin-bottom: 10px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-        .header h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; }
-        .header .subtitle { font-size: 0.85rem; opacity: 0.9; margin-top: 5px; }
-        
-        .stats-row { display: flex; gap: 12px; padding: 25px 20px 15px; }
+        .header .icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; color: var(--white); }
+        .header .subtitle { font-size: 0.8rem; color: var(--fire-light); margin-top: 5px; font-weight: 500; }
+
+        /* STATS */
+        .stats-row { display: flex; gap: 10px; padding: 25px 15px 15px; }
         .stat-card {
-            flex: 1; background: #141428; border-radius: 18px;
-            padding: 18px 15px; text-align: center; border: 1px solid #1e1e3a;
-            transition: all 0.3s;
+            flex: 1; background: var(--coal-light); border-radius: 6px;
+            padding: 16px 12px; text-align: center; border: 1px solid var(--ash);
         }
-        .stat-card:active { transform: scale(0.97); }
-        .stat-card .stat-num { font-size: 2rem; font-weight: 800; }
-        .stat-card .stat-label { font-size: 0.7rem; color: #777; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; }
-        .stat-card.libre .stat-num { color: #10b981; }
-        .stat-card.ocupada .stat-num { color: #f59e0b; }
-        .stat-card.total .stat-num { color: #3b82f6; }
-        
+        .stat-card .stat-num { font-size: 1.8rem; font-weight: 800; }
+        .stat-card .stat-label { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+        .stat-card.libre .stat-num { color: var(--success); }
+        .stat-card.ocupada .stat-num { color: var(--warning); }
+        .stat-card.total .stat-num { color: var(--fire); }
+
+        /* TITLE */
         .section-title {
-            padding: 5px 20px 12px; font-size: 0.95rem; font-weight: 700;
-            display: flex; align-items: center; gap: 10px; color: #aaa;
+            padding: 5px 15px 10px; font-size: 0.9rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; color: var(--text);
         }
-        .section-title .dot { width: 8px; height: 8px; background: #ff6b35; border-radius: 50%; box-shadow: 0 0 10px #ff6b35; }
-        
-        .mesas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px 15px; }
-        
+        .section-title .dot { width: 8px; height: 8px; background: var(--fire); border-radius: 50%; }
+
+        /* MESAS */
+        .mesas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 15px 15px; }
+
         .mesa-card {
-            background: #141428; border: 2px solid #1e1e3a; border-radius: 20px;
-            padding: 24px 12px; text-align: center; cursor: pointer;
+            background: var(--coal-light); border: 2px solid var(--ash); border-radius: 8px;
+            padding: 22px 10px; text-align: center; cursor: pointer;
             transition: all 0.3s; position: relative; overflow: hidden;
         }
-        .mesa-card:hover { transform: translateY(-4px); }
-        .mesa-card:active { transform: scale(0.94); }
+        .mesa-card:hover { transform: translateY(-3px); }
+        .mesa-card:active { transform: scale(0.95); }
+
         .mesa-card.libre {
-            border-color: #10b981;
-            background: linear-gradient(180deg, #0a2a1a 0%, #141428 100%);
+            border-color: var(--success);
+            background: linear-gradient(180deg, #0a2a1a 0%, var(--coal-light) 100%);
         }
-        .mesa-card.libre:hover { border-color: #34d399; box-shadow: 0 0 40px rgba(16,185,129,0.25); }
+        .mesa-card.libre:hover { border-color: #34d399; box-shadow: 0 0 25px rgba(16,185,129,0.2); }
+
         .mesa-card.ocupada {
-            border-color: #f59e0b;
-            background: linear-gradient(180deg, #2d2010 0%, #141428 100%);
+            border-color: var(--fire);
+            background: linear-gradient(180deg, #2d1a0a 0%, var(--coal-light) 100%);
         }
-        .mesa-card.ocupada:hover { border-color: #fbbf24; box-shadow: 0 0 40px rgba(245,158,11,0.25); }
-        .mesa-card .mesa-num { font-size: 2.4rem; font-weight: 800; display: block; letter-spacing: -1px; }
-        .mesa-card.libre .mesa-num { color: #10b981; }
-        .mesa-card.ocupada .mesa-num { color: #f59e0b; }
+        .mesa-card.ocupada:hover { border-color: var(--fire-light); box-shadow: 0 0 25px rgba(255,107,53,0.2); }
+
+        .mesa-card .mesa-num { font-size: 2.2rem; font-weight: 800; display: block; letter-spacing: -1px; }
+        .mesa-card.libre .mesa-num { color: var(--success); }
+        .mesa-card.ocupada .mesa-num { color: var(--fire); }
+
         .mesa-card .mesa-status {
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
-            margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 5px;
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+            margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 5px;
         }
+        .mesa-card.libre .mesa-status { color: var(--success); }
+        .mesa-card.ocupada .mesa-status { color: var(--fire); }
+
         .mesa-card .status-dot { width: 6px; height: 6px; border-radius: 50%; }
-        .mesa-card.libre .status-dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
-        .mesa-card.ocupada .status-dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
-        .mesa-card .mesa-items { font-size: 0.7rem; color: #aaa; margin-top: 5px; }
+        .mesa-card.libre .status-dot { background: var(--success); }
+        .mesa-card.ocupada .status-dot { background: var(--fire); }
+
+        .mesa-card .mesa-items { font-size: 0.7rem; color: var(--text-light); margin-top: 4px; }
+
         .mesa-card .mesa-badge {
             position: absolute; top: 8px; right: 8px;
             width: 8px; height: 8px; border-radius: 50%;
         }
-        .mesa-card.libre .mesa-badge { background: #10b981; animation: glowGreen 2s infinite; }
-        .mesa-card.ocupada .mesa-badge { background: #f59e0b; animation: glowOrange 2s infinite; }
-        @keyframes glowGreen { 0%,100%{box-shadow:0 0 5px #10b981} 50%{box-shadow:0 0 15px #10b981} }
-        @keyframes glowOrange { 0%,100%{box-shadow:0 0 5px #f59e0b} 50%{box-shadow:0 0 15px #f59e0b} }
-        
-        .quick-actions { padding: 0 20px 20px; display: flex; gap: 10px; }
-        .btn-quick {
-            flex: 1; padding: 14px; border-radius: 14px; border: none;
-            font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-        .btn-llevar { background: #f59e0b; color: #1a1a1a; }
-        .btn-llevar:hover { background: #fbbf24; }
-        .btn-delivery { background: #8b5cf6; color: white; }
-        .btn-delivery:hover { background: #a78bfa; }
-        
+        .mesa-card.libre .mesa-badge { background: var(--success); }
+        .mesa-card.ocupada .mesa-badge { background: var(--fire); }
+
+        /* TOAST */
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            color: white; padding: 14px 24px; border-radius: 14px; font-weight: 700;
+            color: white; padding: 14px 24px; border-radius: 6px; font-weight: 700;
             z-index: 999; animation: slideDown 0.3s ease, fadeOut 0.3s ease 2.5s forwards;
+            font-family: 'Montserrat', sans-serif;
         }
-        .toast.error { background: #ef4444; box-shadow: 0 10px 30px rgba(239,68,68,0.4); }
-        .toast.success { background: #10b981; box-shadow: 0 10px 30px rgba(16,185,129,0.4); }
+        .toast.error { background: var(--fire); }
+        .toast.success { background: var(--success); }
         @keyframes slideDown { from { transform: translateX(-50%) translateY(-30px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
         @keyframes fadeOut { to { opacity: 0; } }
-        
-        .refresh-bar { text-align: center; padding: 15px; color: #444; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .refresh-dot { width: 5px; height: 5px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
+
+        .refresh-bar { text-align: center; padding: 15px; color: #555; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .refresh-dot { width: 5px; height: 5px; background: var(--fire); border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        /* Modal */
+        /* MODAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8); display: none; align-items: center;
+            background: rgba(0,0,0,0.9); display: none; align-items: center;
             justify-content: center; z-index: 1000; padding: 20px;
         }
         .modal-box {
-            background: #1a1a2e; border-radius: 20px; padding: 25px;
-            width: 100%; max-width: 400px; text-align: center;
+            background: var(--coal-light); border-radius: 8px; padding: 25px;
+            width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--ash);
         }
-        .modal-box h3 { margin-bottom: 15px; font-size: 1.1rem; }
+        .modal-box h3 { color: var(--white); margin-bottom: 12px; font-size: 1.1rem; }
+        .modal-box p { color: var(--text-light); margin-bottom: 15px; font-size: 0.9rem; }
         .modal-box .btn { 
-            width: 100%; padding: 14px; border-radius: 12px; border: none;
-            font-weight: 700; cursor: pointer; margin: 5px 0; font-size: 0.95rem;
+            width: 100%; padding: 13px; border-radius: 4px; border: none;
+            font-weight: 700; cursor: pointer; margin: 4px 0; font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif; transition: all 0.3s;
         }
-        .btn-edit { background: #f59e0b; color: #1a1a1a; }
-        .btn-new { background: #10b981; color: white; }
-        .btn-close-modal { background: #333; color: white; }
+        .btn-edit { background: var(--fire); color: white; }
+        .btn-edit:hover { background: var(--fire-dark); }
+        .btn-new { background: var(--success); color: white; }
+        .btn-close-modal { background: var(--ash); color: white; }
     </style>
 </head>
 <body>
     <div class="mesero-app">
         <div class="header">
             <span class="icon">📱</span>
-            <h1>Tomar Pedido</h1>
-            <p class="subtitle">Selecciona una mesa disponible</p>
+            <h1>TITO BURGER</h1>
+            <p class="subtitle">Tomar Pedido · Mesero</p>
         </div>
 
         <div class="stats-row">
@@ -160,11 +168,6 @@
             </div>
         </div>
 
-        <div class="quick-actions">
-            <button class="btn-quick btn-llevar" onclick="pedidoRapido('llevar')">🛵 Para Llevar</button>
-            <button class="btn-quick btn-delivery" onclick="pedidoRapido('delivery')">🚀 Delivery</button>
-        </div>
-
         <div class="section-title"><span class="dot"></span> Mesas del Restaurante</div>
         <div class="mesas-grid" id="mesasGrid"></div>
 
@@ -174,8 +177,8 @@
     <!-- MODAL MESA OCUPADA -->
     <div class="modal-overlay" id="modalOcupada">
         <div class="modal-box">
-            <h3>🪑 Mesa <span id="modalMesaNum"></span> está OCUPADA</h3>
-            <p style="color:#aaa;margin-bottom:15px;">¿Qué deseas hacer?</p>
+            <h3>🔥 Mesa <span id="modalMesaNum"></span> Ocupada</h3>
+            <p>¿Qué deseas hacer?</p>
             <button class="btn btn-edit" onclick="editarPedidoModal()">✏️ Editar Pedido</button>
             <button class="btn btn-new" onclick="nuevoPedidoModal()">🆕 Nuevo Pedido</button>
             <button class="btn btn-close-modal" onclick="closeModal()">❌ Cancelar</button>
@@ -192,10 +195,8 @@
                 const res = await fetch(API);
                 const mesas = await res.json();
                 
-                const libres = mesas.filter(m => m.estado === 'libre').length;
-                const ocupadas = mesas.filter(m => m.estado !== 'libre').length;
-                document.getElementById('countLibres').textContent = libres;
-                document.getElementById('countOcupadas').textContent = ocupadas;
+                document.getElementById('countLibres').textContent = mesas.filter(m => m.estado === 'libre').length;
+                document.getElementById('countOcupadas').textContent = mesas.filter(m => m.estado !== 'libre').length;
                 document.getElementById('countTotal').textContent = mesas.length;
                 
                 grid.innerHTML = mesas.map(mesa => {
@@ -216,52 +217,24 @@
                     `;
                 }).join('');
             } catch(e) {
-                grid.innerHTML = '<p style="grid-column:1/-1;color:#ef4444;text-align:center;">Error al cargar</p>';
+                grid.innerHTML = '<p style="grid-column:1/-1;color:#ef4444;text-align:center;">Error</p>';
             }
         }
 
-       function tomarPedido(numero) {
-    window.location.href = 'menu-mesero.html?mesa=' + numero;
-}
-function editarPedido(numero) {
-    window.location.href = 'menu-mesero.html?mesa=' + numero + '&editar=1';
-}
-
-        function editarPedido(numero) {
-            window.location.href = 'menu-digital.html?mesa=' + numero + '&modo=mesero&editar=1';
+        function tomarPedido(numero) {
+            window.location.href = 'menu-mesero.html?mesa=' + numero;
         }
-
+        function editarPedido(numero) {
+            window.location.href = 'menu-mesero.html?mesa=' + numero + '&editar=1';
+        }
         function mostrarOpciones(numero) {
             mesaSeleccionada = numero;
             document.getElementById('modalMesaNum').textContent = numero;
             document.getElementById('modalOcupada').style.display = 'flex';
         }
-
-        function editarPedidoModal() {
-            closeModal();
-            editarPedido(mesaSeleccionada);
-        }
-
-        function nuevoPedidoModal() {
-            closeModal();
-            tomarPedido(mesaSeleccionada);
-        }
-
-        function closeModal() {
-            document.getElementById('modalOcupada').style.display = 'none';
-        }
-
-        function pedidoRapido(tipo) {
-            window.location.href = 'menu-digital.html?tipo=' + tipo + '&modo=mesero';
-        }
-
-        function showToast(msg, type) {
-            const toast = document.createElement('div');
-            toast.className = 'toast ' + (type || 'error');
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2800);
-        }
+        function editarPedidoModal() { closeModal(); editarPedido(mesaSeleccionada); }
+        function nuevoPedidoModal() { closeModal(); tomarPedido(mesaSeleccionada); }
+        function closeModal() { document.getElementById('modalOcupada').style.display = 'none'; }
 
         cargarMesas();
         setInterval(cargarMesas, 3000);

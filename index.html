@@ -3,34 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>La Buena Mesa · Caja</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>TITO BURGER · Caja</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
     <div class="pos-premium">
         <!-- SIDEBAR -->
-        <aside class="sidebar-premium">
-            <div class="sb-logo">
-                <span class="sb-icon">◆</span>
-                <span class="sb-text">LB<br>MA</span>
-            </div>
-            <nav class="sb-nav">
-                <button class="sb-btn active" onclick="switchView('menu')" title="Menú">
-                    <span>📋</span>
-                </button>
-                <button class="sb-btn" onclick="switchView('mesas')" title="Mesas">
-                    <span>🪑</span>
-                </button>
-                <button class="sb-btn" onclick="switchView('cocina')" title="Cocina">
-                    <span>👨‍🍳</span>
-                </button>
-                <button class="sb-btn" onclick="toggleDashboard()" title="Reportes">
-                    <span>📊</span>
-                </button>
-            </nav>
-            <button class="sb-logout" onclick="logout()">🚪</button>
-        </aside>
+     <aside class="sidebar-premium">
+    <div class="sb-logo">
+        <span class="sb-icon">🔥</span>
+        <span class="sb-text">TB</span>
+    </div>
+    <nav class="sb-nav">
+        <button class="sb-btn active" onclick="switchView('menu')" title="Menú">📋</button>
+        <button class="sb-btn" onclick="switchView('mesas')" title="Mesas">🪑</button>
+        <button class="sb-btn" onclick="switchView('cocina')" title="Cocina">👨‍🍳</button>
+        <button class="sb-btn" onclick="toggleDashboard()" title="Dashboard">📊</button>
+    </nav>
+    <button class="sb-logout" onclick="logout()">🚪</button>
+</aside>
 
         <!-- MAIN -->
         <main class="main-premium">
@@ -45,11 +37,13 @@
                         </div>
                     </div>
                     <div class="categories-row-premium" id="categoryTabs">
-                        <button class="cat-btn active" onclick="changeCategory('todo', this)">Todos</button>
-                        <button class="cat-btn" onclick="changeCategory('platos', this)">Platos</button>
-                        <button class="cat-btn" onclick="changeCategory('bebidas', this)">Bebidas</button>
-                        <button class="cat-btn" onclick="changeCategory('snacks', this)">Snacks</button>
-                        <button class="cat-btn" onclick="changeCategory('postres', this)">Postres</button>
+                        <button class="cat-btn active" onclick="changeCategory('hamburguesas', this)">🍔 Burgers</button>
+                        <button class="cat-btn" onclick="changeCategory('cortes', this)">🥩 Cortes</button>
+                        <button class="cat-btn" onclick="changeCategory('alitas', this)">🍗 Alitas</button>
+                        <button class="cat-btn" onclick="changeCategory('parrilla', this)">🔥 Parrilla</button>
+                        <button class="cat-btn" onclick="changeCategory('promociones', this)">⭐ Promos</button>
+                        <button class="cat-btn" onclick="changeCategory('extras', this)">➕ Extras</button>
+                        <button class="cat-btn" onclick="changeCategory('bebidas', this)">🥤 Bebidas</button>
                     </div>
                     <div class="products-grid-premium" id="productsGrid"></div>
                 </div>
@@ -57,7 +51,7 @@
                 <!-- PANEL DERECHO: CARRITO -->
                 <div class="cart-panel-premium">
                     <div class="cart-panel-header">
-                        <h3>Pedido Actual</h3>
+                        <h3>🔥 Pedido Actual</h3>
                         <select id="tipoPedidoPOS" class="select-premium">
                             <option value="mesa">🪑 Mesa</option>
                             <option value="llevar">🛵 Recoger</option>
@@ -70,46 +64,51 @@
                     <div class="cart-items-premium" id="cartItems">
                         <p class="cart-empty">No hay productos</p>
                     </div>
-                   <div class="cart-totals-premium">
-    <div class="cart-row"><span>Subtotal</span><span id="subtotalPOS">$0.00</span></div>
-    <div class="cart-row discount"><span>Descuento</span><span id="descuentoPOS">-$0.00</span></div>
-    <div class="cart-row cart-total"><span>TOTAL</span><span id="totalPOS">$0.00</span></div>
-</div>
+                    <div class="cart-totals-premium">
+                        <div class="cart-row"><span>Subtotal</span><span id="subtotalPOS">$0.00</span></div>
+                        <div class="cart-row discount"><span>Descuento</span><span id="descuentoPOS">-$0.00</span></div>
+                        <div class="cart-row cart-total"><span>TOTAL</span><span id="totalPOS">$0.00</span></div>
+                    </div>
 
-<!-- DATOS DEL CLIENTE PARA FACTURA -->
-<div class="cliente-factura" id="clienteFactura" style="display:none;">
-    <input type="text" id="facturaNombre" placeholder="Nombre o Razón Social" class="input-premium">
-    <input type="text" id="facturaRUC" placeholder="RUC / CI (opcional)" class="input-premium">
-    <input type="email" id="facturaEmail" placeholder="Email para enviar factura" class="input-premium">
-    <input type="text" id="facturaDireccion" placeholder="Dirección" class="input-premium">
+                    <div class="cliente-factura" id="clienteFactura" style="display:none;">
+                        <input type="text" id="facturaNombre" placeholder="Nombre o Razón Social" class="input-premium">
+                        <input type="text" id="facturaRUC" placeholder="RUC / CI (opcional)" class="input-premium">
+                        <input type="email" id="facturaEmail" placeholder="Email para enviar factura" class="input-premium">
+                        <input type="text" id="facturaDireccion" placeholder="Dirección" class="input-premium">
+                    </div>
+<div id="efectivoSection" style="display:none;">
+    <input type="number" id="montoRecibido" placeholder="💵 Monto recibido" class="input-premium" oninput="calcularCambioPOS()">
+    <div id="cambioDisplay" style="text-align:center;font-size:1.2rem;font-weight:700;margin:8px 0;display:none;">
+        Cambio: <span id="cambioValor" style="color:#27ae60;">$0.00</span>
+    </div>
 </div>
-<button class="btn-factura-premium" onclick="mostrarFactura()">
-    📄 Preparar Factura
+           <button class="btn-cocina-premium" onclick="enviarACocinaPOS()" style="width:calc(100% - 30px);margin:8px 15px;">
+    🔥 ENVIAR A COCINA
 </button>
-<button class="btn-cocina-premium" onclick="enviarACocina()" id="btnCocina" style="display:none;">
-    🔥 Enviar a Cocina
+<button class="btn-cocina-premium" onclick="cobrarPOS()" style="width:calc(100% - 30px);margin:5px 15px 15px;">
+    💵 COBRAR
 </button>
-
-                    <button class="btn-payment-premium" onclick="procesarPagoPOS()">
-                        Procesar Pago
-                    </button>
                 </div>
             </div>
 
             <!-- VISTA MESAS -->
             <div class="mesas-view-premium" id="viewMesas" style="display:none;">
                 <div class="mesas-view-header">
-                    <h2>Mesas del Restaurante</h2>
+                    <h2>🪑 Mesas del Restaurante</h2>
                     <button class="btn-add-premium" onclick="agregarMesa()">+ Nueva Mesa</button>
                 </div>
                 <div class="mesas-grid-premium" id="mesasGrid"></div>
             </div>
         </main>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>
-    emailjs.init('WopHgNwctZJCExy_g');
-</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init('WopHgNwctZJCExy_g');
+    </script>
     <script src="app.js"></script>
+    <script>
+    document.getElementById('clienteFactura').style.display = 'none';
+</script>
 </body>
 </html>

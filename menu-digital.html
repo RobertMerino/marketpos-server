@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>La Buena Mesa · Menú Digital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>TITO BURGER · Menú</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="menu-digital.css">
 </head>
 <body>
@@ -12,22 +12,21 @@
         
         <!-- HEADER HERO -->
         <div class="hero-header">
-            <div class="hero-overlay"></div>
             <div class="hero-content">
-                <div class="hero-badge">★ Restaurante Premium ★</div>
-                <h1 class="hero-title">LA BUENA MESA</h1>
-                <p class="hero-subtitle">Cocina de Autor · Parrilla Artesanal</p>
+                <div class="hero-badge">🔥 AL CARBÓN 🔥</div>
+                <h1 class="hero-title">TITO BURGER</h1>
+                <p class="hero-subtitle">Hamburguesas · Cortes · Parrilla</p>
                 <div class="hero-info">
                     <span>🕐 10-30 min</span>
-                    <span>⭐ 4.8 (200+)</span>
-                    <span>📍 Av. Principal 123</span>
+                    <span>⭐ 4.8</span>
+                    <span>📍 Av. Principal</span>
                 </div>
             </div>
         </div>
 
         <!-- TIPO DE PEDIDO -->
         <div class="order-type-section">
-            <h3 class="section-label">Seleccione su modalidad</h3>
+            <h3 class="section-label">¿Cómo quieres tu pedido?</h3>
             <div class="type-selector">
                 <button class="type-option active" onclick="selectType('mesa', this)">
                     <span class="type-icon">🪑</span>
@@ -67,7 +66,7 @@
         <div class="modal-overlay" id="modalCart" style="display:none;">
             <div class="modal-cart-premium">
                 <button onclick="closeCart()" class="modal-close-btn">✕</button>
-                <h3>Su Pedido</h3>
+                <h3>🔥 Tu Pedido</h3>
                 <div id="cartItems"></div>
                 <div class="cart-total-line">
                     <span>TOTAL</span>
@@ -80,9 +79,9 @@
         <!-- MODAL CONFIRMACIÓN -->
         <div class="modal-overlay" id="modalConfirm" style="display:none;">
             <div class="modal-confirm-premium">
-                <span class="confirm-icon">✓</span>
+                <span class="confirm-icon">🔥</span>
                 <h2>¡Pedido Recibido!</h2>
-                <p>Su pedido está siendo preparado</p>
+                <p>Tu pedido está siendo preparado</p>
                 <div id="confirmDetails"></div>
                 <button class="btn-confirm" onclick="closeConfirm()">ENTENDIDO</button>
             </div>

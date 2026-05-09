@@ -1,78 +1,402 @@
+:root {
+    --fire: #ff6b35;
+    --fire-dark: #d4380d;
+    --fire-light: #ff8c5a;
+    --coal: #1a1a1a;
+    --coal-light: #2a2a2a;
+    --ash: #333;
+    --white: #ffffff;
+    --cream: #fff5f0;
+    --gold: #ffb800;
+    --danger: #dc2626;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Poppins', sans-serif; background: #f5f0eb; }
-.menu-app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: #f5f0eb; padding-bottom: 100px; }
-
-.top-bar {
-    display: flex; align-items: center; padding: 15px; background: #1a1a2e;
-    color: white; gap: 10px; position: sticky; top: 0; z-index: 10;
-}
-.btn-back { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
-.mesa-badge { flex: 1; text-align: center; font-weight: 700; font-size: 1rem; }
-.btn-cart {
-    background: #ff6b35; color: white; border: none; padding: 8px 14px;
-    border-radius: 20px; font-weight: 700; cursor: pointer;
+body { 
+    font-family: 'Montserrat', sans-serif; 
+    background: var(--coal); 
+    color: var(--white); 
 }
 
-.category-scroll {
-    display: flex; gap: 6px; padding: 12px 10px; overflow-x: auto; background: white;
-}
-.category-scroll::-webkit-scrollbar { display: none; }
-.cat-pill {
-    padding: 8px 14px; background: #f5f0eb; border: 2px solid #e0d5c7;
-    border-radius: 20px; color: #8b7355; font-size: 0.75rem; font-weight: 700;
-    white-space: nowrap; cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif;
-}
-.cat-pill.active { background: #ff6b35; color: white; border-color: #ff6b35; }
-
-.products-grid { display: grid; gap: 10px; padding: 15px; }
-.product-card {
-    display: flex; justify-content: space-between; align-items: center;
-    background: white; border-radius: 14px; padding: 14px; cursor: pointer;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.05); transition: all 0.2s;
-}
-.product-card:active { transform: scale(0.98); }
-.product-info { flex: 1; }
-.product-name { font-weight: 700; font-size: 0.9rem; }
-.product-price { font-weight: 800; color: #ff6b35; font-size: 1.1rem; }
-.product-add {
-    background: #ff6b35; color: white; border: none; width: 36px; height: 36px;
-    border-radius: 50%; font-size: 1.3rem; cursor: pointer; display: flex;
-    align-items: center; justify-content: center; margin-left: 10px;
+.menu-app { 
+    max-width: 500px; 
+    margin: 0 auto; 
+    min-height: 100vh; 
+    background: var(--coal); 
+    padding-bottom: 100px; 
 }
 
-.cart-float {
-    position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-    background: #1a1a2e; color: white; padding: 12px 20px; border-radius: 25px;
-    display: flex; align-items: center; gap: 10px; cursor: pointer;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 20;
+/* ============================================ */
+/* HEADER TITO BURGER */
+/* ============================================ */
+.header-premium {
+    background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 50%, #2d1a0a 100%);
+    padding: 35px 20px 30px;
+    text-align: center;
+    position: relative;
+    border-bottom: 3px solid var(--fire);
 }
-.cart-float span:first-child {
-    background: #ff6b35; width: 22px; height: 22px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700;
-}
-
-.modal-overlay {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.7); display: flex; align-items: flex-end;
-    justify-content: center; z-index: 100;
-}
-.modal-content {
-    background: white; border-radius: 20px 20px 0 0; padding: 20px;
-    width: 100%; max-width: 500px; max-height: 75vh; overflow-y: auto;
-}
-.cart-items { max-height: 250px; overflow-y: auto; }
-.cart-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0; border-bottom: 1px solid #f0e8dc;
-}
-.cart-total-line {
-    display: flex; justify-content: space-between; font-size: 1.2rem;
-    margin: 12px 0; padding-top: 10px; border-top: 2px solid #e0d5c7;
+.header-premium::before {
+    content: '🔥 TITO BURGER 🔥';
+    color: var(--fire);
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    display: block;
+    margin-bottom: 15px;
     font-weight: 700;
 }
-.cart-total-line strong { color: #ff6b35; }
-.btn-confirm {
-    width: 100%; padding: 14px; background: #ff6b35; color: white;
-    border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
-    cursor: pointer; font-family: 'Poppins', sans-serif;
+.header-premium .logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    color: var(--fire);
+    letter-spacing: 3px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.header-premium .sublogo {
+    font-size: 0.65rem;
+    color: var(--fire-light);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+.header-premium .mesa-info {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: var(--fire);
+    color: var(--white);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ============================================ */
+/* TOP BAR */
+/* ============================================ */
+.top-bar {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    padding: 12px 15px; 
+    background: var(--coal-light); 
+    border-bottom: 1px solid var(--ash);
+}
+.btn-back { 
+    background: none; 
+    border: none; 
+    color: var(--fire-light); 
+    font-size: 0.85rem; 
+    cursor: pointer; 
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.mesa-badge { 
+    color: var(--white); 
+    font-weight: 700; 
+    font-size: 0.95rem; 
+}
+.btn-cart-premium, .btn-cart {
+    background: var(--fire); 
+    color: var(--white); 
+    border: none;
+    padding: 8px 14px; 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+    cursor: pointer;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+.btn-cart-premium:hover, .btn-cart:hover { 
+    background: var(--fire-dark); 
+}
+
+/* ============================================ */
+/* CATEGORÍAS */
+/* ============================================ */
+.categories-premium, .category-scroll {
+    display: flex; 
+    gap: 6px; 
+    padding: 12px 10px; 
+    overflow-x: auto; 
+    background: var(--coal-light);
+    border-bottom: 1px solid var(--ash);
+}
+.categories-premium::-webkit-scrollbar, .category-scroll::-webkit-scrollbar { display: none; }
+
+.cat-item, .cat-pill {
+    padding: 9px 15px; 
+    background: transparent; 
+    border: 1px solid var(--ash);
+    color: #aaa; 
+    font-size: 0.7rem; 
+    font-weight: 600;
+    white-space: nowrap; 
+    cursor: pointer; 
+    letter-spacing: 1px; 
+    text-transform: uppercase;
+    transition: all 0.3s;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 4px;
+}
+.cat-item.active, .cat-pill.active { 
+    background: var(--fire); 
+    color: var(--white); 
+    border-color: var(--fire); 
+}
+.cat-item:hover, .cat-pill:hover { 
+    border-color: var(--fire); 
+    color: var(--fire-light); 
+}
+
+/* ============================================ */
+/* PRODUCTOS */
+/* ============================================ */
+.products-container, .products-grid { 
+    padding: 12px; 
+}
+
+.product-card-premium, .product-card {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: var(--coal-light); 
+    padding: 14px 16px; 
+    margin-bottom: 8px;
+    border-left: 4px solid transparent; 
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+.product-card-premium:hover, .product-card:hover { 
+    border-left-color: var(--fire); 
+    background: #222; 
+}
+.product-card-premium:active, .product-card:active { 
+    transform: scale(0.99); 
+}
+
+.product-info { flex: 1; }
+.product-name { 
+    font-weight: 700; 
+    font-size: 0.95rem; 
+    color: var(--white); 
+    margin-bottom: 3px;
+}
+.product-desc { 
+    font-size: 0.7rem; 
+    color: #999; 
+    line-height: 1.3;
+}
+.product-price { 
+    font-weight: 800; 
+    color: var(--fire); 
+    font-size: 1.1rem; 
+    white-space: nowrap;
+    margin: 0 10px;
+}
+
+.btn-add {
+    background: var(--fire); 
+    color: var(--white); 
+    border: none;
+    width: 34px; 
+    height: 34px; 
+    font-size: 1.2rem; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+.btn-add:hover { 
+    background: var(--fire-dark); 
+}
+
+/* ============================================ */
+/* CARRITO FLOTANTE */
+/* ============================================ */
+.cart-float-premium, .cart-float {
+    position: fixed; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: var(--fire); 
+    color: var(--white); 
+    padding: 14px 24px;
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.4); 
+    z-index: 20;
+    border-radius: 4px;
+    font-weight: 700;
+}
+.cart-float-premium .count, .cart-float-count {
+    background: var(--white); 
+    color: var(--fire);
+    width: 24px; 
+    height: 24px; 
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 0.7rem; 
+    font-weight: 800;
+}
+.cart-float-premium .total, .cart-float-total {
+    font-size: 1.1rem; 
+    font-weight: 800;
+}
+
+/* ============================================ */
+/* MODAL CARRITO */
+/* ============================================ */
+.modal-overlay {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    background: rgba(0,0,0,0.85); 
+    display: flex; 
+    align-items: flex-end;
+    justify-content: center; 
+    z-index: 100;
+}
+.modal-cart, .modal-cart-premium, .modal-content {
+    background: var(--coal-light); 
+    width: 100%; 
+    max-width: 500px;
+    max-height: 75vh; 
+    overflow-y: auto; 
+    padding: 25px 20px;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+}
+.modal-cart h3, .modal-content h3 {
+    color: var(--white); 
+    text-align: center; 
+    margin-bottom: 20px; 
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+.modal-close-btn, .btn-close {
+    position: absolute; 
+    top: 12px; 
+    right: 15px;
+    background: var(--ash); 
+    color: var(--white); 
+    border: none;
+    width: 30px; 
+    height: 30px; 
+    font-size: 1.1rem; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius: 4px;
+}
+
+/* ============================================ */
+/* ITEMS DEL CARRITO */
+/* ============================================ */
+.cart-item-premium, .cart-item, .cart-item-line {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 12px 0; 
+    border-bottom: 1px solid var(--ash);
+    color: var(--white);
+}
+.cart-item-premium strong { 
+    font-size: 0.9rem; 
+}
+.cart-item-premium small { 
+    color: #aaa; 
+    font-size: 0.75rem; 
+}
+
+.cart-total-premium, .cart-total-line {
+    display: flex; 
+    justify-content: space-between;
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    margin: 15px 0;
+    padding-top: 12px; 
+    border-top: 2px solid var(--fire);
+    color: var(--white);
+}
+.cart-total-premium span:last-child, .cart-total-line strong { 
+    color: var(--fire); 
+    font-size: 1.3rem;
+}
+
+/* ============================================ */
+/* BOTONES */
+/* ============================================ */
+.btn-confirm-premium, .btn-confirm {
+    width: 100%; 
+    padding: 16px; 
+    background: var(--fire);
+    color: var(--white); 
+    border: none;
+    font-size: 0.9rem; 
+    font-weight: 700; 
+    cursor: pointer;
+    letter-spacing: 3px; 
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif; 
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+.btn-confirm-premium:hover, .btn-confirm:hover { 
+    background: var(--fire-dark); 
+}
+
+.btn-qty {
+    width: 28px; 
+    height: 28px; 
+    border: 1px solid var(--ash);
+    background: var(--coal); 
+    color: var(--white);
+    cursor: pointer; 
+    font-size: 0.9rem; 
+    font-weight: 700;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.btn-qty:hover { 
+    background: var(--fire); 
+    border-color: var(--fire); 
+}
+
+/* ============================================ */
+/* TOAST */
+/* ============================================ */
+.toast {
+    position: fixed; 
+    top: 20px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: var(--fire); 
+    color: white; 
+    padding: 12px 20px;
+    border-radius: 4px; 
+    font-weight: 700; 
+    z-index: 999;
+    animation: slideDown 0.3s ease, fadeOut 0.3s ease 2.5s forwards;
+}
+@keyframes slideDown { 
+    from { transform: translateX(-50%) translateY(-30px); opacity: 0; } 
+    to { transform: translateX(-50%) translateY(0); opacity: 1; } 
+}
+@keyframes fadeOut { 
+    to { opacity: 0; } 
 }

@@ -143,42 +143,144 @@ function renderCartItems() {
 async function confirmOrder() {
     if (cart.length === 0) { alert('⚠️ Agrega productos'); return; }
     const total = calculateTotal();
-    const pedido = { cliente: { nombre: 'Mesero', mesa: mesaActual, tipoPedido: 'mesa' }, items: cart.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad, sabor: i.sabor || '' })), total };
+    const pedido = { 
+        cliente: { nombre: 'Mesero', mesa: mesaActual, tipoPedido: 'mesa' }, 
+        items: cart.map(i => ({ 
+            id: i.id, 
+            nombre: i.nombre, 
+            precio: i.precio, 
+            emoji: i.emoji, 
+            cantidad: i.cantidad, 
+            sabor: i.sabor || '' 
+        })), 
+        total 
+    };
 
     if (modoEdicion && pedidoIdEdicion) {
-        // ACTUALIZAR pedido existente
-        try { await fetch('/api/pedidos/' + pedidoIdEdicion, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: pedido.items, total: pedido.total }) }); } catch(e) {}
+        // ✅ ACTUALIZAR pedido existente
+        try {
+            const response = await fetch('/api/pedidos/' + pedidoIdEdicion, { 
+                method: 'PATCH', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ items: pedido.items, total: pedido.total }) 
+            });
+            if (!response.ok) throw new Error('Error al actualizar');
+        } catch(e) {
+            console.error('Error actualizando pedido:', e);
+        }
+
+        // Actualizar localStorage
         const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
         const idx = pedidosLocal.findIndex(p => p.id == pedidoIdEdicion);
-        if (idx !== -1) { pedidosLocal[idx].items = pedido.items; pedidosLocal[idx].total = pedido.total; localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal)); }
+        if (idx !== -1) { 
+            pedidosLocal[idx].items = pedido.items; 
+            pedidosLocal[idx].total = pedido.total; 
+            localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal)); 
+        }
+
+        // Actualizar mesas en localStorage
         const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
         const mesa = mesasLocal.find(m => m.numero === parseInt(mesaActual));
-        if (mesa) { mesa.orden = pedido.items; localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); }
-        try { const res = await fetch('/api/mesas'); const apiMesas = await res.json(); const mesaAPI = apiMesas.find(m => m.numero === parseInt(mesaActual)); if (mesaAPI) { await fetch('/api/mesas/' + mesaAPI.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orden: pedido.items }) }); } } catch(e) {}
-        alert('✅ Pedido actualizado');
+        if (mesa) { 
+            mesa.orden = pedido.items; 
+            localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
+        }
+
+        // ✅ También actualizar la mesa en la API
+        try {
+            const res = await fetch('/api/mesas');
+            const apiMesas = await res.json();
+            const mesaAPI = apiMesas.find(m => m.numero === parseInt(mesaActual));
+            if (mesaAPI) { 
+                await fetch('/api/mesas/' + mesaAPI.id, { 
+                    method: 'PATCH', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ orden: pedido.items }) 
+                }); 
+            }
+        } catch(e) {
+            console.error('Error actualizando mesa:', e);
+        }
+
+        alert('✅ Pedido actualizado correctamente');
     } else {
         // Crear NUEVO pedido
-        try { await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) }); } catch(e) {}
+        try {
+            const response = await fetch('/api/pedidos', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(pedido) 
+            });
+            const nuevoPedido = await response.json();
+            pedido.id = nuevoPedido.id || Date.now().toString();
+        } catch(e) {
+            pedido.id = Date.now().toString();
+        }
+
+        pedido.fecha = new Date().toISOString(); 
+        pedido.estado = 'nuevo';
+        
         const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-        pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';
-        pedidosLocal.unshift(pedido); localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+        pedidosLocal.unshift(pedido); 
+        localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+        
         const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
         const mesa = mesasLocal.find(m => m.numero === parseInt(mesaActual));
-        if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); }
+        if (mesa) { 
+            mesa.estado = 'ocupada'; 
+            mesa.orden = pedido.items; 
+            localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
+        }
+        
         alert('✅ Pedido enviado a cocina');
     }
-    cart = []; updateCartCount(); updateCartFloat(); window.location.href = 'mesero.html';
+    
+    cart = []; 
+    updateCartCount(); 
+    updateCartFloat(); 
+    window.location.href = 'mesero.html';
 }
 
+// ✅ Cargar pedido existente si estamos en modo edición
 if (editarParam === '1') {
     modoEdicion = true;
+    
+    // Cargar desde API primero, luego desde localStorage como fallback
     fetch('/api/mesas').then(r => r.json()).then(mesas => {
         const mesa = mesas.find(m => m.numero === parseInt(mesaActual));
-        if (mesa?.orden?.length > 0) { cart = mesa.orden.map(i => ({ ...i, cantidad: i.cantidad || 1 })); }
+        if (mesa?.orden?.length > 0) { 
+            cart = mesa.orden.map(i => ({ ...i, cantidad: i.cantidad || 1 })); 
+            updateCartFloat(); 
+            updateCartCount(); 
+        }
+    }).catch(() => {
+        // Fallback a localStorage
+        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+        const mesa = mesasLocal.find(m => m.numero === parseInt(mesaActual));
+        if (mesa?.orden?.length > 0) { 
+            cart = mesa.orden.map(i => ({ ...i, cantidad: i.cantidad || 1 })); 
+            updateCartFloat(); 
+            updateCartCount(); 
+        }
+    });
+
+    // Buscar el ID del pedido original
+    fetch('/api/pedidos').then(r => r.json()).then(pedidosAPI => {
+        const pedidoOriginal = pedidosAPI.find(p => 
+            p.cliente?.mesa == mesaActual && 
+            p.estado !== 'entregado'
+        );
+        if (pedidoOriginal) {
+            pedidoIdEdicion = pedidoOriginal.id;
+        }
+    }).catch(() => {
+        // Fallback a localStorage
         const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-        const pedidoOriginal = pedidosLocal.find(p => p.cliente?.mesa == mesaActual && p.estado !== 'entregado');
+        const pedidoOriginal = pedidosLocal.find(p => 
+            p.cliente?.mesa == mesaActual && 
+            p.estado !== 'entregado'
+        );
         if (pedidoOriginal) pedidoIdEdicion = pedidoOriginal.id;
-        updateCartFloat(); updateCartCount();
     });
 }
 

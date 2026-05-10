@@ -95,6 +95,14 @@ def update_pedido(id):
             data = request.json
             if 'items' in data:
                 p['items'] = data['items']
+                # ✅ ACTUALIZAR también la mesa correspondiente
+                mesa_numero = p.get('cliente', {}).get('mesa')
+                if mesa_numero:
+                    for m in mesas:
+                        if m['numero'] == int(mesa_numero):
+                            m['orden'] = data['items']
+                            guardar_mesas(mesas)
+                            break
             if 'total' in data:
                 p['total'] = data['total']
             if 'estado' in data:

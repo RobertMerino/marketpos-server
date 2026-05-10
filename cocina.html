@@ -34,8 +34,6 @@
         .order-card.listo { border-left-color: var(--success); opacity: 0.9; }
         .order-card.retrasado { border-left-color: var(--fire) !important; box-shadow: 0 0 20px rgba(192,57,43,0.3); }
         .order-card-content { overflow-y: auto; flex: 1; padding-right: 3px; }
-        .order-card-content::-webkit-scrollbar { width: 3px; }
-        .order-card-content::-webkit-scrollbar-thumb { background: var(--border); }
         .order-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
         .order-card-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--dark); }
         .order-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
@@ -90,22 +88,17 @@
             if (!sonidoActivado) return;
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const o = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
                 o.connect(g); g.connect(audioCtx.destination);
                 if (tipo === 'nuevo') { 
-                    o.frequency.value = 800; o.type = 'square'; g.gain.value = 0.3; 
-                    o.start(); o.stop(audioCtx.currentTime + 0.15);
+                    o.frequency.value = 800; o.type = 'square'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.15);
                     setTimeout(() => { const o2 = audioCtx.createOscillator(); o2.connect(g); o2.frequency.value = 1000; o2.type = 'square'; o2.start(); o2.stop(audioCtx.currentTime + 0.15); }, 150);
                 } else if (tipo === 'listo') { 
-                    o.frequency.value = 523; o.type = 'sine'; g.gain.value = 0.3;
-                    o.start(); o.stop(audioCtx.currentTime + 0.2);
+                    o.frequency.value = 523; o.type = 'sine'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.2);
                     setTimeout(() => { const o2 = audioCtx.createOscillator(); o2.connect(g); o2.frequency.value = 659; o2.type = 'sine'; o2.start(); o2.stop(audioCtx.currentTime + 0.2); }, 200);
                     setTimeout(() => { const o3 = audioCtx.createOscillator(); o3.connect(g); o3.frequency.value = 784; o3.type = 'sine'; o3.start(); o3.stop(audioCtx.currentTime + 0.3); }, 400);
                 } else if (tipo === 'retraso') { 
-                    for (let i = 0; i < 3; i++) {
-                        setTimeout(() => { const oo = audioCtx.createOscillator(); oo.connect(g); oo.frequency.value = 600; oo.type = 'sawtooth'; oo.start(); oo.stop(audioCtx.currentTime + 0.1); }, i * 200);
-                    }
+                    for (let i = 0; i < 3; i++) { setTimeout(() => { const oo = audioCtx.createOscillator(); oo.connect(g); oo.frequency.value = 600; oo.type = 'sawtooth'; oo.start(); oo.stop(audioCtx.currentTime + 0.1); }, i * 200); }
                 }
             } catch(e) {}
         }
@@ -114,8 +107,7 @@
 
         function calcularTiempoDesde(timestamp) {
             const d = Date.now() - timestamp;
-            const min = Math.floor(d / 60000);
-            const seg = Math.floor((d % 60000) / 1000);
+            const min = Math.floor(d / 60000); const seg = Math.floor((d % 60000) / 1000);
             return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) };
         }
 
@@ -126,15 +118,14 @@
         }
 
         async function entregarPedido(id) {
-            delete pedidosTimers[id];
+            delete pedidosTimers[id]; pedidosAnteriores = 0;
             try {
                 const res = await fetch('/api/pedidos'); const todos = await res.json();
                 const pedido = todos.find(p => p.id === id);
                 if (pedido?.cliente?.mesa && pedido.cliente.tipoPedido === 'mesa') {
                     const mesas = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
                     const mesa = mesas.find(m => m.numero === parseInt(pedido.cliente.mesa));
-                    if (mesa) { mesa.estado = 'libre'; mesa.orden = []; }
-                    localStorage.setItem('marketpos_mesas', JSON.stringify(mesas));
+                    if (mesa) { mesa.estado = 'libre'; mesa.orden = []; localStorage.setItem('marketpos_mesas', JSON.stringify(mesas)); }
                 }
             } catch(e) {}
             await fetch('/api/pedidos/' + id, { method: 'DELETE' }).catch(() => {});
@@ -156,20 +147,34 @@
 
         async function renderizar() {
             const pedidos = await getPedidosOnline();
+            
+            // Limpiar timers de pedidos eliminados
+            const idsActuales = pedidos.map(p => p.id);
+            Object.keys(pedidosTimers).forEach(id => {
+                if (!idsActuales.includes(id)) delete pedidosTimers[id];
+            });
+            
             const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
             const grid = document.getElementById('ordersGrid');
+            
             if (activos.length > pedidosAnteriores) playSound('nuevo');
             pedidosAnteriores = activos.length;
+            
             document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
             document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
             document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
+            
             let retrasados = 0;
             activos.forEach(p => { if (p.estado !== 'listo' && calcularTiempoDesde(pedidosTimers[p.id] || Date.now()).retrasado) { retrasados++; playSound('retraso'); } });
             document.getElementById('retrasadosCount').textContent = retrasados;
+            
             if (activos.length === 0) { grid.innerHTML = `<div class="empty-state"><span class="emoji">🍳</span><h2>Cocina en Espera</h2></div>`; return; }
+            
             activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+            
             grid.innerHTML = activos.map(p => {
-                if (!pedidosTimers[p.id]) pedidosTimers[p.id] = Date.now();
+                // Actualizar timer siempre para reflejar ediciones
+                pedidosTimers[p.id] = Date.now();
                 const t = calcularTiempoDesde(pedidosTimers[p.id]);
                 const ret = t.retrasado && p.estado !== 'listo';
                 const tipoTexto = (p.cliente?.tipoPedido || 'mesa') === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : '🛵 Recoger';
@@ -198,13 +203,8 @@
             document.removeEventListener('click', initAudio);
         }, { once: true });
 
-        // Timer cada segundo
         setInterval(actualizarTemporizadores, 1000);
-
-        // Renderizar cada 5 segundos
         setInterval(renderizar, 5000);
-
-        // Primera carga
         renderizar();
     </script>
 </body>

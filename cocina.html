@@ -198,9 +198,20 @@ async function renderizar() {
             document.removeEventListener('click', initAudio);
         }, { once: true });
 
-        setInterval(actualizarTemporizadores, 1000);
-        setInterval(renderizar, 5000);
-        renderizar();
+       setInterval(actualizarTemporizadores, 1000);
+
+// Bucle manual para renderizar
+async function bucleRenderizar() {
+    console.log('🚀 Bucle de cocina iniciado');
+    while (true) {
+        console.log('🔄 Actualizando cocina...');
+        await renderizar();
+        console.log('✅ Cocina actualizada, esperando 5s...');
+        await new Promise(r => setTimeout(r, 5000));
+    }
+}
+bucleRenderizar();
+bucleRenderizar();sss
     </script>
 </body>
 </html>

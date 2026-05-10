@@ -154,41 +154,41 @@
             });
         }
 
-async function renderizar() {
-    const pedidos = await getPedidosOnline();
-    const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
-    const grid = document.getElementById('ordersGrid');
-    if (activos.length > pedidosAnteriores) playSound('nuevo');
-    pedidosAnteriores = activos.length;
-    document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
-    document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
-    document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
-    let retrasados = 0;
-    activos.forEach(p => { if (p.estado !== 'listo' && calcularTiempoDesde(pedidosTimers[p.id] || Date.now()).retrasado) { retrasados++; playSound('retraso'); } });
-    document.getElementById('retrasadosCount').textContent = retrasados;
-    if (activos.length === 0) { grid.innerHTML = `<div class="empty-state"><span class="emoji">🍳</span><h2>Cocina en Espera</h2></div>`; return; }
-    activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-    grid.innerHTML = activos.map(p => {
-        if (!pedidosTimers[p.id]) pedidosTimers[p.id] = Date.now();
-        const t = calcularTiempoDesde(pedidosTimers[p.id]);
-        const ret = t.retrasado && p.estado !== 'listo';
-        const tipoTexto = (p.cliente?.tipoPedido || 'mesa') === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : '🛵 Recoger';
-        return `
-            <div class="order-card ${ret ? 'retrasado' : p.estado}" data-id="${p.id}">
-                <div class="order-card-content">
-                    <div class="order-card-header"><h3>${tipoTexto}</h3><span class="order-badge ${ret ? 'badge-retrasado' : 'badge-' + p.estado}">${ret ? '⏰ RETRASADO' : p.estado.toUpperCase()}</span></div>
-                    <div class="timer-container ${ret ? 'retrasado' : ''}"><span>⏱️</span> <span class="timer-text"><strong class="timer-minutes">${t.min}:${String(t.seg).padStart(2,'0')}</strong> min</span>${ret ? `<span style="color:var(--fire);margin-left:auto;">+${t.retrasoMin} min</span>` : ''}</div>
-                    <div class="customer-info-mini"><span>👤 ${p.cliente?.nombre || 'Cliente'}</span></div>
-                    <ul class="order-items">${(p.items || []).map(i => `<li class="order-item"><span><strong>${i.emoji || '🍽️'} ${i.nombre}</strong></span><span class="item-cantidad">x${i.cantidad}</span></li>`).join('')}</ul>
-                </div>
-                <div class="order-actions">
-                    ${p.estado === 'nuevo' ? `<button class="btn-action btn-start" onclick="cambiarEstado('${p.id}','preparando')">Iniciar</button><button class="btn-action btn-reject" onclick="entregarPedido('${p.id}')">Rechazar</button>` : ''}
-                    ${p.estado === 'preparando' ? `<button class="btn-action btn-ready" onclick="cambiarEstado('${p.id}','listo')">¡Listo!</button>` : ''}
-                    ${p.estado === 'listo' ? `<button class="btn-action btn-deliver" onclick="entregarPedido('${p.id}')">Entregado</button>` : ''}
-                </div>
-            </div>`;
-    }).join('');
-}
+        async function renderizar() {
+            const pedidos = await getPedidosOnline();
+            const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
+            const grid = document.getElementById('ordersGrid');
+            if (activos.length > pedidosAnteriores) playSound('nuevo');
+            pedidosAnteriores = activos.length;
+            document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
+            document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
+            document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
+            let retrasados = 0;
+            activos.forEach(p => { if (p.estado !== 'listo' && calcularTiempoDesde(pedidosTimers[p.id] || Date.now()).retrasado) { retrasados++; playSound('retraso'); } });
+            document.getElementById('retrasadosCount').textContent = retrasados;
+            if (activos.length === 0) { grid.innerHTML = `<div class="empty-state"><span class="emoji">🍳</span><h2>Cocina en Espera</h2></div>`; return; }
+            activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+            grid.innerHTML = activos.map(p => {
+                if (!pedidosTimers[p.id]) pedidosTimers[p.id] = Date.now();
+                const t = calcularTiempoDesde(pedidosTimers[p.id]);
+                const ret = t.retrasado && p.estado !== 'listo';
+                const tipoTexto = (p.cliente?.tipoPedido || 'mesa') === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : '🛵 Recoger';
+                return `
+                    <div class="order-card ${ret ? 'retrasado' : p.estado}" data-id="${p.id}">
+                        <div class="order-card-content">
+                            <div class="order-card-header"><h3>${tipoTexto}</h3><span class="order-badge ${ret ? 'badge-retrasado' : 'badge-' + p.estado}">${ret ? '⏰ RETRASADO' : p.estado.toUpperCase()}</span></div>
+                            <div class="timer-container ${ret ? 'retrasado' : ''}"><span>⏱️</span> <span class="timer-text"><strong class="timer-minutes">${t.min}:${String(t.seg).padStart(2,'0')}</strong> min</span>${ret ? `<span style="color:var(--fire);margin-left:auto;">+${t.retrasoMin} min</span>` : ''}</div>
+                            <div class="customer-info-mini"><span>👤 ${p.cliente?.nombre || 'Cliente'}</span></div>
+                            <ul class="order-items">${(p.items || []).map(i => `<li class="order-item"><span><strong>${i.emoji || '🍽️'} ${i.nombre}</strong></span><span class="item-cantidad">x${i.cantidad}</span></li>`).join('')}</ul>
+                        </div>
+                        <div class="order-actions">
+                            ${p.estado === 'nuevo' ? `<button class="btn-action btn-start" onclick="cambiarEstado('${p.id}','preparando')">Iniciar</button><button class="btn-action btn-reject" onclick="entregarPedido('${p.id}')">Rechazar</button>` : ''}
+                            ${p.estado === 'preparando' ? `<button class="btn-action btn-ready" onclick="cambiarEstado('${p.id}','listo')">¡Listo!</button>` : ''}
+                            ${p.estado === 'listo' ? `<button class="btn-action btn-deliver" onclick="entregarPedido('${p.id}')">Entregado</button>` : ''}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
 
         document.addEventListener('click', function initAudio() {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -198,20 +198,14 @@ async function renderizar() {
             document.removeEventListener('click', initAudio);
         }, { once: true });
 
-       setInterval(actualizarTemporizadores, 1000);
+        // Timer cada segundo
+        setInterval(actualizarTemporizadores, 1000);
 
-// Bucle manual para renderizar
-async function bucleRenderizar() {
-    console.log('🚀 Bucle de cocina iniciado');
-    while (true) {
-        console.log('🔄 Actualizando cocina...');
-        await renderizar();
-        console.log('✅ Cocina actualizada, esperando 5s...');
-        await new Promise(r => setTimeout(r, 5000));
-    }
-}
-bucleRenderizar();
-bucleRenderizar();sss
+        // Renderizar cada 5 segundos
+        setInterval(renderizar, 5000);
+
+        // Primera carga
+        renderizar();
     </script>
 </body>
 </html>

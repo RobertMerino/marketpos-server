@@ -81,45 +81,118 @@
         let sonidoActivado = true;
         let pedidosAnteriores = 0;
         let pedidosTimers = {};
-        let pedidosPrevios = {}; // Para detectar ediciones
+        let pedidosPrevios = {};
 
         async function getPedidosOnline() {
-            try { const res = await fetch('/api/pedidos'); return await res.json(); }
-            catch(e) { return JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]'); }
+            try { 
+                const res = await fetch('/api/pedidos'); 
+                const data = await res.json();
+                return data;
+            } catch(e) { 
+                return JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]'); 
+            }
         }
 
         function playSound(tipo) {
             if (!sonidoActivado) return;
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-                o.connect(g); g.connect(audioCtx.destination);
+                const o = audioCtx.createOscillator(); 
+                const g = audioCtx.createGain();
+                o.connect(g); 
+                g.connect(audioCtx.destination);
+                
                 if (tipo === 'nuevo') { 
-                    o.frequency.value = 800; o.type = 'square'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.15);
-                    setTimeout(() => { const o2 = audioCtx.createOscillator(); o2.connect(g); o2.frequency.value = 1000; o2.type = 'square'; o2.start(); o2.stop(audioCtx.currentTime + 0.15); }, 150);
+                    o.frequency.value = 800; 
+                    o.type = 'square'; 
+                    g.gain.value = 0.3; 
+                    o.start(); 
+                    o.stop(audioCtx.currentTime + 0.15);
+                    setTimeout(() => { 
+                        const o2 = audioCtx.createOscillator(); 
+                        o2.connect(g); 
+                        o2.frequency.value = 1000; 
+                        o2.type = 'square'; 
+                        o2.start(); 
+                        o2.stop(audioCtx.currentTime + 0.15); 
+                    }, 150);
                 } else if (tipo === 'listo') { 
-                    o.frequency.value = 523; o.type = 'sine'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.2);
-                    setTimeout(() => { const o2 = audioCtx.createOscillator(); o2.connect(g); o2.frequency.value = 659; o2.type = 'sine'; o2.start(); o2.stop(audioCtx.currentTime + 0.2); }, 200);
-                    setTimeout(() => { const o3 = audioCtx.createOscillator(); o3.connect(g); o3.frequency.value = 784; o3.type = 'sine'; o3.start(); o3.stop(audioCtx.currentTime + 0.3); }, 400);
+                    o.frequency.value = 523; 
+                    o.type = 'sine'; 
+                    g.gain.value = 0.3; 
+                    o.start(); 
+                    o.stop(audioCtx.currentTime + 0.2);
+                    setTimeout(() => { 
+                        const o2 = audioCtx.createOscillator(); 
+                        o2.connect(g); 
+                        o2.frequency.value = 659; 
+                        o2.type = 'sine'; 
+                        o2.start(); 
+                        o2.stop(audioCtx.currentTime + 0.2); 
+                    }, 200);
+                    setTimeout(() => { 
+                        const o3 = audioCtx.createOscillator(); 
+                        o3.connect(g); 
+                        o3.frequency.value = 784; 
+                        o3.type = 'sine'; 
+                        o3.start(); 
+                        o3.stop(audioCtx.currentTime + 0.3); 
+                    }, 400);
                 } else if (tipo === 'retraso') { 
-                    for (let i = 0; i < 3; i++) { setTimeout(() => { const oo = audioCtx.createOscillator(); oo.connect(g); oo.frequency.value = 600; oo.type = 'sawtooth'; oo.start(); oo.stop(audioCtx.currentTime + 0.1); }, i * 200); }
+                    for (let i = 0; i < 3; i++) { 
+                        setTimeout(() => { 
+                            const oo = audioCtx.createOscillator(); 
+                            oo.connect(g); 
+                            oo.frequency.value = 600; 
+                            oo.type = 'sawtooth'; 
+                            oo.start(); 
+                            oo.stop(audioCtx.currentTime + 0.1); 
+                        }, i * 200); 
+                    }
                 } else if (tipo === 'editado') {
-                    o.frequency.value = 440; o.type = 'sine'; g.gain.value = 0.3; o.start(); o.stop(audioCtx.currentTime + 0.1);
-                    setTimeout(() => { const o2 = audioCtx.createOscillator(); o2.connect(g); o2.frequency.value = 880; o2.type = 'sine'; o2.start(); o2.stop(audioCtx.currentTime + 0.1); }, 100);
+                    o.frequency.value = 440; 
+                    o.type = 'sine'; 
+                    g.gain.value = 0.3; 
+                    o.start(); 
+                    o.stop(audioCtx.currentTime + 0.1);
+                    setTimeout(() => { 
+                        const o2 = audioCtx.createOscillator(); 
+                        o2.connect(g); 
+                        o2.frequency.value = 880; 
+                        o2.type = 'sine'; 
+                        o2.start(); 
+                        o2.stop(audioCtx.currentTime + 0.1); 
+                    }, 100);
                 }
             } catch(e) {}
         }
 
-        function toggleSound() { sonidoActivado = !sonidoActivado; document.querySelector('.sound-btn').textContent = sonidoActivado ? '🔊' : '🔇'; }
+        function toggleSound() { 
+            sonidoActivado = !sonidoActivado; 
+            document.querySelector('.sound-btn').textContent = sonidoActivado ? '🔊' : '🔇'; 
+        }
 
         function calcularTiempoDesde(timestamp) {
             const d = Date.now() - timestamp;
-            const min = Math.floor(d / 60000); const seg = Math.floor((d % 60000) / 1000);
-            return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) };
+            const min = Math.floor(d / 60000); 
+            const seg = Math.floor((d % 60000) / 1000);
+            return { 
+                min, 
+                seg, 
+                retrasado: min >= TIEMPO_LIMITE, 
+                retrasoMin: Math.max(0, min - TIEMPO_LIMITE) 
+            };
         }
 
         async function cambiarEstado(id, estado) {
-            await fetch('/api/pedidos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado }) }).catch(() => {});
+            try {
+                await fetch('/api/pedidos/' + id, { 
+                    method: 'PATCH', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ estado }) 
+                });
+            } catch(e) {}
+            
             if (estado === 'listo') playSound('listo');
             renderizar();
         }
@@ -128,18 +201,41 @@
             delete pedidosTimers[id];
             delete pedidosPrevios[id];
             pedidosAnteriores = 0;
+            
             try {
-                const res = await fetch('/api/pedidos'); const todos = await res.json();
+                const res = await fetch('/api/pedidos'); 
+                const todos = await res.json();
                 const pedido = todos.find(p => p.id === id);
+                
                 if (pedido?.cliente?.mesa && pedido.cliente.tipoPedido === 'mesa') {
-                    const mesas = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+                    // Actualizar API
+                    const mesasRes = await fetch('/api/mesas');
+                    const mesas = await mesasRes.json();
                     const mesa = mesas.find(m => m.numero === parseInt(pedido.cliente.mesa));
-                    if (mesa) { mesa.estado = 'libre'; mesa.orden = []; localStorage.setItem('marketpos_mesas', JSON.stringify(mesas)); }
+                    if (mesa) {
+                        await fetch('/api/mesas/' + mesa.id, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ estado: 'libre', orden: [] })
+                        });
+                    }
+                    
+                    // Actualizar localStorage
+                    const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+                    const mesaL = mesasLocal.find(m => m.numero === parseInt(pedido.cliente.mesa));
+                    if (mesaL) { 
+                        mesaL.estado = 'libre'; 
+                        mesaL.orden = []; 
+                        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
+                    }
                 }
             } catch(e) {}
+            
             await fetch('/api/pedidos/' + id, { method: 'DELETE' }).catch(() => {});
+            
             const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
             localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal.filter(p => p.id != id)));
+            
             renderizar();
         }
 
@@ -154,23 +250,19 @@
             });
         }
 
-        // Función para detectar si un pedido fue editado
         function fueEditado(pedido) {
             const previo = pedidosPrevios[pedido.id];
             if (!previo) return false;
-            
-            // Comparar items
             if (JSON.stringify(previo.items) !== JSON.stringify(pedido.items)) return true;
             if (previo.total !== pedido.total) return true;
-            
             return false;
         }
 
         async function renderizar() {
             const pedidos = await getPedidosOnline();
+            const idsActuales = pedidos.map(p => p.id);
             
             // Limpiar timers de pedidos eliminados
-            const idsActuales = pedidos.map(p => p.id);
             Object.keys(pedidosTimers).forEach(id => {
                 if (!idsActuales.includes(id)) {
                     delete pedidosTimers[id];
@@ -181,7 +273,7 @@
             const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
             const grid = document.getElementById('ordersGrid');
             
-            // Detectar nuevos pedidos vs ediciones
+            // Detectar nuevos pedidos
             if (activos.length > pedidosAnteriores) {
                 playSound('nuevo');
             }
@@ -201,9 +293,8 @@
             
             let retrasados = 0;
             activos.forEach(p => { 
-                if (p.estado !== 'listo' && calcularTiempoDesde(pedidosTimers[p.id] || Date.now()).retrasado) { 
+                if (p.estado !== 'listo' && pedidosTimers[p.id] && calcularTiempoDesde(pedidosTimers[p.id]).retrasado) { 
                     retrasados++; 
-                    playSound('retraso'); 
                 } 
             });
             document.getElementById('retrasadosCount').textContent = retrasados;
@@ -216,9 +307,10 @@
             activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
             
             grid.innerHTML = activos.map(p => {
-                // ✅ Solo asignar timer si no existe (pedido nuevo)
+                // ✅ SOLO crear timer si el pedido es NUEVO (no existe en pedidosTimers)
                 if (!pedidosTimers[p.id]) {
                     pedidosTimers[p.id] = Date.now();
+                    console.log('🆕 Nuevo pedido detectado:', p.id, 'Timer iniciado:', new Date(pedidosTimers[p.id]).toLocaleTimeString());
                 }
                 
                 const editado = fueEditado(p);
@@ -238,7 +330,7 @@
                             <div class="order-card-header">
                                 <h3>${tipoTexto} ${editado ? '<span class="editado-badge">✏️ EDITADO</span>' : ''}</h3>
                                 <span class="order-badge ${editado ? 'badge-editado' : ''} ${ret ? 'badge-retrasado' : 'badge-' + p.estado}">
-                                    ${editado ? '✏️ EDITADO' : ''} ${ret ? '⏰ RETRASADO' : p.estado.toUpperCase()}
+                                    ${editado ? '✏️ ' : ''}${ret ? '⏰ RETRASADO' : p.estado.toUpperCase()}
                                 </span>
                             </div>
                             <div class="timer-container ${ret ? 'retrasado' : ''}">
@@ -260,15 +352,24 @@
 
         document.addEventListener('click', function initAudio() {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination);
-            g.gain.value = 0; o.start(); o.stop(0.001);
+            const o = audioCtx.createOscillator(); 
+            const g = audioCtx.createGain();
+            o.connect(g); 
+            g.connect(audioCtx.destination);
+            g.gain.value = 0; 
+            o.start(); 
+            o.stop(0.001);
             document.removeEventListener('click', initAudio);
         }, { once: true });
 
+        // Actualizar timers cada segundo
         setInterval(actualizarTemporizadores, 1000);
+        // Renderizar cada 5 segundos
         setInterval(renderizar, 5000);
         renderizar();
+        
+        console.log('🔥 Cocina TITO BURGER inicializada');
+        console.log('⏱️ Timers activos:', pedidosTimers);
     </script>
 </body>
 </html>

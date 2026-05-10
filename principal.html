@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITO BURGER | Las mejores hamburguesas</title>
+    <meta name="description" content="TITO BURGER - Hamburguesas artesanales, cortes, alitas y mucho más. ¡El sabor que mereces!">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --surface2: #252525;
+            --gold: #f4b841;
+            --gold-light: #ffe082;
+            --text: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --accent: #e63946;
+            --accent-hover: #ff4d5a;
+            --green: #4caf84;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --shadow: 0 8px 32px rgba(0,0,0,0.5);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --max-width: 1200px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(13,13,13,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 24px;
+        }
+        .nav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.3px;
+        }
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 15px rgba(230,57,70,0.4);
+        }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            letter-spacing: 0.2px;
+        }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-cta {
+            background: var(--accent);
+            color: #fff !important;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700 !important;
+            transition: var(--transition);
+        }
+        .nav-cta:hover {
+            background: var(--accent-hover) !important;
+            color: #fff !important;
+            box-shadow: 0 6px 20px rgba(230,57,70,0.4);
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 60px 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .hero-content {
+            flex: 1 1 400px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(244,184,65,0.15);
+            color: var(--gold-light);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .hero-title span {
+            color: var(--gold);
+        }
+        .hero-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 480px;
+            margin-bottom: 28px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn-primary, .btn-secondary {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 8px 25px rgba(230,57,70,0.5);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .hero-image {
+            flex: 1 1 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-burger {
+            font-size: clamp(8rem, 15vw, 14rem);
+            filter: drop-shadow(0 20px 40px rgba(244,184,65,0.3));
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* ========== CATEGORIES STRIP ========== */
+        .categories-strip {
+            background: var(--surface);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .categories-strip::-webkit-scrollbar { display: none; }
+        .categories-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            padding: 14px 24px;
+        }
+        .cat-chip {
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--surface2);
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            letter-spacing: 0.2px;
+        }
+        .cat-chip:hover { background: #333; color: #ddd; }
+        .cat-chip.active {
+            background: var(--gold);
+            color: #1a1a1a;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(244,184,65,0.3);
+        }
+
+        /* ========== MENU SECTION ========== */
+        .menu-section {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 50px 24px;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-label {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin-top: 6px;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .product-card {
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            border-color: rgba(255,255,255,0.12);
+            background: #2d2d2d;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(244,184,65,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .product-card:hover::before {
+            top: -30%;
+            right: -30%;
+            width: 180px;
+            height: 180px;
+        }
+        .product-emoji {
+            font-size: 3rem;
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        .product-info { z-index: 1; }
+        .product-name {
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -0.2px;
+        }
+        .product-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1;
+        }
+        .product-price {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--gold-light);
+        }
+        .btn-add {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-add:hover {
+            background: var(--accent-hover);
+            transform: scale(1.1);
+        }
+
+        /* ========== POWER MEALS ========== */
+        .power-section {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px 60px;
+        }
+        .power-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .power-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* ========== FOOTER ========== */
+        .site-footer {
+            background: var(--surface);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 40px 24px 20px;
+            text-align: center;
+        }
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            list-style: none;
+        }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-copy {
+            color: #555;
+            font-size: 0.8rem;
+        }
+        .footer-copy span { color: var(--accent); }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .hero { padding: 40px 20px 30px; text-align: center; }
+            .hero-content { flex: 1 1 100%; }
+            .hero-text { margin: 0 auto 28px; }
+            .hero-buttons { justify-content: center; }
+            .hero-image { display: none; }
+            .section-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">🍔</div>
+                TITO BURGER
+            </a>
+            <ul class="nav-links">
+                <li><a href="#menu">Menú</a></li>
+                <li><a href="#promos">Promos</a></li>
+                <li><a href="#ubicacion">Ubicación</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#ordenar" class="nav-cta">🛒 Ordenar Ahora</a></li>
+            </ul>
+            <button class="hamburger" aria-label="Menú">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🔥 Nuevo</div>
+            <h1 class="hero-title">El <span>sabor</span> que<br>te mereces</h1>
+            <p class="hero-text">
+                Hamburguesas artesanales, cortes premium, alitas crujientes y mucho más. 
+                Ingredientes frescos, recetas únicas y el mismo amor de siempre.
+            </p>
+            <div class="hero-buttons">
+                <a href="#menu" class="btn-primary">🍔 Ver Menú</a>
+                <a href="#promos" class="btn-secondary">⭐ Promos</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-burger">🍔</div>
+        </div>
+    </section>
+
+    <!-- ==================== CATEGORIES ==================== -->
+    <div class="categories-strip" id="menu">
+        <div class="categories-inner">
+            <span class="cat-chip active">🍔 BURGERS</span>
+            <span class="cat-chip">🥩 CORTES</span>
+            <span class="cat-chip">🍗 ALITAS</span>
+            <span class="cat-chip">🔥 PARRILLA</span>
+            <span class="cat-chip">⭐ PROMOS</span>
+            <span class="cat-chip">➕ EXTRAS</span>
+            <span class="cat-chip">🥤 BEBIDAS</span>
+        </div>
+    </div>
+
+    <!-- ==================== MENÚ PRINCIPAL ==================== -->
+    <section class="menu-section">
+        <div class="section-header">
+            <div class="section-label">Nuestro Menú</div>
+            <h2 class="section-title">Los Favoritos</h2>
+        </div>
+        <div class="products-grid">
+
+            <!-- TITO BURGER -->
+            <div class="product-card">
+                <div class="product-emoji">🍔</div>
+                <div class="product-info">
+                    <div class="product-name">TITO BURGER</div>
+                    <div class="product-desc">La especialidad de la casa: carne 180g, queso cheddar, panceta y salsa secreta.</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$4.99</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+
+            <!-- HAWAII -->
+            <div class="product-card">
+                <div class="product-emoji">🍍</div>
+                <div class="product-info">
+                    <div class="product-name">HAWAII</div>
+                    <div class="product-desc">Piña caramelizada, jamón ahumado, queso mozzarella y salsa BBQ.</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$3.75</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+
+            <!-- THE BIG BOSS -->
+            <div class="product-card">
+                <div class="product-emoji">👑</div>
+                <div class="product-info">
+                    <div class="product-name">THE BIG BOSS</div>
+                    <div class="product-desc">Doble carne, doble queso, cebolla crispy y aderezo especial.</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$5.50</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+
+            <!-- PARRILLERA -->
+            <div class="product-card">
+                <div class="product-emoji">🥓</div>
+                <div class="product-info">
+                    <div class="product-name">PARRILLERA</div>
+                    <div class="product-desc">Estilo argentino: chimichurri, provoleta y morrón asado.</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$3.95</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== POWER MEALS ==================== -->
+    <section class="power-section" id="promos">
+        <div class="power-divider">⚡ Power Meals</div>
+        <div class="products-grid">
+
+            <!-- HULK -->
+            <div class="product-card">
+                <div class="product-emoji">💪</div>
+                <div class="product-info">
+                    <div class="product-name">HULK</div>
+                    <div class="product-desc">Proteína pura: 360g de carne, espinaca, palta y huevo. ¡Monstruoso!</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$6.99</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+
+            <!-- CLÁSICA + PAPAS (1) -->
+            <div class="product-card">
+                <div class="product-emoji">🍟</div>
+                <div class="product-info">
+                    <div class="product-name">CLÁSICA + PAPAS</div>
+                    <div class="product-desc">Combo individual: clásica 120g + papas fritas + gaseosa.</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$2.50</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+
+            <!-- CLÁSICA + PAPAS (2) -->
+            <div class="product-card">
+                <div class="product-emoji">🍟</div>
+                <div class="product-info">
+                    <div class="product-name">CLÁSICA + PAPAS</div>
+                    <div class="product-desc">Combo grande: clásica 180g + papas grandes + gaseosa 500ml.</div>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">$2.99</span>
+                    <button class="btn-add" aria-label="Agregar">+</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="nav-logo" style="justify-content: center;">
+                <div class="nav-logo-icon">🍔</div>
+                TITO BURGER
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">Menú</a></li>
+                <li><a href="#">Promos</a></li>
+                <li><a href="#">Ubicación</a></li>
+                <li><a href="#">Contacto</a></li>
+                <li><a href="#">Términos</a></li>
+            </ul>
+            <p class="footer-copy">© 2026 <span>❤️</span> TITO BURGER. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

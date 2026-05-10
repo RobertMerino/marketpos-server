@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TITO BURGER · Sistema POS Premium</title>
+    <title>TITO BURGER · Caja</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="estilos.css">
@@ -12,7 +12,10 @@
     <div class="pos-premium">
         <!-- SIDEBAR -->
         <aside class="sidebar-premium">
-            <div class="sb-logo">🔥</div>
+            <div class="sb-logo">
+                <span class="sb-icon">🔥</span>
+                <span class="sb-text">TB</span>
+            </div>
             <nav class="sb-nav">
                 <button class="sb-btn active" onclick="switchView('menu')" title="Menú"><i class="fa-solid fa-utensils"></i></button>
                 <button class="sb-btn" onclick="switchView('mesas')" title="Mesas"><i class="fa-solid fa-chair"></i></button>
@@ -26,7 +29,7 @@
         <main class="main-premium">
             <div class="top-bar-premium">
                 <span class="top-bar-title">🍔 TITO BURGER · Punto de Venta</span>
-                <span class="top-bar-status"><span class="status-dot"></span> Sistema activo</span>
+                <span class="top-bar-status"><span class="status-dot"></span> Abierto</span>
             </div>
 
             <!-- VISTA MENÚ -->
@@ -35,7 +38,7 @@
                     <div class="menu-panel-header">
                         <div class="search-box-premium">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="searchInput" placeholder="Buscar producto..." oninput="buscarProductoLive()">
+                            <input type="text" id="searchInput" placeholder="Buscar en el menú..." oninput="buscarProductoLive()">
                         </div>
                     </div>
                     <div class="categories-row-premium" id="categoryTabs">
@@ -53,7 +56,7 @@
                 <!-- CARRITO -->
                 <div class="cart-panel-premium">
                     <div class="cart-panel-header">
-                        <h3>🔥 Pedido <span class="cart-badge" id="cartCountBadge">0</span></h3>
+                        <h3>🔥 Pedido Actual</h3>
                         <select id="tipoPedidoPOS" class="select-premium" onchange="toggleMesaInput()">
                             <option value="mesa">🪑 Mesa</option>
                             <option value="llevar">🛵 Recoger</option>
@@ -64,7 +67,7 @@
                         <input type="number" id="mesaInputPOS" placeholder="N° Mesa" class="input-premium">
                     </div>
                     <div class="cart-items-premium" id="cartItems">
-                        <div class="cart-empty">📋 No hay productos</div>
+                        <p class="cart-empty">No hay productos</p>
                     </div>
                     <div class="cart-totals-premium">
                         <div class="cart-row"><span>Subtotal</span><span id="subtotalPOS">$0.00</span></div>
@@ -72,31 +75,35 @@
                         <div class="cart-row cart-total"><span>TOTAL</span><span id="totalPOS">$0.00</span></div>
                     </div>
                     <div class="cliente-factura" id="clienteFactura" style="display:none;">
-                        <select id="metodoPago" class="input-premium" style="margin-bottom:4px;" onchange="mostrarEfectivo()">
+                        <select id="metodoPago" class="input-premium" style="margin-bottom:5px;" onchange="mostrarEfectivo()">
                             <option value="">💳 Método de pago</option>
                             <option value="efectivo">💵 Efectivo</option>
                             <option value="tarjeta">💳 Tarjeta</option>
                             <option value="transferencia">🏦 Transferencia</option>
                         </select>
-                        <input type="text" id="facturaNombre" placeholder="👤 Nombre" class="input-premium">
-                        <input type="text" id="facturaRUC" placeholder="📄 RUC (opcional)" class="input-premium">
-                        <input type="email" id="facturaEmail" placeholder="📧 Email" class="input-premium">
-                        <input type="text" id="facturaDireccion" placeholder="📍 Dirección" class="input-premium">
+                        <input type="text" id="facturaNombre" placeholder="Nombre o Razón Social" class="input-premium">
+                        <input type="text" id="facturaRUC" placeholder="RUC / CI (opcional)" class="input-premium">
+                        <input type="email" id="facturaEmail" placeholder="Email para factura" class="input-premium">
+                        <input type="text" id="facturaDireccion" placeholder="Dirección" class="input-premium">
                         <div id="efectivoSection" style="display:none;">
                             <input type="number" id="montoRecibido" placeholder="💵 Monto recibido" class="input-premium" oninput="calcularCambioPOS()">
-                            <div id="cambioDisplay" style="display:none;text-align:center;padding:6px 0;font-weight:700;">Cambio: <span id="cambioValor" style="color:#2ecc71;">$0.00</span></div>
+                            <div id="cambioDisplay" style="display:none;text-align:center;padding:8px 0;font-weight:700;">Cambio: <span id="cambioValor" style="color:#27ae60;">$0.00</span></div>
                         </div>
                     </div>
-                    <button class="btn-enviar" id="btnEnviarCocina" onclick="enviarACocinaPOS()" disabled><i class="fa-solid fa-paper-plane"></i> ENVIAR A COCINA</button>
-                    <button class="btn-cobrar" onclick="cobrarPOS()"><i class="fa-solid fa-cash-register"></i> COBRAR</button>
+                    <button class="btn-cocina-premium" onclick="enviarACocinaPOS()" id="btnEnviarCocina" disabled>
+                        <i class="fa-solid fa-paper-plane"></i> ENVIAR A COCINA
+                    </button>
+                    <button class="btn-cobrar-premium" onclick="cobrarPOS()">
+                        <i class="fa-solid fa-cash-register"></i> COBRAR
+                    </button>
                 </div>
             </div>
 
             <!-- VISTA MESAS -->
-            <div class="mesas-view-premium" id="viewMesas">
+            <div class="mesas-view-premium" id="viewMesas" style="display:none;">
                 <div class="mesas-view-header">
-                    <h2>🪑 Mesas</h2>
-                    <button class="btn-add-premium" onclick="agregarMesa()"><i class="fa-solid fa-plus"></i> Nueva</button>
+                    <h2>🪑 Mesas del Restaurante</h2>
+                    <button class="btn-add-premium" onclick="agregarMesa()"><i class="fa-solid fa-plus"></i> Nueva Mesa</button>
                 </div>
                 <div class="mesas-grid-premium" id="mesasGrid"></div>
             </div>

@@ -99,19 +99,13 @@ function renderProducts() {
 function addToCart(id) {
     const p = getMenuData().find(x => x.id === id);
     let sabor = '';
-    
     if (p.categoria === 'alitas') {
         sabor = prompt('🍗 Elige los sabores (separados por coma):\n1. BBQ\n2. BBQ Picante\n3. Mostaza y Miel\n4. Maracuyá\n5. Parmesano\n\nEjemplo: 1,3,5');
-        if (sabor) {
-            const sabores = { '1': 'BBQ', '2': 'BBQ Picante', '3': 'Mostaza y Miel', '4': 'Maracuyá', '5': 'Parmesano' };
-            sabor = sabor.split(',').map(s => sabores[s.trim()] || s.trim()).join(', ');
-        }
+        if (sabor) { const sabores = { '1': 'BBQ', '2': 'BBQ Picante', '3': 'Mostaza y Miel', '4': 'Maracuyá', '5': 'Parmesano' }; sabor = sabor.split(',').map(s => sabores[s.trim()] || s.trim()).join(', '); }
     }
-    
     const nombreConSabor = sabor ? p.nombre + ' (' + sabor + ')' : p.nombre;
     const exist = cart.find(i => i.id === id && i.sabor === sabor);
-    if (exist) { exist.cantidad++; } 
-    else { cart.push({ id: p.id, nombre: nombreConSabor, precio: p.precio, emoji: p.emoji, cantidad: 1, sabor }); }
+    if (exist) { exist.cantidad++; } else { cart.push({ id: p.id, nombre: nombreConSabor, precio: p.precio, emoji: p.emoji, cantidad: 1, sabor }); }
     updateCartFloat(); updateCartCount();
     if (navigator.vibrate) navigator.vibrate(10);
 }
@@ -152,6 +146,7 @@ async function confirmOrder() {
     const pedido = { cliente: { nombre: 'Mesero', mesa: mesaActual, tipoPedido: 'mesa' }, items: cart.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad, sabor: i.sabor || '' })), total };
 
     if (modoEdicion && pedidoIdEdicion) {
+        // ACTUALIZAR pedido existente
         try { await fetch('/api/pedidos/' + pedidoIdEdicion, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: pedido.items, total: pedido.total }) }); } catch(e) {}
         const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
         const idx = pedidosLocal.findIndex(p => p.id == pedidoIdEdicion);
@@ -159,8 +154,10 @@ async function confirmOrder() {
         const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
         const mesa = mesasLocal.find(m => m.numero === parseInt(mesaActual));
         if (mesa) { mesa.orden = pedido.items; localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); }
+        try { const res = await fetch('/api/mesas'); const apiMesas = await res.json(); const mesaAPI = apiMesas.find(m => m.numero === parseInt(mesaActual)); if (mesaAPI) { await fetch('/api/mesas/' + mesaAPI.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orden: pedido.items }) }); } } catch(e) {}
         alert('✅ Pedido actualizado');
     } else {
+        // Crear NUEVO pedido
         try { await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) }); } catch(e) {}
         const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
         pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';

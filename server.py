@@ -7,7 +7,6 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Archivo donde se guardan los pedidos
 PEDIDOS_FILE = 'pedidos.json'
 MESAS_FILE = 'mesas.json'
 
@@ -58,7 +57,7 @@ def update_mesa(id):
     for m in mesas:
         if m['id'] == id:
             m.update(request.json)
-    guardar_mesas(mesas)
+            guardar_mesas(mesas)
     return jsonify({"ok": True})
 
 @app.route('/api/mesas', methods=['POST'])
@@ -93,9 +92,16 @@ def add_pedido():
 def update_pedido(id):
     for p in pedidos:
         if p['id'] == id:
-            p.update(request.json)
-    guardar_pedidos(pedidos)
-    return jsonify({"ok": True})
+            data = request.json
+            if 'items' in data:
+                p['items'] = data['items']
+            if 'total' in data:
+                p['total'] = data['total']
+            if 'estado' in data:
+                p['estado'] = data['estado']
+            guardar_pedidos(pedidos)
+            return jsonify(p)
+    return jsonify({"error": "No encontrado"}), 404
 
 @app.route('/api/pedidos/<id>', methods=['DELETE'])
 def delete_pedido(id):

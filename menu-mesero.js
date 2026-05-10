@@ -99,11 +99,15 @@ function renderProducts() {
 function addToCart(id) {
     const p = getMenuData().find(x => x.id === id);
     let sabor = '';
+    
     if (p.categoria === 'alitas') {
-        sabor = prompt('🍗 Elige el sabor:\n1. BBQ\n2. BBQ Picante\n3. Mostaza y Miel\n4. Maracuyá\n5. Parmesano\n\nEscribe el número:');
-        const sabores = { '1': 'BBQ', '2': 'BBQ Picante', '3': 'Mostaza y Miel', '4': 'Maracuyá', '5': 'Parmesano' };
-        sabor = sabores[sabor] || sabor || 'BBQ';
+        sabor = prompt('🍗 Elige los sabores (separados por coma):\n1. BBQ\n2. BBQ Picante\n3. Mostaza y Miel\n4. Maracuyá\n5. Parmesano\n\nEjemplo: 1,3,5');
+        if (sabor) {
+            const sabores = { '1': 'BBQ', '2': 'BBQ Picante', '3': 'Mostaza y Miel', '4': 'Maracuyá', '5': 'Parmesano' };
+            sabor = sabor.split(',').map(s => sabores[s.trim()] || s.trim()).join(', ');
+        }
     }
+    
     const nombreConSabor = sabor ? p.nombre + ' (' + sabor + ')' : p.nombre;
     const exist = cart.find(i => i.id === id && i.sabor === sabor);
     if (exist) { exist.cantidad++; } 

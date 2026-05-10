@@ -79,6 +79,7 @@
         const TIEMPO_LIMITE = 15;
         let sonidoActivado = true;
         let pedidosAnteriores = 0;
+        let pedidosTimers = {};
 
         async function getPedidosOnline() {
             try { const res = await fetch('/api/pedidos'); return await res.json(); }
@@ -111,17 +112,12 @@
 
         function toggleSound() { sonidoActivado = !sonidoActivado; document.querySelector('.sound-btn').textContent = sonidoActivado ? '🔊' : '🔇'; }
 
-       function calcularTiempo(f) { 
-    if (!f) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
-    const ahora = new Date();
-    const fechaPedido = new Date(f);
-    if (isNaN(fechaPedido.getTime())) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
-    const d = ahora - fechaPedido; 
-    if (d < 0) return { min: 0, seg: 0, retrasado: false, retrasoMin: 0 };
-    const min = Math.floor(d / 60000); 
-    const seg = Math.floor((d % 60000) / 1000); 
-    return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) }; 
-}
+        function calcularTiempoDesde(timestamp) {
+            const d = Date.now() - timestamp;
+            const min = Math.floor(d / 60000);
+            const seg = Math.floor((d % 60000) / 1000);
+            return { min, seg, retrasado: min >= TIEMPO_LIMITE, retrasoMin: Math.max(0, min - TIEMPO_LIMITE) };
+        }
 
         async function cambiarEstado(id, estado) {
             await fetch('/api/pedidos/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado }) }).catch(() => {});
@@ -130,6 +126,7 @@
         }
 
         async function entregarPedido(id) {
+            delete pedidosTimers[id];
             try {
                 const res = await fetch('/api/pedidos'); const todos = await res.json();
                 const pedido = todos.find(p => p.id === id);
@@ -146,20 +143,16 @@
             renderizar();
         }
 
-  function actualizarTemporizadores() {
-    const cards = document.querySelectorAll('.order-card');
-    console.log('Tarjetas encontradas:', cards.length);
-    
-    cards.forEach((card, index) => {
-        const timerEl = card.querySelector('.timer-minutes');
-        const fechaAttr = card.getAttribute('data-fecha');
-        if (index === 0) console.log('Fecha raw:', fechaAttr, 'Timer:', timerEl);
-        if (timerEl && fechaAttr) { 
-            const t = calcularTiempo(fechaAttr); 
-            timerEl.textContent = `${t.min}:${String(t.seg).padStart(2, '0')}`; 
+        function actualizarTemporizadores() {
+            document.querySelectorAll('.order-card').forEach(card => {
+                const id = card.getAttribute('data-id');
+                const timerEl = card.querySelector('.timer-minutes');
+                if (timerEl && pedidosTimers[id]) {
+                    const t = calcularTiempoDesde(pedidosTimers[id]);
+                    timerEl.textContent = `${t.min}:${String(t.seg).padStart(2, '0')}`;
+                }
+            });
         }
-    });
-}
 
         async function renderizar() {
             const pedidos = await getPedidosOnline();
@@ -171,16 +164,17 @@
             document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
             document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
             let retrasados = 0;
-            activos.forEach(p => { if (p.estado !== 'listo' && calcularTiempo(p.fecha).retrasado) { retrasados++; playSound('retraso'); } });
+            activos.forEach(p => { if (p.estado !== 'listo' && calcularTiempoDesde(pedidosTimers[p.id] || Date.now()).retrasado) { retrasados++; playSound('retraso'); } });
             document.getElementById('retrasadosCount').textContent = retrasados;
             if (activos.length === 0) { grid.innerHTML = `<div class="empty-state"><span class="emoji">🍳</span><h2>Cocina en Espera</h2></div>`; return; }
             activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
             grid.innerHTML = activos.map(p => {
-                const t = calcularTiempo(p.fecha);
+                if (!pedidosTimers[p.id]) pedidosTimers[p.id] = Date.now();
+                const t = calcularTiempoDesde(pedidosTimers[p.id]);
                 const ret = t.retrasado && p.estado !== 'listo';
                 const tipoTexto = (p.cliente?.tipoPedido || 'mesa') === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : '🛵 Recoger';
                 return `
-                    <div class="order-card ${ret ? 'retrasado' : p.estado}" data-fecha="${p.fecha}">
+                    <div class="order-card ${ret ? 'retrasado' : p.estado}" data-id="${p.id}">
                         <div class="order-card-content">
                             <div class="order-card-header"><h3>${tipoTexto}</h3><span class="order-badge ${ret ? 'badge-retrasado' : 'badge-' + p.estado}">${ret ? '⏰ RETRASADO' : p.estado.toUpperCase()}</span></div>
                             <div class="timer-container ${ret ? 'retrasado' : ''}"><span>⏱️</span> <span class="timer-text"><strong class="timer-minutes">${t.min}:${String(t.seg).padStart(2,'0')}</strong> min</span>${ret ? `<span style="color:var(--fire);margin-left:auto;">+${t.retrasoMin} min</span>` : ''}</div>
@@ -196,7 +190,6 @@
             }).join('');
         }
 
-        // Activar audio al primer clic
         document.addEventListener('click', function initAudio() {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const o = audioCtx.createOscillator(); const g = audioCtx.createGain();

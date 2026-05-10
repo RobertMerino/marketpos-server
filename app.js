@@ -320,5 +320,152 @@ document.getElementById('tipoPedidoPOS').addEventListener('change', function() {
     else { facturaDiv.style.display = 'block'; mesaInput.style.display = 'none'; }
 });
 
+// ============================================
+// BOTÓN 1: SOLO ENVIAR A COCINA
+// ============================================
+async function enviarACocinaPOS() {
+    if (cartPOS.length === 0) { alert('Agregue productos'); return; }
+    
+    const mesa = document.getElementById('mesaInputPOS').value || '1';
+    const total = cartPOS.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    
+    const pedido = {
+        cliente: { nombre: 'Mesero', mesa, tipoPedido: tipoPedidoActual },
+        items: cartPOS.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad })),
+        total
+    };
+    
+    // Enviar a API
+    try {
+        await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
+    } catch(e) {}
+    
+    // Guardar en localStorage
+    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';
+    pedidosLocal.unshift(pedido);
+    localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+    
+    // Marcar mesa ocupada
+    const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+    const mesaObj = mesasLocal.find(m => m.numero === parseInt(mesa));
+    if (mesaObj) { mesaObj.estado = 'ocupada'; mesaObj.orden = pedido.items; }
+    localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
+    
+    // También actualizar API de mesas
+    try {
+        const res = await fetch('/api/mesas');
+        const apiMesas = await res.json();
+        const mesaAPI = apiMesas.find(m => m.numero === parseInt(mesa));
+        if (mesaAPI) {
+            await fetch('/api/mesas/' + mesaAPI.id, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ estado: 'ocupada', orden: pedido.items })
+            });
+        }
+    } catch(e) {}
+    
+    alert('✅ Pedido enviado a cocina - Mesa ' + mesa + ' ocupada');
+    cartPOS = []; renderCartPOS();
+}
+
+// ============================================
+// BOTÓN 2: SOLO COBRAR (CON DATOS Y MÉTODO DE PAGO)
+// ============================================
+async function cobrarPOS() {
+    if (cartPOS.length === 0) { alert('Agregue productos'); return; }
+    
+    const facturaDiv = document.getElementById('clienteFactura');
+    
+    // Si los campos no están visibles, mostrarlos
+    if (!facturaDiv || facturaDiv.style.display === 'none') {
+        if (facturaDiv) facturaDiv.style.display = 'block';
+        // Agregar selector de método de pago si no existe
+        if (!document.getElementById('metodoPago')) {
+            const metodoHTML = `
+                <select id="metodoPago" class="input-premium" style="margin-bottom:6px;">
+                    <option value="">💳 Seleccione método de pago</option>
+                    <option value="efectivo">💵 Efectivo</option>
+                    <option value="tarjeta">💳 Tarjeta</option>
+                    <option value="transferencia">🏦 Transferencia</option>
+                </select>
+            `;
+            facturaDiv.insertAdjacentHTML('afterbegin', metodoHTML);
+        }
+        document.getElementById('facturaNombre').focus();
+        alert('📄 Complete los datos del cliente y método de pago');
+        return;
+    }
+    
+    const mesa = document.getElementById('mesaInputPOS').value || '1';
+    const total = cartPOS.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    const metodoPago = document.getElementById('metodoPago')?.value || 'No especificado';
+    
+    if (!document.getElementById('metodoPago')?.value) {
+        alert('⚠️ Seleccione un método de pago');
+        return;
+    }
+    
+    const clienteFactura = {
+        nombre: document.getElementById('facturaNombre').value || 'Consumidor Final',
+        ruc: document.getElementById('facturaRUC').value || '9999999999999',
+        email: document.getElementById('facturaEmail').value || '',
+        direccion: document.getElementById('facturaDireccion').value || 'Av. Principal 123',
+        metodoPago: metodoPago
+    };
+    
+    const facturaNum = '001-001-' + String(Math.floor(Math.random()*99999999)).padStart(8,'0');
+    
+    const pedidoActual = {
+        cliente: { nombre: clienteFactura.nombre, mesa, tipoPedido: tipoPedidoActual, ruc: clienteFactura.ruc, email: clienteFactura.email, direccion: clienteFactura.direccion, metodoPago: clienteFactura.metodoPago },
+        items: cartPOS.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad })),
+        total, factura: clienteFactura
+    };
+    
+    // Descargar factura
+    const facturaHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Factura</title><style>body{font-family:Arial;padding:20px;max-width:300px;margin:0 auto}h2{text-align:center;color:#c0392b}table{width:100%}td,th{padding:6px;border-bottom:1px solid #ddd;font-size:12px}.total{font-size:18px;font-weight:bold;color:#c0392b}</style></head><body><h2>🔥 TITO BURGER</h2><p><strong>Factura:</strong> ${facturaNum}</p><p><strong>Fecha:</strong> ${new Date().toLocaleString()}</p><p><strong>Cliente:</strong> ${clienteFactura.nombre}</p><p><strong>RUC:</strong> ${clienteFactura.ruc}</p><p><strong>Método de pago:</strong> ${clienteFactura.metodoPago}</p><table><tr><th>Producto</th><th>Cant</th><th>Total</th></tr>${pedidoActual.items.map(i => `<tr><td>${i.emoji} ${i.nombre}</td><td>x${i.cantidad}</td><td>$${(i.precio*i.cantidad).toFixed(2)}</td></tr>`).join('')}</table><p class="total">TOTAL: $${total.toFixed(2)}</p><p style="text-align:center">Gracias por su visita</p></body></html>`;
+    const blob = new Blob([facturaHTML], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Factura_TITO_${facturaNum}.html`;
+    a.click();
+    
+    // Email
+    if (clienteFactura.email && window.emailjs) {
+        emailjs.send('service_nj7glup', 'template_szgtsns', {
+            to_email: clienteFactura.email,
+            cliente_nombre: clienteFactura.nombre,
+            cliente_ruc: clienteFactura.ruc,
+            total: '$' + total.toFixed(2),
+            factura_numero: facturaNum,
+            items: pedidoActual.items.map(i => `${i.nombre} x${i.cantidad} - $${(i.precio*i.cantidad).toFixed(2)}`).join('\n'),
+            fecha: new Date().toLocaleString()
+        }).catch(() => {});
+    }
+    
+    // Liberar mesa
+    if (tipoPedidoActual === 'mesa') {
+        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+        const mesaLocal = mesasLocal.find(x => x.numero === parseInt(mesa));
+        if (mesaLocal) { mesaLocal.estado = 'libre'; mesaLocal.orden = []; localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); }
+        try {
+            const res = await fetch('/api/mesas');
+            const apiMesas = await res.json();
+            const mesaAPI = apiMesas.find(x => x.numero === parseInt(mesa));
+            if (mesaAPI) { await fetch('/api/mesas/' + mesaAPI.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado: 'libre', orden: [] }) }); }
+        } catch(e) {}
+    }
+    
+    alert('✅ Cobro realizado - Factura: ' + facturaNum + ' - Método: ' + metodoPago);
+    cartPOS = []; renderCartPOS();
+    document.getElementById('clienteFactura').style.display = 'none';
+    document.getElementById('facturaNombre').value = '';
+    document.getElementById('facturaRUC').value = '';
+    document.getElementById('facturaEmail').value = '';
+    document.getElementById('facturaDireccion').value = '';
+    if (document.getElementById('metodoPago')) document.getElementById('metodoPago').remove();
+}
 setInterval(renderizarMesasPOS, 3000);
 renderProductsPOS();

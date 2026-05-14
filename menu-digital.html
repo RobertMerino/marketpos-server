@@ -87,7 +87,58 @@
             </div>
         </div>
     </div>
-
+<!-- Modal de selección de sabores para alitas -->
+<div id="modalSabores" class="modal-sabores" style="display: none;">
+    <div class="modal-sabores-content">
+        <div class="modal-header">
+            <h3>🍗 Selecciona los sabores para tus alitas</h3>
+            <button class="close-modal" onclick="closeSaborModal()">&times;</button>
+        </div>
+        
+        <div class="sabores-grid" id="saboresGrid">
+            <div class="sabor-card" data-sabor="BBQ" data-id="1">
+                <div class="sabor-emoji">🍖</div>
+                <div class="sabor-nombre">BBQ</div>
+                <div class="sabor-desc">Clásica barbacoa ahumada</div>
+                <div class="sabor-check">✓</div>
+            </div>
+            <div class="sabor-card" data-sabor="BBQ Picante" data-id="2">
+                <div class="sabor-emoji">🌶️</div>
+                <div class="sabor-nombre">BBQ Picante</div>
+                <div class="sabor-desc">Barbacoa con toque picante</div>
+                <div class="sabor-check">✓</div>
+            </div>
+            <div class="sabor-card" data-sabor="Mostaza y Miel" data-id="3">
+                <div class="sabor-emoji">🍯</div>
+                <div class="sabor-nombre">Mostaza y Miel</div>
+                <div class="sabor-desc">Dulce y suave</div>
+                <div class="sabor-check">✓</div>
+            </div>
+            <div class="sabor-card" data-sabor="Maracuyá" data-id="4">
+                <div class="sabor-emoji">🥭</div>
+                <div class="sabor-nombre">Maracuyá</div>
+                <div class="sabor-desc">Agridulce tropical</div>
+                <div class="sabor-check">✓</div>
+            </div>
+            <div class="sabor-card" data-sabor="Parmesano" data-id="5">
+                <div class="sabor-emoji">🧀</div>
+                <div class="sabor-nombre">Parmesano</div>
+                <div class="sabor-desc">Queso parmesano crujiente</div>
+                <div class="sabor-check">✓</div>
+            </div>
+        </div>
+        
+        <div class="selected-sabores">
+            <label>📋 Sabores seleccionados:</label>
+            <div id="selectedSaboresList" class="selected-list"></div>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn-cancelar" onclick="closeSaborModal()">Cancelar</button>
+            <button class="btn-aceptar" onclick="confirmarSabores()">Aceptar ✓</button>
+        </div>
+    </div>
+</div>
     <script src="menu-digital.js"></script>
 </body>
 </html>

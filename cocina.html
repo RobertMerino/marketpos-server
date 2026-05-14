@@ -36,6 +36,15 @@
         .order-card.listo { border-left-color: var(--success); opacity: 0.9; }
         .order-card.retrasado { border-left-color: var(--fire) !important; box-shadow: 0 0 20px rgba(192,57,43,0.3); animation: cardPulse 2s infinite; }
         @keyframes cardPulse { 0%,100%{box-shadow:0 0 10px rgba(192,57,43,0.2);} 50%{box-shadow:0 0 25px rgba(192,57,43,0.5);} }
+        .order-card-content { overflow-y: auto; flex: 1; padding-right: 3px; }
+        .order-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .order-card-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--dark); }
+        .order-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .badge-nuevo { background: var(--danger); color: white; }
+        .badge-preparando { background: var(--warning); color: white; }
+        .badge-listo { background: var(--success); color: white; }
+        .badge-retrasado { background: var(--fire); color: white; animation: badgeBlink 0.8s infinite; }
+        @keyframes badgeBlink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
         .timer-container { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg); border-radius: 4px; margin-bottom: 8px; font-size: 0.9rem; font-weight: bold; }
         .timer-container.retrasado { background: #fde8e8; border: 1px solid var(--fire); }
         .timer-container .tiempo-transcurrido { color: #2c1810; }
@@ -46,23 +55,20 @@
         .item-nombre { font-weight: 700; color: var(--dark); }
         .item-cantidad { background: var(--wood); color: white; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 0.7rem; }
         .order-actions { display: flex; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border); flex-shrink: 0; }
-        .btn-action { flex: 1; padding: 9px; border: none; border-radius: 4px; font-weight: 700; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+        .btn-action { flex: 1; padding: 9px; border: none; border-radius: 4px; font-weight: 700; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; font-family: 'Montserrat', sans-serif; }
         .btn-action:hover { opacity: 0.85; transform: scale(1.02); }
         .btn-action:active { transform: scale(0.95); }
         .btn-start { background: var(--warning); color: white; }
         .btn-ready { background: var(--success); color: white; }
         .btn-deliver { background: var(--fire); color: white; }
+        .btn-reject { background: #999; color: white; }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
         .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-light); }
         .empty-state .emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
         .sound-btn { position:fixed;bottom:20px;right:20px;background:var(--wood);color:white;border:none;width:50px;height:50px;border-radius:50%;font-size:1.5rem;cursor:pointer;z-index:100;box-shadow:0 4px 10px rgba(0,0,0,0.2); }
         .sound-btn:hover { background: var(--wood-light); }
         .alerta-flotante { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--fire); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; z-index: 200; animation: slideDown 0.5s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-20px);} to{opacity:1;transform:translateX(-50%) translateY(0);} }
-        .badge-retrasado { background: var(--fire); color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
-        .order-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
-        .badge-nuevo { background: var(--danger); color: white; }
-        .badge-preparando { background: var(--warning); color: white; }
-        .badge-listo { background: var(--success); color: white; }
     </style>
 </head>
 <body>
@@ -82,15 +88,14 @@
 
     <script>
         // ==================== CONFIGURACIÓN ====================
-        const TIEMPO_LIMITE_SEGUNDOS = 15 * 60; // 15 MINUTOS en segundos
-        const DURACION_ALARMA_SEGUNDOS = 15; // Alarma por retraso suena 15 SEGUNDOS
+        const TIEMPO_LIMITE_SEGUNDOS = 15 * 60; // 15 MINUTOS
+        const DURACION_ALARMA_SEGUNDOS = 15; // 15 segundos de alarma
         
         let sonidoActivado = true;
         let alarmasActivas = {};
         let audioContext = null;
         let alarmaIntervalos = {};
         
-        // Storage
         let pedidosTimers = {};
         let retrasosNotificados = {};
         let nuevosNotificados = {};
@@ -129,46 +134,35 @@
                 clearTimeout(alarmasActivas[id]);
                 delete alarmasActivas[id];
             }
-            console.log('🔇 Sonido detenido para pedido:', id);
         }
 
-        // Sonido tipo "DING" para nuevo pedido y entrega
         function sonidoDing() {
             if (!sonidoActivado) return;
-            
-            console.log('🔔 SONIDO DING');
             
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
             
             try {
-                const frequencies = [523.25, 659.25, 783.99]; // Do, Mi, Sol
+                const frequencies = [523.25, 659.25, 783.99];
                 
                 frequencies.forEach((freq, index) => {
                     setTimeout(() => {
                         const oscillator = audioContext.createOscillator();
                         const gain = audioContext.createGain();
-                        
                         oscillator.connect(gain);
                         gain.connect(audioContext.destination);
-                        
                         oscillator.frequency.value = freq;
                         oscillator.type = 'sine';
                         gain.gain.value = 0.3;
-                        
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.3);
-                        
                         gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
                     }, index * 100);
                 });
-            } catch(e) {
-                console.log('Error reproduciendo sonido ding:', e);
-            }
+            } catch(e) {}
         }
 
-        // Alarma para retraso (15 segundos con beeps)
         function iniciarAlarmaRetraso(id) {
             if (!sonidoActivado) return;
             if (alarmasActivas[id]) return;
@@ -197,11 +191,9 @@
                     const g = audioContext.createGain();
                     o.connect(g);
                     g.connect(audioContext.destination);
-                    
                     o.frequency.value = beepCount % 2 === 0 ? 880 : 440;
                     o.type = 'square';
                     g.gain.value = 0.4;
-                    
                     o.start();
                     o.stop(audioContext.currentTime + 0.15);
                     beepCount++;
@@ -219,7 +211,6 @@
         function toggleSound() { 
             sonidoActivado = !sonidoActivado; 
             document.querySelector('.sound-btn').textContent = sonidoActivado ? '🔊' : '🔇'; 
-            
             if (!sonidoActivado) {
                 Object.keys(alarmaIntervalos).forEach(id => detenerAlarma(id));
             }
@@ -246,13 +237,8 @@
             const excesoSegundos = exceso % 60;
             
             return {
-                minutos,
-                segundos,
-                segundosTranscurridos,
-                retrasado,
-                exceso,
-                excesoMinutos,
-                excesoSegundos
+                minutos, segundos, segundosTranscurridos,
+                retrasado, exceso, excesoMinutos, excesoSegundos
             };
         }
 
@@ -282,7 +268,6 @@
 
         async function entregarPedido(id) {
             sonidoDing();
-            
             detenerAlarma(id);
             
             delete pedidosTimers[id];
@@ -301,16 +286,35 @@
             setTimeout(() => renderizar(), 300);
         }
 
+        // 🔥 NUEVO: Rechazar pedido (botón adicional)
+        async function rechazarPedido(id) {
+            if (!confirm('⚠️ ¿Estás seguro de rechazar este pedido?')) return;
+            
+            detenerAlarma(id);
+            delete pedidosTimers[id];
+            delete retrasosNotificados[id];
+            delete nuevosNotificados[id];
+            guardarTimers();
+            
+            try {
+                await fetch('/api/pedidos/' + id, { method: 'DELETE' });
+            } catch(e) {}
+            
+            const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+            localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal.filter(p => String(p.id) !== String(id))));
+            
+            mostrarAlerta('✕ Pedido rechazado');
+            setTimeout(() => renderizar(), 300);
+        }
+
         function verificarNuevosPedidos(activos) {
             activos.forEach(p => {
                 const pid = String(p.id);
                 if (p.estado === 'nuevo' && !nuevosNotificados[pid]) {
-                    console.log('🆕 NUEVO PEDIDO LLEGÓ A COCINA:', pid);
+                    console.log('🆕 NUEVO PEDIDO:', pid);
                     nuevosNotificados[pid] = Date.now();
                     guardarTimers();
-                    
                     sonidoDing();
-                    
                     mostrarAlerta('🆕 ¡Nuevo pedido en cocina!');
                 }
             });
@@ -322,7 +326,7 @@
                 const tiempo = calcularTiempoTranscurrido(timestamp);
                 
                 if (tiempo.retrasado && !retrasosNotificados[id]) {
-                    console.log('🔴 PEDIDO RETRASADO después de 15 minutos:', id);
+                    console.log('🔴 PEDIDO RETRASADO:', id);
                     retrasosNotificados[id] = Date.now();
                     guardarTimers();
                     iniciarAlarmaRetraso(id);
@@ -363,7 +367,6 @@
                 const pid = String(p.id);
                 if (!pedidosTimers[pid] && p.estado !== 'listo') {
                     pedidosTimers[pid] = Date.now();
-                    console.log('⏱️ Timer iniciado para pedido:', pid);
                     guardarTimers();
                 }
             });
@@ -384,6 +387,14 @@
                 const tiempo = calcularTiempoTranscurrido(pedidosTimers[pid] || Date.now());
                 const retrasado = tiempo.retrasado && p.estado !== 'listo';
                 
+                // 🔥 MOSTRAR ITEMS SIN el texto del sabor
+                const itemsHTML = (p.items || []).map(i => `
+                    <li class="order-item">
+                        <span class="item-nombre">${i.emoji || '🍽️'} ${i.nombre}</span>
+                        <span class="item-cantidad">x${i.cantidad}</span>
+                    </li>
+                `).join('');
+                
                 return `
                     <div class="order-card ${retrasado ? 'retrasado' : p.estado}" data-id="${pid}">
                         <div class="order-card-content">
@@ -392,23 +403,18 @@
                                 ${retrasado ? '<span class="badge-retrasado">⏰ RETRASADO</span>' : `<span class="order-badge badge-${p.estado}">${p.estado.toUpperCase()}</span>`}
                             </div>
                             <div class="timer-container ${retrasado ? 'retrasado' : ''}">
-                                <span>⏱️</span>
                                 ${retrasado ? 
                                     `<strong class="tiempo-transcurrido" style="color:var(--fire)">⌛ ${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')} (${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')} excedido)</strong>` : 
                                     `<strong class="tiempo-transcurrido">⌛ ${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')} transcurrido</strong>`
                                 }
                             </div>
                             <div class="customer-info-mini"><span>👤 ${p.cliente?.nombre || 'Cliente'}</span></div>
-                            <ul class="order-items">${(p.items || []).map(i => `
-                                <li class="order-item">
-                                    <span class="item-nombre">${i.emoji || '🍽️'} ${i.nombre}${i.sabor ? ' <span style="font-weight:normal; color:#e67e22;">(' + i.sabor + ')</span>' : ''}</span>
-                                    <span class="item-cantidad">x${i.cantidad}</span>
-                                </li>
-                            `).join('')}</ul>
+                            <ul class="order-items">${itemsHTML}</ul>
                         </div>
                         <div class="order-actions">
                             ${p.estado === 'nuevo' ? `
                                 <button class="btn-action btn-start" onclick="cambiarEstado('${pid}','preparando')">▶ Iniciar</button>
+                                <button class="btn-action btn-reject" onclick="rechazarPedido('${pid}')">✕ Rechazar</button>
                             ` : ''}
                             ${p.estado === 'preparando' ? `
                                 <button class="btn-action btn-ready" onclick="cambiarEstado('${pid}','listo')">✅ ¡Listo!</button>

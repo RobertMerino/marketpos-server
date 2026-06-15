@@ -6,6 +6,29 @@
     <title>TITO BURGER · Caja</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="estilos.css">
+    <style>
+        /* ============================================
+           COLORES ESTILO COCINA - FONDOS GRISES CLAROS
+           PALETA FRÍA PROFESIONAL
+        ============================================ */
+        :root {
+            --fire: #3b82f6;
+            --fire-dark: #2563eb;
+            --wood: #6c757d;
+            --wood-light: #8c959f;
+            --cream: #f8f9fa;
+            --white: #ffffff;
+            --dark: #1a1a2e;
+            --text: #2c3e50;
+            --text-light: #6c757d;
+            --border: #e8ecf0;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+        }
+    </style>
 </head>
 <body>
     <div class="pos-premium">
@@ -79,7 +102,7 @@
 <div id="efectivoSection" style="display:none;">
     <input type="number" id="montoRecibido" placeholder="💵 Monto recibido" class="input-premium" oninput="calcularCambioPOS()">
     <div id="cambioDisplay" style="text-align:center;font-size:1.2rem;font-weight:700;margin:8px 0;display:none;">
-        Cambio: <span id="cambioValor" style="color:#27ae60;">$0.00</span>
+        Cambio: <span id="cambioValor" style="color:#10b981;">$0.00</span>
     </div>
 </div>
            <button class="btn-cocina-premium" onclick="enviarACocinaPOS()" style="width:calc(100% - 30px);margin:8px 15px;">

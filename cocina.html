@@ -2,79 +2,523 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITO BURGER · Cocina</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cocina Pedidos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --fire: #c0392b; --fire-dark: #a93226; --wood: #8b4513; --wood-light: #a0522d;
-            --cream: #fdf5e6; --white: #ffffff; --dark: #2c1810; --text: #3d2b1f;
-            --text-light: #8b7355; --border: #d4c5b2; --danger: #c0392b; --warning: #e67e22;
-            --success: #27ae60; --bg: #f5ebe0; --card: #ffffff;
+            /* Paleta de colores fríos - Diseño profesional */
+            --primary: #0f172a;
+            --primary-dark: #020617;
+            --primary-light: #1e293b;
+            --accent: #3b82f6;
+            --accent-light: #60a5fa;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --success: #10b981;
+            --success-dark: #059669;
+            --info: #06b6d4;
+            
+            /* Fondos fríos */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-elevated: #334155;
+            --bg-light: #f1f5f9;
+            
+            /* Textos */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            
+            /* Bordes */
+            --border: #334155;
+            --border-light: #475569;
+            
+            /* Layout */
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            --transition: all 0.2s ease;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--bg); min-height: 100vh; padding: 12px; color: var(--text); }
-        .kitchen-screen { max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; height: 95vh; }
-        .kitchen-header { background: linear-gradient(135deg, var(--dark), #3d1e0a); padding: 16px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-shrink: 0; flex-wrap: wrap; gap: 12px; border: 1px solid var(--wood); }
-        .kitchen-header h1 { font-size: 1.3rem; font-weight: 900; color: var(--fire); letter-spacing: 1px; }
-        .kitchen-stats { display: flex; gap: 8px; flex-wrap: wrap; }
-        .stat-badge { background: rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 6px; text-align: center; border: 1px solid var(--wood-light); transition: all 0.3s; }
-        .stat-badge.alerta-retraso { background: rgba(192,57,43,0.3); border-color: var(--fire); animation: pulse 1s infinite; }
-        @keyframes pulse { 0%,100%{box-shadow:0 0 5px rgba(192,57,43,0.3);} 50%{box-shadow:0 0 20px rgba(192,57,43,0.7);} }
-        .stat-number { font-size: 1.4rem; font-weight: 800; display: block; }
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+        }
+        
+        body { 
+            background: var(--bg-primary); 
+            min-height: 100vh; 
+            padding: 16px; 
+            color: var(--text-primary); 
+        }
+        
+        .kitchen-screen { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+            display: flex; 
+            flex-direction: column; 
+            height: 95vh; 
+        }
+        
+        /* Header profesional */
+        .kitchen-header { 
+            background: linear-gradient(135deg, var(--bg-secondary), var(--primary-dark)); 
+            padding: 20px 24px; 
+            border-radius: var(--radius-lg); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 24px; 
+            flex-shrink: 0; 
+            flex-wrap: wrap; 
+            gap: 16px; 
+            border: 1px solid var(--border); 
+            box-shadow: var(--shadow);
+        }
+        
+        .kitchen-header h1 { 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.3px;
+        }
+        
+        /* Stats cards frías */
+        .kitchen-stats { 
+            display: flex; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+        }
+        
+        .stat-badge { 
+            background: var(--bg-elevated); 
+            padding: 12px 20px; 
+            border-radius: var(--radius); 
+            text-align: center; 
+            border: 1px solid var(--border); 
+            transition: var(--transition); 
+            min-width: 90px;
+        }
+        
+        .stat-badge.alerta-retraso { 
+            background: rgba(239, 68, 68, 0.15); 
+            border-color: var(--danger); 
+            animation: pulse 1.5s infinite; 
+        }
+        
+        @keyframes pulse { 
+            0%,100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 
+            50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 
+        }
+        
+        .stat-number { 
+            font-size: 1.6rem; 
+            font-weight: 800; 
+            display: block; 
+            line-height: 1.2;
+        }
+        
         .stat-badge:nth-child(1) .stat-number { color: var(--danger); }
         .stat-badge:nth-child(2) .stat-number { color: var(--warning); }
-        .stat-badge:nth-child(3) .stat-number { color: var(--fire); }
+        .stat-badge:nth-child(3) .stat-number { color: #f97316; }
         .stat-badge:nth-child(4) .stat-number { color: var(--success); }
-        .stat-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: #d4a574; }
-        .orders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 12px; overflow-y: auto; flex: 1; padding: 3px; }
-        .orders-grid::-webkit-scrollbar { width: 5px; }
-        .orders-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-        .order-card { background: var(--card); border-radius: 8px; padding: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; max-height: 450px; border-left: 4px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s; }
-        .order-card.nuevo { border-left-color: var(--danger); }
-        .order-card.preparando { border-left-color: var(--warning); }
-        .order-card.listo { border-left-color: var(--success); opacity: 0.9; }
-        .order-card.retrasado { border-left-color: var(--fire) !important; box-shadow: 0 0 20px rgba(192,57,43,0.3); animation: cardPulse 2s infinite; }
-        @keyframes cardPulse { 0%,100%{box-shadow:0 0 10px rgba(192,57,43,0.2);} 50%{box-shadow:0 0 25px rgba(192,57,43,0.5);} }
-        .order-card-content { overflow-y: auto; flex: 1; padding-right: 3px; }
-        .order-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        .order-card-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--dark); }
-        .order-badge { padding: 4px 10px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .badge-nuevo { background: var(--danger); color: white; }
-        .badge-preparando { background: var(--warning); color: white; }
-        .badge-listo { background: var(--success); color: white; }
-        .badge-retrasado { background: var(--fire); color: white; animation: badgeBlink 0.8s infinite; }
-        @keyframes badgeBlink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-        .timer-container { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg); border-radius: 4px; margin-bottom: 8px; font-size: 0.9rem; font-weight: bold; }
-        .timer-container.retrasado { background: #fde8e8; border: 1px solid var(--fire); }
-        .timer-container .tiempo-transcurrido { color: #2c1810; }
-        .timer-container.retrasado .tiempo-transcurrido { color: var(--fire); }
-        .customer-info-mini { font-size: 0.75rem; color: var(--text-light); margin-bottom: 6px; padding: 6px 8px; background: var(--bg); border-radius: 4px; }
-        .order-items { list-style: none; margin-bottom: 6px; }
-        .order-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--bg); border-radius: 6px; margin-bottom: 4px; font-size: 0.85rem; }
-        .item-nombre { font-weight: 700; color: var(--dark); }
-        .item-cantidad { background: var(--wood); color: white; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 0.7rem; }
-        .order-actions { display: flex; gap: 6px; padding-top: 8px; border-top: 1px solid var(--border); flex-shrink: 0; }
-        .btn-action { flex: 1; padding: 9px; border: none; border-radius: 4px; font-weight: 700; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; font-family: 'Montserrat', sans-serif; }
-        .btn-action:hover { opacity: 0.85; transform: scale(1.02); }
-        .btn-action:active { transform: scale(0.95); }
-        .btn-start { background: var(--warning); color: white; }
-        .btn-ready { background: var(--success); color: white; }
-        .btn-deliver { background: var(--fire); color: white; }
-        .btn-reject { background: #999; color: white; }
-        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-        .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-light); }
-        .empty-state .emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
-        .sound-btn { position:fixed;bottom:20px;right:20px;background:var(--wood);color:white;border:none;width:50px;height:50px;border-radius:50%;font-size:1.5rem;cursor:pointer;z-index:100;box-shadow:0 4px 10px rgba(0,0,0,0.2); }
-        .sound-btn:hover { background: var(--wood-light); }
-        .alerta-flotante { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--fire); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; z-index: 200; animation: slideDown 0.5s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        @keyframes slideDown { from{opacity:0;transform:translateX(-50%) translateY(-20px);} to{opacity:1;transform:translateX(-50%) translateY(0);} }
+        
+        .stat-label { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: var(--text-muted); 
+            font-weight: 600;
+            margin-top: 6px;
+        }
+        
+        /* Grid de pedidos */
+        .orders-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); 
+            gap: 20px; 
+            overflow-y: auto; 
+            flex: 1; 
+            padding: 4px; 
+        }
+        
+        .orders-grid::-webkit-scrollbar { 
+            width: 6px; 
+        }
+        
+        .orders-grid::-webkit-scrollbar-track { 
+            background: var(--bg-secondary); 
+            border-radius: 4px; 
+        }
+        
+        .orders-grid::-webkit-scrollbar-thumb { 
+            background: var(--border); 
+            border-radius: 4px; 
+        }
+        
+        /* Tarjetas de pedido */
+        .order-card { 
+            background: var(--bg-card); 
+            border-radius: var(--radius-lg); 
+            padding: 20px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            max-height: 480px; 
+            border-left: 4px solid var(--border); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+            transition: var(--transition); 
+        }
+        
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border-color: var(--border-light);
+        }
+        
+        .order-card.nuevo { 
+            border-left-color: var(--danger); 
+        }
+        
+        .order-card.preparando { 
+            border-left-color: var(--warning); 
+        }
+        
+        .order-card.listo { 
+            border-left-color: var(--success); 
+            opacity: 0.85; 
+        }
+        
+        .order-card.retrasado { 
+            border-left-color: var(--danger) !important; 
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); 
+            animation: cardPulse 2s infinite; 
+        }
+        
+        @keyframes cardPulse { 
+            0%,100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.15); } 
+            50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); } 
+        }
+        
+        .order-card-content { 
+            overflow-y: auto; 
+            flex: 1; 
+            padding-right: 6px; 
+        }
+        
+        .order-card-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .order-card-content::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        .order-card-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        
+        .order-card-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 12px; 
+            padding-bottom: 12px; 
+            border-bottom: 1px solid var(--border); 
+            flex-shrink: 0; 
+        }
+        
+        .order-card-header h3 { 
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            color: var(--accent-light); 
+        }
+        
+        .order-badge { 
+            padding: 5px 12px; 
+            border-radius: 40px; 
+            font-size: 0.65rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        
+        .badge-nuevo { 
+            background: var(--danger); 
+            color: white; 
+        }
+        
+        .badge-preparando { 
+            background: var(--warning); 
+            color: var(--primary-dark); 
+        }
+        
+        .badge-listo { 
+            background: var(--success); 
+            color: white; 
+        }
+        
+        .badge-retrasado { 
+            background: var(--danger); 
+            color: white; 
+            animation: badgeBlink 0.8s infinite; 
+        }
+        
+        @keyframes badgeBlink { 
+            0%,100% { opacity: 1; } 
+            50% { opacity: 0.6; } 
+        }
+        
+        /* Timer - estilo frío */
+        .timer-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: 10px 14px; 
+            background: var(--bg-elevated); 
+            border-radius: var(--radius); 
+            margin-bottom: 12px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+        }
+        
+        .timer-container.retrasado { 
+            background: rgba(239, 68, 68, 0.1); 
+            border: 1px solid rgba(239, 68, 68, 0.3); 
+        }
+        
+        .timer-label {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+        
+        .timer-value {
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        
+        .timer-container.retrasado .timer-value { 
+            color: var(--danger); 
+        }
+        
+        .timer-exceso {
+            color: var(--danger);
+            font-size: 0.7rem;
+            margin-left: 6px;
+        }
+        
+        /* Info cliente */
+        .customer-info-mini { 
+            font-size: 0.75rem; 
+            color: var(--text-secondary); 
+            margin-bottom: 12px; 
+            padding: 10px 12px; 
+            background: var(--bg-elevated); 
+            border-radius: var(--radius); 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .customer-info-mini span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Items */
+        .order-items { 
+            list-style: none; 
+            margin-bottom: 8px; 
+        }
+        
+        .order-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 12px; 
+            background: var(--bg-elevated); 
+            border-radius: var(--radius-sm); 
+            margin-bottom: 6px; 
+            font-size: 0.85rem; 
+            transition: var(--transition);
+        }
+        
+        .order-item:hover {
+            background: var(--border);
+        }
+        
+        .item-nombre { 
+            font-weight: 600; 
+            color: var(--text-primary); 
+        }
+        
+        .item-cantidad { 
+            background: var(--accent); 
+            color: white; 
+            padding: 3px 10px; 
+            border-radius: 40px; 
+            font-weight: 700; 
+            font-size: 0.7rem; 
+        }
+        
+        /* Acciones */
+        .order-actions { 
+            display: flex; 
+            gap: 10px; 
+            padding-top: 14px; 
+            margin-top: 6px;
+            border-top: 1px solid var(--border); 
+            flex-shrink: 0; 
+        }
+        
+        .btn-action { 
+            flex: 1; 
+            padding: 10px; 
+            border: none; 
+            border-radius: var(--radius); 
+            font-weight: 700; 
+            font-size: 0.7rem; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            transition: var(--transition); 
+            font-family: inherit;
+        }
+        
+        .btn-action:hover { 
+            opacity: 0.9; 
+            transform: translateY(-1px); 
+        }
+        
+        .btn-action:active { 
+            transform: scale(0.97); 
+        }
+        
+        .btn-start { 
+            background: var(--warning); 
+            color: var(--primary-dark); 
+        }
+        
+        .btn-ready { 
+            background: var(--success); 
+            color: white; 
+        }
+        
+        .btn-deliver { 
+            background: var(--accent); 
+            color: white; 
+        }
+        
+        .btn-reject { 
+            background: var(--border); 
+            color: var(--text-secondary); 
+        }
+        
+        /* Empty state */
+        .empty-state { 
+            grid-column: 1/-1; 
+            text-align: center; 
+            padding: 80px 20px; 
+            color: var(--text-muted); 
+        }
+        
+        .empty-state .emoji { 
+            font-size: 5rem; 
+            display: block; 
+            margin-bottom: 16px; 
+            opacity: 0.5;
+        }
+        
+        .empty-state h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 0.85rem;
+        }
+        
+        /* Botón de sonido */
+        .sound-btn { 
+            position: fixed; 
+            bottom: 24px; 
+            right: 24px; 
+            background: var(--bg-elevated); 
+            color: var(--text-primary); 
+            border: 1px solid var(--border); 
+            width: 52px; 
+            height: 52px; 
+            border-radius: 50%; 
+            font-size: 1.4rem; 
+            cursor: pointer; 
+            z-index: 100; 
+            box-shadow: var(--shadow); 
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sound-btn:hover { 
+            background: var(--accent); 
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+        
+        /* Alerta flotante */
+        .alerta-flotante { 
+            position: fixed; 
+            top: 24px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--bg-elevated); 
+            color: var(--text-primary); 
+            padding: 14px 28px; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            font-size: 0.85rem;
+            z-index: 200; 
+            animation: slideDown 0.4s ease; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); 
+            border-left: 3px solid var(--accent);
+            backdrop-filter: blur(8px);
+        }
+        
+        @keyframes slideDown { 
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); } 
+            to { opacity: 1; transform: translateX(-50%) translateY(0); } 
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .kitchen-header { flex-direction: column; align-items: stretch; }
+            .kitchen-stats { justify-content: center; }
+            .orders-grid { grid-template-columns: 1fr; gap: 16px; }
+            .order-card { max-height: none; }
+        }
     </style>
 </head>
 <body>
     <div class="kitchen-screen">
         <div class="kitchen-header">
-            <h1>🔥 TITO BURGER · Cocina</h1>
+            <h1>❄️ MarketPOS · Cocina Profesional</h1>
             <div class="kitchen-stats">
                 <div class="stat-badge"><span class="stat-number" id="pendientesCount">0</span><span class="stat-label">Pendientes</span></div>
                 <div class="stat-badge"><span class="stat-number" id="preparandoCount">0</span><span class="stat-label">Preparando</span></div>
@@ -84,12 +528,12 @@
         </div>
         <div class="orders-grid" id="ordersGrid"></div>
     </div>
-    <button class="sound-btn" onclick="toggleSound()" title="Sonido">🔊</button>
+    <button class="sound-btn" onclick="toggleSound()" title="Activar/Desactivar sonido">🔊</button>
 
     <script>
         // ==================== CONFIGURACIÓN ====================
         const TIEMPO_LIMITE_SEGUNDOS = 15 * 60; // 15 MINUTOS
-        const DURACION_ALARMA_SEGUNDOS = 15; // 15 segundos de alarma
+        const DURACION_ALARMA_SEGUNDOS = 15;
         
         let sonidoActivado = true;
         let alarmasActivas = {};
@@ -154,10 +598,10 @@
                         gain.connect(audioContext.destination);
                         oscillator.frequency.value = freq;
                         oscillator.type = 'sine';
-                        gain.gain.value = 0.3;
+                        gain.gain.value = 0.25;
                         oscillator.start();
-                        oscillator.stop(audioContext.currentTime + 0.3);
-                        gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.3);
+                        oscillator.stop(audioContext.currentTime + 0.25);
+                        gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.25);
                     }, index * 100);
                 });
             } catch(e) {}
@@ -166,8 +610,6 @@
         function iniciarAlarmaRetraso(id) {
             if (!sonidoActivado) return;
             if (alarmasActivas[id]) return;
-            
-            console.log(`🔊 ALARMA RETRASO (15s) - Pedido: ${id}`);
             
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -193,12 +635,12 @@
                     g.connect(audioContext.destination);
                     o.frequency.value = beepCount % 2 === 0 ? 880 : 440;
                     o.type = 'square';
-                    g.gain.value = 0.4;
+                    g.gain.value = 0.3;
                     o.start();
                     o.stop(audioContext.currentTime + 0.15);
                     beepCount++;
                 } catch(e) {}
-            }, 200);
+            }, 250);
             
             alarmaIntervalos[id] = intervalo;
             
@@ -216,7 +658,7 @@
             }
         }
 
-        function mostrarAlerta(mensaje) {
+        function mostrarAlerta(mensaje, tipo = 'info') {
             const alerta = document.createElement('div');
             alerta.className = 'alerta-flotante';
             alerta.textContent = mensaje;
@@ -286,7 +728,6 @@
             setTimeout(() => renderizar(), 300);
         }
 
-        // 🔥 NUEVO: Rechazar pedido (botón adicional)
         async function rechazarPedido(id) {
             if (!confirm('⚠️ ¿Estás seguro de rechazar este pedido?')) return;
             
@@ -311,7 +752,6 @@
             activos.forEach(p => {
                 const pid = String(p.id);
                 if (p.estado === 'nuevo' && !nuevosNotificados[pid]) {
-                    console.log('🆕 NUEVO PEDIDO:', pid);
                     nuevosNotificados[pid] = Date.now();
                     guardarTimers();
                     sonidoDing();
@@ -326,7 +766,6 @@
                 const tiempo = calcularTiempoTranscurrido(timestamp);
                 
                 if (tiempo.retrasado && !retrasosNotificados[id]) {
-                    console.log('🔴 PEDIDO RETRASADO:', id);
                     retrasosNotificados[id] = Date.now();
                     guardarTimers();
                     iniciarAlarmaRetraso(id);
@@ -376,7 +815,7 @@
             document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
             
             if (activos.length === 0) { 
-                grid.innerHTML = `<div class="empty-state"><span class="emoji">🍳</span><h2>Cocina en Espera</h2><p>Todos los pedidos están completos</p></div>`; 
+                grid.innerHTML = `<div class="empty-state"><span class="emoji">❄️🍳</span><h2>Cocina en Espera</h2><p>Todos los pedidos están completados</p></div>`; 
                 return; 
             }
             
@@ -387,7 +826,6 @@
                 const tiempo = calcularTiempoTranscurrido(pedidosTimers[pid] || Date.now());
                 const retrasado = tiempo.retrasado && p.estado !== 'listo';
                 
-                // 🔥 MOSTRAR ITEMS SIN el texto del sabor
                 const itemsHTML = (p.items || []).map(i => `
                     <li class="order-item">
                         <span class="item-nombre">${i.emoji || '🍽️'} ${i.nombre}</span>
@@ -399,16 +837,20 @@
                     <div class="order-card ${retrasado ? 'retrasado' : p.estado}" data-id="${pid}">
                         <div class="order-card-content">
                             <div class="order-card-header">
-                                <h3>${p.cliente?.tipoPedido === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : '🛵 Delivery'}</h3>
+                                <h3>${p.cliente?.tipoPedido === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : p.cliente?.tipoPedido === 'delivery' ? '🚀 Delivery' : '🛵 Para Llevar'}</h3>
                                 ${retrasado ? '<span class="badge-retrasado">⏰ RETRASADO</span>' : `<span class="order-badge badge-${p.estado}">${p.estado.toUpperCase()}</span>`}
                             </div>
                             <div class="timer-container ${retrasado ? 'retrasado' : ''}">
-                                ${retrasado ? 
-                                    `<strong class="tiempo-transcurrido" style="color:var(--fire)">⌛ ${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')} (${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')} excedido)</strong>` : 
-                                    `<strong class="tiempo-transcurrido">⌛ ${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')} transcurrido</strong>`
-                                }
+                                <span class="timer-label">⏱️ Tiempo</span>
+                                <div>
+                                    <span class="timer-value">${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')}</span>
+                                    ${retrasado ? `<span class="timer-exceso">(+${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')})</span>` : ''}
+                                </div>
                             </div>
-                            <div class="customer-info-mini"><span>👤 ${p.cliente?.nombre || 'Cliente'}</span></div>
+                            <div class="customer-info-mini">
+                                <span>👤 ${p.cliente?.nombre || 'Cliente'}</span>
+                                ${p.cliente?.telefono ? `<span>📞 ${p.cliente.telefono}</span>` : ''}
+                            </div>
                             <ul class="order-items">${itemsHTML}</ul>
                         </div>
                         <div class="order-actions">
@@ -417,7 +859,7 @@
                                 <button class="btn-action btn-reject" onclick="rechazarPedido('${pid}')">✕ Rechazar</button>
                             ` : ''}
                             ${p.estado === 'preparando' ? `
-                                <button class="btn-action btn-ready" onclick="cambiarEstado('${pid}','listo')">✅ ¡Listo!</button>
+                                <button class="btn-action btn-ready" onclick="cambiarEstado('${pid}','listo')">✅ Listo</button>
                             ` : ''}
                             ${p.estado === 'listo' ? `
                                 <button class="btn-action btn-deliver" onclick="entregarPedido('${pid}')">🚀 Entregar</button>
@@ -446,14 +888,16 @@
                     const tiempo = calcularTiempoTranscurrido(pedidosTimers[id]);
                     const retrasado = tiempo.retrasado;
                     
-                    const timerElement = card.querySelector('.timer-container strong');
-                    if (timerElement) {
-                        if (retrasado) {
-                            timerElement.innerHTML = `⌛ ${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')} (${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')} excedido)`;
-                            timerElement.style.color = 'var(--fire)';
-                        } else {
-                            timerElement.innerHTML = `⌛ ${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')} transcurrido`;
-                            timerElement.style.color = '';
+                    const timerContainer = card.querySelector('.timer-container');
+                    const timerValue = card.querySelector('.timer-value');
+                    
+                    if (timerValue) {
+                        timerValue.innerHTML = `${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')}`;
+                        if (retrasado && timerContainer) {
+                            const excesoSpan = timerContainer.querySelector('.timer-exceso');
+                            if (excesoSpan) {
+                                excesoSpan.textContent = `(+${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')})`;
+                            }
                         }
                     }
                     
@@ -468,6 +912,7 @@
                             newBadge.textContent = '⏰ RETRASADO';
                             badgeContainer.appendChild(newBadge);
                         }
+                        if (timerContainer) timerContainer.classList.add('retrasado');
                     }
                 }
             });

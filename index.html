@@ -2,9 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Sistema de punto de venta TITO BURGER — toma de pedidos, mesas y cobro.">
     <meta name="theme-color" content="#160d07">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
     <title>TITO BURGER · Caja</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,7 +14,6 @@
 </head>
 <body>
     <div class="pos-premium">
-        <!-- SIDEBAR -->
         <aside class="sidebar-premium" aria-label="Navegación principal">
             <div class="sb-logo" aria-hidden="true">
                 <span class="sb-icon">🔥</span>
@@ -27,11 +28,8 @@
             <button class="sb-logout" onclick="logout()" title="Cerrar sesión" aria-label="Cerrar sesión">🚪</button>
         </aside>
 
-        <!-- MAIN -->
         <main class="main-premium">
-            <!-- VISTA MENÚ -->
             <div class="pos-layout-premium" id="viewMenu">
-                <!-- PANEL IZQUIERDO: MENÚ -->
                 <div class="menu-panel-premium">
                     <div class="menu-panel-header">
                         <div class="search-box-premium">
@@ -51,7 +49,6 @@
                     <div class="products-grid-premium" id="productsGrid"></div>
                 </div>
 
-                <!-- PANEL DERECHO: CARRITO -->
                 <div class="cart-panel-premium">
                     <div class="cart-panel-header">
                         <h3>🔥 Pedido Actual</h3>
@@ -95,7 +92,6 @@
                 </div>
             </div>
 
-            <!-- VISTA MESAS -->
             <div class="mesas-view-premium" id="viewMesas" style="display:none;">
                 <div class="mesas-view-header">
                     <h2>🪑 Mesas del Restaurante</h2>

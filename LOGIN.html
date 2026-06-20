@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brasas & Burger | Sistema de Gestión Interna</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b35;
+            --primary-dark: #e55a2b;
+            --primary-light: #ff8c42;
+            --accent: #ffd700;
+            --dark: #0a0a0f;
+            --dark-secondary: #13131a;
+            --surface: #1a1a25;
+            --surface-light: #222230;
+            --text: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b6b80;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-active: rgba(255, 107, 53, 0.4);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(255, 107, 53, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Background Effects */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        .bg-orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.3), transparent);
+            top: -200px;
+            right: -200px;
+            animation: orbFloat1 20s ease-in-out infinite;
+        }
+
+        .bg-orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 140, 66, 0.2), transparent);
+            bottom: -150px;
+            left: -150px;
+            animation: orbFloat2 25s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-50px, 30px) scale(1.1); }
+            66% { transform: translate(30px, -20px) scale(0.9); }
+        }
+
+        @keyframes orbFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -25px) scale(1.05); }
+            66% { transform: translate(-30px, 20px) scale(0.95); }
+        }
+
+        /* Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Main Container */
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .login-container {
+            background: rgba(26, 26, 37, 0.8);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            padding: 48px 40px;
+            position: relative;
+            animation: containerEntry 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes containerEntry {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius-xl);
+            padding: 1px;
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 53, 0.3), 
+                rgba(255, 140, 66, 0.1), 
+                rgba(255, 215, 0, 0.2), 
+                rgba(255, 107, 53, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .logo-ring {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-right-color: var(--accent);
+            animation: ringSpin 4s linear infinite;
+        }
+
+        .logo-ring-2 {
+            inset: -25px;
+            border-top-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: var(--primary-light);
+            border-left-color: var(--accent);
+            animation: ringSpin 6s linear infinite reverse;
+        }
+
+        @keyframes ringSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a1a25, #222230);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 
+                0 0 30px rgba(255, 107, 53, 0.2),
+                inset 0 0 30px rgba(255, 107, 53, 0.05);
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #fff 0%, #ff8c42 50%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--success);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .security-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .divider-icon {
+            font-size: 16px;
+            animation: flicker 2s ease-in-out infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .form-label span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-label .required {
+            color: var(--primary);
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-muted);
+            z-index: 2;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            background: var(--surface-light);
+            box-shadow: 
+                0 0 0 4px rgba(255, 107, 53, 0.1),
+                0 0 20px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-input:focus ~ .input-icon {
+            color: var(--primary);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+            animation: inputShake 0.5s ease-in-out;
+        }
+
+        @keyframes inputShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .submit-btn .btn-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) .btn-shine {
+            left: 100%;
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .submit-btn.loading .spinner {
+            display: block;
+        }
+
+        .submit-btn.loading .btn-text {
+            display: none;
+        }
+
+        /* Messages */
+        .message-box {
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-box.error {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .message-box.success {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+        }
+
+        .message-box.warning {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 200;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .toast.error {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 520px) {
+            .login-container {
+                padding: 32px 24px;
+            }
+            .brand-name {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="particles" id="particles"></div>
+    <div class="toast" id="toast"></div>
+
+    <div class="login-wrapper">
+        <div class="login-container" id="loginContainer">
+            <div class="login-header">
+                <div class="logo-wrapper">
+                    <div class="logo-ring"></div>
+                    <div class="logo-ring logo-ring-2"></div>
+                    <div class="logo-icon">🍔</div>
+                </div>
+                <h1 class="brand-name">Brasas & Burger</h1>
+                <p class="brand-subtitle">Sistema de Gestión Interna</p>
+                <div class="security-badge">
+                    <span class="security-dot"></span>
+                    Acceso Restringido • Solo Personal Autorizado
+                </div>
+            </div>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-icon">🔥</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <div class="message-box" id="messageBox"></div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <div class="form-label">
+                        <span>Usuario</span>
+                        <span class="required">• REQUERIDO</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            class="form-input" 
+                            placeholder="Ingrese su nombre de usuario"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <span>Contraseña</span>
+                        <span class="required">• REQUERIDO</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="form-input" 
+                            placeholder="Ingrese su contraseña"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-content">
+                        <span class="btn-text">🔥 Ingresar al Sistema</span>
+                        <div class="spinner"></div>
+                    </span>
+                    <div class="btn-shine"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // BASE DE DATOS DE USUARIOS
+        // ============================================
+        const USERS = [
+            {
+                username: 'admin.ad',
+                password: 'admin1234',
+                name: 'admin',
+                role: 'gerente',
+                redirect: 'index.html'
+            },
+            {
+                username: 'alex.ortiz',
+                password: 'parrillero',
+                name: 'Alex Ortiz',
+                role: 'Parrillero',
+                redirect: 'cocina.html'
+            },
+            {
+                username: 'robert.merino',
+                password: 'cocinero12',
+                name: 'Robert Merino',
+                role: 'Cocinero',
+                redirect: 'cocina.html'
+            },
+            {
+                username: 'maria.lopez',
+                password: 'Adm1n!Str@tiva24',
+                name: 'María López',
+                role: 'admin',
+                redirect: 'admin.html'
+            },
+            {
+                username: 'fernanda.guerrero',
+                password: 'Mesera2024!',
+                name: 'Fernanda Guerrero',
+                role: 'mesero',
+                redirect: 'mesero.html'
+            },
+            {
+                username: 'jonathan.ortiz',
+                password: 'Mesero2024!',
+                name: 'Jonathan Ortiz',
+                role: 'mesero',
+                redirect: 'mesero.html'
+            }
+        ];
+
+        // ============================================
+        // STATE
+        // ============================================
+        const dom = {
+            loginForm: document.getElementById('loginForm'),
+            loginContainer: document.getElementById('loginContainer'),
+            username: document.getElementById('username'),
+            password: document.getElementById('password'),
+            submitBtn: document.getElementById('submitBtn'),
+            messageBox: document.getElementById('messageBox'),
+            toast: document.getElementById('toast'),
+            particles: document.getElementById('particles')
+        };
+
+        // ============================================
+        // INIT
+        // ============================================
+        function init() {
+            createParticles();
+            setupEventListeners();
+            checkExistingSession();
+        }
+
+        function createParticles() {
+            const container = dom.particles;
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        function setupEventListeners() {
+            dom.loginForm.addEventListener('submit', handleLogin);
+        }
+
+        function checkExistingSession() {
+            const sessionData = sessionStorage.getItem('brasas_session');
+            if (sessionData) {
+                try {
+                    const session = JSON.parse(sessionData);
+                    const age = Date.now() - session.timestamp;
+                    if (age < 30 * 60 * 1000) {
+                        showMessage('👋 Sesión activa detectada', 'success');
+                        dom.username.value = session.user.username;
+                    } else {
+                        sessionStorage.removeItem('brasas_session');
+                    }
+                } catch (e) {
+                    sessionStorage.removeItem('brasas_session');
+                }
+            }
+        }
+
+        // ============================================
+        // LOGIN
+        // ============================================
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const username = dom.username.value.toLowerCase().trim();
+            const password = dom.password.value;
+
+            const user = USERS.find(u => u.username === username && u.password === password);
+
+            if (!user) {
+                showMessage('❌ Usuario o contraseña incorrectos', 'error');
+                dom.password.classList.add('error');
+                setTimeout(() => dom.password.classList.remove('error'), 500);
+                shakeContainer();
+                return;
+            }
+
+            // Login exitoso
+            dom.submitBtn.classList.add('loading');
+            await delay(1000);
+            dom.submitBtn.classList.remove('loading');
+
+            // Guardar sesión
+            const session = {
+                user: user,
+                timestamp: Date.now()
+            };
+            sessionStorage.setItem('brasas_session', JSON.stringify(session));
+
+            showMessage(`✅ Bienvenido/a ${user.name}`, 'success');
+            showToast(`🎉 Acceso concedido • ${user.role}`, 'success');
+
+            // Redirigir según rol
+            setTimeout(() => {
+                if (user.role === 'mesero') {
+                    window.location.href = 'mesero.html';
+                } else {
+                    window.location.href = user.redirect;
+                }
+            }, 1000);
+        }
+
+        // ============================================
+        // HELPERS
+        // ============================================
+        function showMessage(message, type) {
+            dom.messageBox.textContent = message;
+            dom.messageBox.className = 'message-box ' + type;
+            dom.messageBox.style.display = 'flex';
+        }
+
+        function showToast(message, type) {
+            dom.toast.textContent = message;
+            dom.toast.className = 'toast ' + type + ' show';
+            setTimeout(() => dom.toast.classList.remove('show'), 3000);
+        }
+
+        function shakeContainer() {
+            dom.loginContainer.style.animation = 'none';
+            dom.loginContainer.offsetHeight;
+            dom.loginContainer.style.animation = 'inputShake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97)';
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        init();
+    </script>
+</body>
+</html>

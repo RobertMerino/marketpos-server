@@ -3,76 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Cocina Pedidos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>🍽️ TITO BURGER · Cocina Profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* ============================================ */
+        /* ROOT — Sistema de diseño profesional         */
+        /* ============================================ */
         :root {
-            /* Paleta de colores fríos - Diseño profesional */
-            --primary: #0f172a;
-            --primary-dark: #020617;
-            --primary-light: #1e293b;
-            --accent: #3b82f6;
-            --accent-light: #60a5fa;
-            --accent-glow: rgba(59, 130, 246, 0.25);
-            --danger: #ef4444;
-            --danger-dark: #dc2626;
-            --warning: #f59e0b;
-            --warning-dark: #d97706;
-            --success: #10b981;
-            --success-dark: #059669;
-            --info: #06b6d4;
+            --primary-900: #0a1628;
+            --primary-800: #0f1f3a;
+            --primary-700: #162d4d;
+            --primary-600: #1d3d66;
+            --primary-500: #2a5298;
+            --primary-400: #3b6bb5;
+            --primary-300: #5a8fd4;
+            --primary-200: #8ab5e5;
+            --primary-100: #bdd7f2;
             
-            /* Fondos fríos */
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --bg-elevated: #334155;
-            --bg-light: #f1f5f9;
+            --accent-600: #d97706;
+            --accent-500: #f59e0b;
+            --accent-400: #fbbf24;
+            --accent-300: #fcd34d;
             
-            /* Textos */
-            --text-primary: #f1f5f9;
+            --success-600: #059669;
+            --success-500: #10b981;
+            --success-400: #34d399;
+            
+            --danger-600: #dc2626;
+            --danger-500: #ef4444;
+            --danger-400: #f87171;
+            
+            --bg-primary: #0a1628;
+            --bg-secondary: #0f1f3a;
+            --bg-card: #162d4d;
+            --bg-elevated: #1d3d66;
+            
+            --text-primary: #f0f4f8;
             --text-secondary: #cbd5e1;
-            --text-muted: #64748b;
+            --text-muted: #94a3b8;
             
-            /* Bordes */
-            --border: #334155;
-            --border-light: #475569;
+            --border: #1d3d66;
+            --border-light: #2a5298;
             
-            /* Layout */
-            --radius-sm: 8px;
-            --radius: 12px;
-            --radius-lg: 16px;
-            --shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            --transition: all 0.2s ease;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 60px rgba(42, 82, 152, 0.15);
+            
+            --radius-sm: 6px;
+            --radius: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 18px;
+            --radius-2xl: 22px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
         }
-        
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
             background: var(--bg-primary); 
             min-height: 100vh; 
-            padding: 16px; 
-            color: var(--text-primary); 
+            padding: 20px; 
+            color: var(--text-primary);
+            background-image: 
+                radial-gradient(ellipse at 20% 20%, rgba(42, 82, 152, 0.06), transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(245, 158, 11, 0.03), transparent 50%);
+            position: relative;
         }
-        
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .kitchen-screen { 
             max-width: 1600px; 
             margin: 0 auto; 
             display: flex; 
             flex-direction: column; 
-            height: 95vh; 
+            height: calc(100vh - 40px); 
+            position: relative;
+            z-index: 1;
         }
-        
-        /* Header profesional */
+
+        /* HEADER */
         .kitchen-header { 
-            background: linear-gradient(135deg, var(--bg-secondary), var(--primary-dark)); 
-            padding: 20px 24px; 
-            border-radius: var(--radius-lg); 
+            background: linear-gradient(165deg, var(--bg-secondary), var(--bg-card));
+            padding: 20px 28px; 
+            border-radius: var(--radius-2xl); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -80,459 +105,796 @@
             flex-shrink: 0; 
             flex-wrap: wrap; 
             gap: 16px; 
-            border: 1px solid var(--border); 
-            box-shadow: var(--shadow);
+            border: 1px solid rgba(42, 82, 152, 0.25); 
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
         }
-        
-        .kitchen-header h1 { 
-            font-size: 1.4rem; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+
+        .kitchen-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-500), var(--primary-400), var(--accent-500), transparent);
+            opacity: 0.7;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .header-logo .icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 20px rgba(42, 82, 152, 0.2));
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .header-title .brand {
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.3px;
         }
-        
-        /* Stats cards frías */
+
+        .header-title .sub {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            -webkit-text-fill-color: var(--text-muted);
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 16px 4px 12px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 40px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--success-400);
+            letter-spacing: 0.5px;
+        }
+
+        .header-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success-500);
+            animation: pulse-dot 2s infinite;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        /* STATS */
         .kitchen-stats { 
             display: flex; 
-            gap: 12px; 
+            gap: 10px; 
             flex-wrap: wrap; 
         }
-        
+
         .stat-badge { 
-            background: var(--bg-elevated); 
-            padding: 12px 20px; 
+            background: var(--bg-card); 
+            padding: 10px 18px; 
             border-radius: var(--radius); 
             text-align: center; 
             border: 1px solid var(--border); 
             transition: var(--transition); 
-            min-width: 90px;
+            min-width: 80px;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .stat-badge::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            right: 20%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-400), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .stat-badge:hover::after {
+            opacity: 1;
+        }
+
+        .stat-badge:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
         .stat-badge.alerta-retraso { 
-            background: rgba(239, 68, 68, 0.15); 
-            border-color: var(--danger); 
-            animation: pulse 1.5s infinite; 
+            border-color: var(--danger-500); 
+            animation: pulse-border 1.5s infinite; 
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.08);
         }
-        
-        @keyframes pulse { 
-            0%,100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 
+
+        .stat-badge.alerta-retraso .stat-number {
+            color: var(--danger-500);
+        }
+
+        @keyframes pulse-border { 
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.1); } 
             50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 
         }
-        
+
         .stat-number { 
             font-size: 1.6rem; 
-            font-weight: 800; 
+            font-weight: 900; 
             display: block; 
             line-height: 1.2;
+            letter-spacing: -0.5px;
+            transition: var(--transition);
         }
-        
-        .stat-badge:nth-child(1) .stat-number { color: var(--danger); }
-        .stat-badge:nth-child(2) .stat-number { color: var(--warning); }
-        .stat-badge:nth-child(3) .stat-number { color: #f97316; }
-        .stat-badge:nth-child(4) .stat-number { color: var(--success); }
-        
+
+        .stat-badge:nth-child(1) .stat-number { color: var(--danger-400); }
+        .stat-badge:nth-child(2) .stat-number { color: var(--accent-400); }
+        .stat-badge:nth-child(3) .stat-number { color: var(--danger-400); }
+        .stat-badge:nth-child(4) .stat-number { color: var(--success-400); }
+
         .stat-label { 
-            font-size: 0.65rem; 
+            font-size: 0.55rem; 
             text-transform: uppercase; 
             letter-spacing: 1.5px; 
             color: var(--text-muted); 
-            font-weight: 600;
-            margin-top: 6px;
+            font-weight: 700;
+            margin-top: 4px;
         }
-        
-        /* Grid de pedidos */
+
+        /* ORDERS GRID */
         .orders-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); 
             gap: 20px; 
             overflow-y: auto; 
             flex: 1; 
-            padding: 4px; 
+            padding: 4px 2px 4px 4px; 
         }
-        
-        .orders-grid::-webkit-scrollbar { 
-            width: 6px; 
-        }
-        
-        .orders-grid::-webkit-scrollbar-track { 
-            background: var(--bg-secondary); 
-            border-radius: 4px; 
-        }
-        
-        .orders-grid::-webkit-scrollbar-thumb { 
-            background: var(--border); 
-            border-radius: 4px; 
-        }
-        
-        /* Tarjetas de pedido */
+
+        .orders-grid::-webkit-scrollbar { width: 6px; }
+        .orders-grid::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 4px; }
+        .orders-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; transition: var(--transition); }
+        .orders-grid::-webkit-scrollbar-thumb:hover { background: var(--primary-400); }
+
+        /* ORDER CARD */
         .order-card { 
             background: var(--bg-card); 
-            border-radius: var(--radius-lg); 
-            padding: 20px; 
+            border-radius: var(--radius-xl); 
+            padding: 20px 22px; 
             border: 1px solid var(--border); 
             display: flex; 
             flex-direction: column; 
-            max-height: 480px; 
+            max-height: 520px; 
             border-left: 4px solid var(--border); 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
-            transition: var(--transition); 
+            box-shadow: var(--shadow-sm); 
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.4s ease forwards;
+            will-change: transform, box-shadow;
         }
-        
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
+            pointer-events: none;
+        }
+
+        .order-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .order-card:hover::after { opacity: 1; }
         .order-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
             border-color: var(--border-light);
         }
-        
+
         .order-card.nuevo { 
-            border-left-color: var(--danger); 
+            border-left-color: var(--danger-500); 
+            background: linear-gradient(135deg, var(--bg-card), rgba(239, 68, 68, 0.04));
         }
-        
+
+        .order-card.nuevo::before {
+            content: '🆕';
+            position: absolute;
+            top: -6px;
+            right: 14px;
+            font-size: 1.1rem;
+            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.2));
+        }
+
         .order-card.preparando { 
-            border-left-color: var(--warning); 
+            border-left-color: var(--accent-500);
+            background: linear-gradient(135deg, var(--bg-card), rgba(245, 158, 11, 0.03));
         }
-        
+
         .order-card.listo { 
-            border-left-color: var(--success); 
-            opacity: 0.85; 
+            border-left-color: var(--success-500);
+            background: linear-gradient(135deg, var(--bg-card), rgba(16, 185, 129, 0.03));
+            opacity: 0.92;
         }
-        
+
+        .order-card.listo::before {
+            content: '✅';
+            position: absolute;
+            top: -6px;
+            right: 14px;
+            font-size: 1.1rem;
+            filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.2));
+        }
+
         .order-card.retrasado { 
-            border-left-color: var(--danger) !important; 
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); 
-            animation: cardPulse 2s infinite; 
+            border-left-color: var(--danger-500) !important; 
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.06), var(--shadow-sm); 
+            animation: cardPulse 2.5s infinite;
+            background: linear-gradient(135deg, var(--bg-card), rgba(239, 68, 68, 0.06));
         }
-        
+
         @keyframes cardPulse { 
-            0%,100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.15); } 
-            50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); } 
+            0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.04), var(--shadow-sm); } 
+            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.1), var(--shadow-md); } 
         }
-        
+
         .order-card-content { 
             overflow-y: auto; 
             flex: 1; 
-            padding-right: 6px; 
+            padding-right: 4px; 
         }
-        
-        .order-card-content::-webkit-scrollbar {
-            width: 4px;
-        }
-        
-        .order-card-content::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        
-        .order-card-content::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
-        
+
+        .order-card-content::-webkit-scrollbar { width: 4px; }
+        .order-card-content::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 4px; }
+        .order-card-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* CARD HEADER */
         .order-card-header { 
             display: flex; 
             justify-content: space-between; 
-            align-items: flex-start; 
+            align-items: center; 
             margin-bottom: 12px; 
             padding-bottom: 12px; 
             border-bottom: 1px solid var(--border); 
             flex-shrink: 0; 
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        
+
         .order-card-header h3 { 
             font-size: 0.95rem; 
-            font-weight: 700; 
-            color: var(--accent-light); 
+            font-weight: 800; 
+            color: var(--accent-400);
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
+
+        .order-card-header h3 .mesa-num {
+            background: var(--bg-elevated);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            border: 1px solid var(--border);
+        }
+
         .order-badge { 
-            padding: 5px 12px; 
+            padding: 4px 14px; 
             border-radius: 40px; 
-            font-size: 0.65rem; 
-            font-weight: 700; 
+            font-size: 0.55rem; 
+            font-weight: 800; 
             text-transform: uppercase; 
-            letter-spacing: 1px; 
+            letter-spacing: 1.2px; 
+            position: relative;
+            white-space: nowrap;
         }
-        
+
         .badge-nuevo { 
-            background: var(--danger); 
+            background: linear-gradient(135deg, var(--danger-500), var(--danger-600));
             color: white; 
+            box-shadow: 0 2px 12px rgba(239, 68, 68, 0.25);
         }
-        
+
         .badge-preparando { 
-            background: var(--warning); 
-            color: var(--primary-dark); 
-        }
-        
-        .badge-listo { 
-            background: var(--success); 
+            background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
             color: white; 
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.2);
         }
-        
+
+        .badge-listo { 
+            background: linear-gradient(135deg, var(--success-500), var(--success-600));
+            color: white; 
+            box-shadow: 0 2px 12px rgba(16, 185, 129, 0.2);
+        }
+
         .badge-retrasado { 
-            background: var(--danger); 
+            background: linear-gradient(135deg, var(--danger-500), var(--danger-600));
             color: white; 
             animation: badgeBlink 0.8s infinite; 
+            box-shadow: 0 2px 20px rgba(239, 68, 68, 0.35);
         }
-        
+
         @keyframes badgeBlink { 
-            0%,100% { opacity: 1; } 
-            50% { opacity: 0.6; } 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.5; } 
         }
-        
-        /* Timer - estilo frío */
+
+        /* TIMER */
         .timer-container { 
             display: flex; 
             align-items: center; 
             justify-content: space-between;
-            padding: 10px 14px; 
-            background: var(--bg-elevated); 
+            padding: 10px 16px; 
+            background: var(--bg-secondary); 
             border-radius: var(--radius); 
             margin-bottom: 12px; 
             font-size: 0.85rem; 
-            font-weight: 600; 
+            font-weight: 700; 
+            border: 1px solid var(--border);
+            transition: var(--transition);
         }
-        
+
+        .timer-container:hover { border-color: var(--border-light); }
         .timer-container.retrasado { 
-            background: rgba(239, 68, 68, 0.1); 
-            border: 1px solid rgba(239, 68, 68, 0.3); 
+            background: rgba(239, 68, 68, 0.06); 
+            border-color: rgba(239, 68, 68, 0.2);
         }
-        
+
         .timer-label {
             color: var(--text-muted);
-            font-size: 0.7rem;
-        }
-        
-        .timer-value {
-            font-family: monospace;
-            font-size: 1rem;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
             font-weight: 700;
         }
-        
+
+        .timer-value {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
         .timer-container.retrasado .timer-value { 
-            color: var(--danger); 
+            color: var(--danger-400); 
+            animation: timerBlink 1s infinite;
         }
-        
+
+        @keyframes timerBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .timer-exceso {
-            color: var(--danger);
-            font-size: 0.7rem;
+            color: var(--danger-400);
+            font-size: 0.65rem;
             margin-left: 6px;
+            font-weight: 700;
         }
-        
-        /* Info cliente */
+
+        /* CUSTOMER INFO */
         .customer-info-mini { 
-            font-size: 0.75rem; 
+            font-size: 0.7rem; 
             color: var(--text-secondary); 
             margin-bottom: 12px; 
-            padding: 10px 12px; 
-            background: var(--bg-elevated); 
+            padding: 8px 14px; 
+            background: var(--bg-secondary); 
             border-radius: var(--radius); 
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             flex-wrap: wrap;
+            border: 1px solid var(--border);
         }
-        
+
         .customer-info-mini span {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            font-weight: 500;
         }
-        
-        /* Items */
+
+        /* ITEMS */
         .order-items { 
             list-style: none; 
-            margin-bottom: 8px; 
+            margin-bottom: 4px; 
         }
-        
+
         .order-item { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 10px 12px; 
-            background: var(--bg-elevated); 
-            border-radius: var(--radius-sm); 
-            margin-bottom: 6px; 
-            font-size: 0.85rem; 
-            transition: var(--transition);
+            padding: 7px 12px; 
+            background: var(--bg-secondary); 
+            border-radius: var(--radius); 
+            margin-bottom: 4px; 
+            font-size: 0.82rem; 
+            transition: var(--transition-fast);
+            border-left: 2px solid transparent;
         }
-        
+
         .order-item:hover {
-            background: var(--border);
+            background: var(--bg-elevated);
+            border-left-color: var(--accent-400);
+            transform: translateX(2px);
         }
-        
+
         .item-nombre { 
             font-weight: 600; 
             color: var(--text-primary); 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
         }
-        
+
+        .item-nombre .emoji { font-size: 1rem; }
+
+        /* BADGE DE SABOR EN COCINA */
+        .sabor-badge-cocina {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+            color: var(--accent-300);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+
         .item-cantidad { 
-            background: var(--accent); 
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
             color: white; 
-            padding: 3px 10px; 
+            padding: 1px 10px; 
             border-radius: 40px; 
-            font-weight: 700; 
-            font-size: 0.7rem; 
+            font-weight: 800; 
+            font-size: 0.65rem; 
+            min-width: 28px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(42, 82, 152, 0.2);
         }
-        
-        /* Acciones */
+
+        /* ACTIONS */
         .order-actions { 
             display: flex; 
-            gap: 10px; 
+            gap: 8px; 
             padding-top: 14px; 
             margin-top: 6px;
             border-top: 1px solid var(--border); 
             flex-shrink: 0; 
         }
-        
+
         .btn-action { 
             flex: 1; 
-            padding: 10px; 
+            padding: 10px 14px; 
             border: none; 
             border-radius: var(--radius); 
-            font-weight: 700; 
-            font-size: 0.7rem; 
+            font-weight: 800; 
+            font-size: 0.65rem; 
             cursor: pointer; 
             text-transform: uppercase; 
-            letter-spacing: 1px; 
+            letter-spacing: 1.2px; 
             transition: var(--transition); 
             font-family: inherit;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .btn-action::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .btn-action:hover::after { opacity: 1; }
         .btn-action:hover { 
-            opacity: 0.9; 
-            transform: translateY(-1px); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
         }
-        
-        .btn-action:active { 
-            transform: scale(0.97); 
-        }
-        
+        .btn-action:active { transform: scale(0.96); }
+
         .btn-start { 
-            background: var(--warning); 
-            color: var(--primary-dark); 
+            background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
+            color: white; 
         }
-        
+        .btn-start:hover { box-shadow: 0 4px 24px rgba(245, 158, 11, 0.3); }
+
         .btn-ready { 
-            background: var(--success); 
+            background: linear-gradient(135deg, var(--success-500), var(--success-600));
             color: white; 
         }
-        
+        .btn-ready:hover { box-shadow: 0 4px 24px rgba(16, 185, 129, 0.3); }
+
         .btn-deliver { 
-            background: var(--accent); 
+            background: linear-gradient(135deg, var(--primary-400), var(--primary-500));
             color: white; 
         }
-        
+        .btn-deliver:hover { box-shadow: 0 4px 24px rgba(42, 82, 152, 0.3); }
+
         .btn-reject { 
-            background: var(--border); 
-            color: var(--text-secondary); 
+            background: var(--bg-elevated); 
+            color: var(--text-muted); 
+            border: 1px solid var(--border);
         }
-        
-        /* Empty state */
+        .btn-reject:hover {
+            background: var(--danger-500);
+            color: white;
+            border-color: var(--danger-500);
+            box-shadow: 0 4px 24px rgba(239, 68, 68, 0.3);
+        }
+
+        /* EMPTY STATE */
         .empty-state { 
             grid-column: 1/-1; 
             text-align: center; 
             padding: 80px 20px; 
             color: var(--text-muted); 
+            background: var(--bg-card);
+            border-radius: var(--radius-2xl);
+            border: 1px solid var(--border);
         }
-        
+
         .empty-state .emoji { 
             font-size: 5rem; 
             display: block; 
             margin-bottom: 16px; 
             opacity: 0.5;
         }
-        
+
         .empty-state h2 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 800;
         }
-        
+
         .empty-state p {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
-        
-        /* Botón de sonido */
+
+        /* SOUND BUTTON */
         .sound-btn { 
             position: fixed; 
             bottom: 24px; 
             right: 24px; 
-            background: var(--bg-elevated); 
+            background: var(--bg-card); 
             color: var(--text-primary); 
             border: 1px solid var(--border); 
-            width: 52px; 
-            height: 52px; 
+            width: 54px; 
+            height: 54px; 
             border-radius: 50%; 
-            font-size: 1.4rem; 
+            font-size: 1.3rem; 
             cursor: pointer; 
             z-index: 100; 
-            box-shadow: var(--shadow); 
+            box-shadow: var(--shadow-lg); 
             transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(10px);
+            background: rgba(22, 45, 77, 0.9);
         }
-        
+
         .sound-btn:hover { 
-            background: var(--accent); 
-            border-color: var(--accent);
-            transform: scale(1.05);
+            background: var(--accent-500); 
+            border-color: var(--accent-500);
+            transform: scale(1.08) rotate(-5deg);
+            box-shadow: 0 4px 32px rgba(245, 158, 11, 0.3);
         }
-        
-        /* Alerta flotante */
+        .sound-btn:active { transform: scale(0.92); }
+
+        /* FLOATING ALERT */
         .alerta-flotante { 
             position: fixed; 
             top: 24px; 
             left: 50%; 
             transform: translateX(-50%); 
-            background: var(--bg-elevated); 
+            background: var(--bg-card); 
             color: var(--text-primary); 
-            padding: 14px 28px; 
-            border-radius: 50px; 
+            padding: 14px 32px; 
+            border-radius: 60px; 
             font-weight: 700; 
             font-size: 0.85rem;
             z-index: 200; 
-            animation: slideDown 0.4s ease; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); 
-            border-left: 3px solid var(--accent);
-            backdrop-filter: blur(8px);
+            animation: slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            box-shadow: var(--shadow-lg); 
+            border-left: 4px solid var(--accent-500);
+            backdrop-filter: blur(16px);
+            background: rgba(15, 31, 58, 0.95);
+            border: 1px solid var(--border);
+            max-width: 90%;
         }
-        
+
         @keyframes slideDown { 
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); } 
-            to { opacity: 1; transform: translateX(-50%) translateY(0); } 
+            from { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0.95); } 
+            to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } 
         }
-        
-        /* Responsive */
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .orders-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+        }
+
         @media (max-width: 768px) {
             body { padding: 12px; }
-            .kitchen-header { flex-direction: column; align-items: stretch; }
-            .kitchen-stats { justify-content: center; }
-            .orders-grid { grid-template-columns: 1fr; gap: 16px; }
-            .order-card { max-height: none; }
+            .kitchen-screen { height: calc(100vh - 24px); }
+            
+            .kitchen-header { 
+                flex-direction: column; 
+                align-items: stretch; 
+                padding: 16px 20px;
+                border-radius: var(--radius-lg);
+            }
+            
+            .header-left { justify-content: center; flex-wrap: wrap; }
+            .header-title .brand { font-size: 1.1rem; }
+            .header-status { display: none; }
+            
+            .kitchen-stats { justify-content: center; gap: 6px; }
+            .stat-badge { padding: 8px 12px; min-width: 60px; }
+            .stat-number { font-size: 1.2rem; }
+            .stat-label { font-size: 0.45rem; letter-spacing: 1px; }
+            
+            .orders-grid { grid-template-columns: 1fr; gap: 14px; }
+            .order-card { max-height: none; padding: 16px 18px; border-radius: var(--radius-lg); }
+            .order-actions { flex-wrap: wrap; }
+            .btn-action { min-width: 80px; flex: 1 1 auto; padding: 8px 12px; font-size: 0.55rem; }
+            
+            .sound-btn { width: 44px; height: 44px; font-size: 1.1rem; bottom: 16px; right: 16px; }
+            
+            .alerta-flotante {
+                top: 12px;
+                padding: 10px 20px;
+                font-size: 0.75rem;
+                max-width: 92%;
+                text-align: center;
+                border-radius: 30px;
+            }
+            
+            .order-card-header h3 { font-size: 0.85rem; }
+            .order-item { font-size: 0.75rem; padding: 6px 10px; }
+            .timer-container { padding: 8px 12px; font-size: 0.75rem; }
+            .timer-value { font-size: 0.95rem; }
+            .customer-info-mini { font-size: 0.6rem; padding: 6px 10px; gap: 8px; }
+            .order-card.nuevo::before, .order-card.listo::before { font-size: 1rem; top: -4px; right: 10px; }
+            .sabor-badge-cocina { font-size: 0.55rem; padding: 1px 8px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            .kitchen-header { padding: 12px 16px; border-radius: var(--radius); }
+            .header-title .brand { font-size: 0.95rem; }
+            .header-logo .icon { font-size: 1.4rem; }
+            .stat-badge { padding: 6px 10px; min-width: 50px; }
+            .stat-number { font-size: 1rem; }
+            .stat-label { font-size: 0.4rem; letter-spacing: 0.5px; }
+            .order-card { padding: 14px 14px; border-radius: var(--radius); }
+            .order-card-header { flex-wrap: wrap; gap: 6px; }
+            .order-card-header h3 { font-size: 0.8rem; }
+            .order-badge { font-size: 0.45rem; padding: 3px 10px; }
+            .btn-action { font-size: 0.5rem; padding: 6px 8px; letter-spacing: 0.8px; min-width: 60px; }
+            .order-items { margin-bottom: 2px; }
+            .order-item { font-size: 0.7rem; padding: 5px 8px; }
+            .item-cantidad { font-size: 0.55rem; padding: 1px 8px; min-width: 22px; }
+            .timer-container { padding: 6px 10px; font-size: 0.65rem; border-radius: var(--radius-sm); }
+            .timer-value { font-size: 0.85rem; }
+            .customer-info-mini { font-size: 0.55rem; padding: 5px 8px; gap: 6px; }
+            .empty-state { padding: 40px 16px; }
+            .empty-state .emoji { font-size: 3.5rem; }
+            .empty-state h2 { font-size: 1.1rem; }
+            .sound-btn { width: 38px; height: 38px; font-size: 0.9rem; bottom: 12px; right: 12px; }
+            .alerta-flotante { padding: 8px 16px; font-size: 0.65rem; top: 8px; border-radius: 20px; }
+            .sabor-badge-cocina { font-size: 0.5rem; padding: 1px 6px; }
         }
     </style>
 </head>
 <body>
     <div class="kitchen-screen">
         <div class="kitchen-header">
-            <h1>❄️ MarketPOS · Cocina Profesional</h1>
+            <div class="header-left">
+                <div class="header-logo">
+                    <span class="icon">🍽️</span>
+                    <div class="header-title">
+                        <span class="brand">TITO BURGER</span>
+                        <span class="sub">· Cocina Profesional</span>
+                    </div>
+                </div>
+                <div class="header-status">
+                    <span class="dot"></span>
+                    En línea
+                </div>
+            </div>
             <div class="kitchen-stats">
-                <div class="stat-badge"><span class="stat-number" id="pendientesCount">0</span><span class="stat-label">Pendientes</span></div>
-                <div class="stat-badge"><span class="stat-number" id="preparandoCount">0</span><span class="stat-label">Preparando</span></div>
-                <div class="stat-badge" id="retrasadosBadge"><span class="stat-number" id="retrasadosCount">0</span><span class="stat-label">⏰ Retrasados</span></div>
-                <div class="stat-badge"><span class="stat-number" id="listosCount">0</span><span class="stat-label">Listos</span></div>
+                <div class="stat-badge">
+                    <span class="stat-number" id="pendientesCount">0</span>
+                    <span class="stat-label">Pendientes</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="stat-number" id="preparandoCount">0</span>
+                    <span class="stat-label">Preparando</span>
+                </div>
+                <div class="stat-badge" id="retrasadosBadge">
+                    <span class="stat-number" id="retrasadosCount">0</span>
+                    <span class="stat-label">⏰ Retrasados</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="stat-number" id="listosCount">0</span>
+                    <span class="stat-label">Listos</span>
+                </div>
             </div>
         </div>
+
         <div class="orders-grid" id="ordersGrid"></div>
     </div>
+
     <button class="sound-btn" onclick="toggleSound()" title="Activar/Desactivar sonido">🔊</button>
 
     <script>
-        // ==================== CONFIGURACIÓN ====================
-        const TIEMPO_LIMITE_SEGUNDOS = 15 * 60; // 15 MINUTOS
+        // ============================================ //
+        // CONFIGURACIÓN                                //
+        // ============================================ //
+        const TIEMPO_LIMITE_SEGUNDOS = 15 * 60;
         const DURACION_ALARMA_SEGUNDOS = 15;
         
         let sonidoActivado = true;
@@ -543,6 +905,9 @@
         let pedidosTimers = {};
         let retrasosNotificados = {};
         let nuevosNotificados = {};
+        
+        let orderElementsCache = new Map();
+        let previousOrders = [];
         
         try {
             const savedTimers = localStorage.getItem('cocina_timers_pedidos');
@@ -568,7 +933,9 @@
             }
         }
 
-        // ==================== SONIDOS ====================
+        // ============================================ //
+        // SONIDOS                                      //
+        // ============================================ //
         function detenerAlarma(id) {
             if (alarmaIntervalos[id]) {
                 clearInterval(alarmaIntervalos[id]);
@@ -582,14 +949,11 @@
 
         function sonidoDing() {
             if (!sonidoActivado) return;
-            
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
-            
             try {
                 const frequencies = [523.25, 659.25, 783.99];
-                
                 frequencies.forEach((freq, index) => {
                     setTimeout(() => {
                         const oscillator = audioContext.createOscillator();
@@ -598,7 +962,7 @@
                         gain.connect(audioContext.destination);
                         oscillator.frequency.value = freq;
                         oscillator.type = 'sine';
-                        gain.gain.value = 0.25;
+                        gain.gain.value = 0.15;
                         oscillator.start();
                         oscillator.stop(audioContext.currentTime + 0.25);
                         gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.25);
@@ -608,9 +972,7 @@
         }
 
         function iniciarAlarmaRetraso(id) {
-            if (!sonidoActivado) return;
-            if (alarmasActivas[id]) return;
-            
+            if (!sonidoActivado || alarmasActivas[id]) return;
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -620,12 +982,10 @@
             
             const intervalo = setInterval(() => {
                 const transcurrido = (Date.now() - inicioAlarma) / 1000;
-                
                 if (transcurrido >= DURACION_ALARMA_SEGUNDOS) {
                     detenerAlarma(id);
                     return;
                 }
-                
                 if (!alarmasActivas[id]) return;
                 
                 try {
@@ -635,7 +995,7 @@
                     g.connect(audioContext.destination);
                     o.frequency.value = beepCount % 2 === 0 ? 880 : 440;
                     o.type = 'square';
-                    g.gain.value = 0.3;
+                    g.gain.value = 0.15;
                     o.start();
                     o.stop(audioContext.currentTime + 0.15);
                     beepCount++;
@@ -643,10 +1003,7 @@
             }, 250);
             
             alarmaIntervalos[id] = intervalo;
-            
-            const timeout = setTimeout(() => {
-                detenerAlarma(id);
-            }, DURACION_ALARMA_SEGUNDOS * 1000);
+            const timeout = setTimeout(() => detenerAlarma(id), DURACION_ALARMA_SEGUNDOS * 1000);
             alarmasActivas[id] = timeout;
         }
 
@@ -658,13 +1015,14 @@
             }
         }
 
-        function mostrarAlerta(mensaje, tipo = 'info') {
+        function mostrarAlerta(mensaje) {
             const alerta = document.createElement('div');
             alerta.className = 'alerta-flotante';
             alerta.textContent = mensaje;
             document.body.appendChild(alerta);
             setTimeout(() => {
                 alerta.style.opacity = '0';
+                alerta.style.transition = 'opacity 0.5s ease';
                 setTimeout(() => alerta.remove(), 500);
             }, 4000);
         }
@@ -678,12 +1036,12 @@
             const excesoMinutos = Math.floor(exceso / 60);
             const excesoSegundos = exceso % 60;
             
-            return {
-                minutos, segundos, segundosTranscurridos,
-                retrasado, exceso, excesoMinutos, excesoSegundos
-            };
+            return { minutos, segundos, segundosTranscurridos, retrasado, exceso, excesoMinutos, excesoSegundos };
         }
 
+        // ============================================ //
+        // ACCIONES DE PEDIDOS                          //
+        // ============================================ //
         async function cambiarEstado(id, estado) {
             try {
                 await fetch('/api/pedidos/' + id, { 
@@ -703,172 +1061,354 @@
             if (estado === 'listo') {
                 detenerAlarma(id);
                 mostrarAlerta('✅ ¡Pedido listo para entregar!');
+                sonidoDing();
             }
-            
-            setTimeout(() => renderizar(), 300);
+            renderizar();
         }
 
         async function entregarPedido(id) {
             sonidoDing();
             detenerAlarma(id);
-            
             delete pedidosTimers[id];
             delete retrasosNotificados[id];
             delete nuevosNotificados[id];
             guardarTimers();
             
-            try {
-                await fetch('/api/pedidos/' + id, { method: 'DELETE' });
-            } catch(e) {}
-            
+            try { await fetch('/api/pedidos/' + id, { method: 'DELETE' }); } catch(e) {}
             const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
             localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal.filter(p => String(p.id) !== String(id))));
             
+            orderElementsCache.delete(id);
+            
             mostrarAlerta('🚀 Pedido entregado');
-            setTimeout(() => renderizar(), 300);
+            renderizar();
         }
 
         async function rechazarPedido(id) {
             if (!confirm('⚠️ ¿Estás seguro de rechazar este pedido?')) return;
-            
             detenerAlarma(id);
             delete pedidosTimers[id];
             delete retrasosNotificados[id];
             delete nuevosNotificados[id];
             guardarTimers();
             
-            try {
-                await fetch('/api/pedidos/' + id, { method: 'DELETE' });
-            } catch(e) {}
-            
+            try { await fetch('/api/pedidos/' + id, { method: 'DELETE' }); } catch(e) {}
             const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
             localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal.filter(p => String(p.id) !== String(id))));
             
+            orderElementsCache.delete(id);
+            
             mostrarAlerta('✕ Pedido rechazado');
-            setTimeout(() => renderizar(), 300);
+            renderizar();
         }
 
-        function verificarNuevosPedidos(activos) {
-            activos.forEach(p => {
-                const pid = String(p.id);
-                if (p.estado === 'nuevo' && !nuevosNotificados[pid]) {
-                    nuevosNotificados[pid] = Date.now();
-                    guardarTimers();
-                    sonidoDing();
-                    mostrarAlerta('🆕 ¡Nuevo pedido en cocina!');
-                }
-            });
-        }
-
-        function verificarRetrasos() {
-            Object.keys(pedidosTimers).forEach(id => {
-                const timestamp = pedidosTimers[id];
-                const tiempo = calcularTiempoTranscurrido(timestamp);
-                
-                if (tiempo.retrasado && !retrasosNotificados[id]) {
-                    retrasosNotificados[id] = Date.now();
-                    guardarTimers();
-                    iniciarAlarmaRetraso(id);
-                    mostrarAlerta(`⏰ ¡PEDIDO RETRASADO! +${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')} min`);
-                }
-            });
+        // ============================================ //
+        // GENERAR HTML DE UNA TARJETA                  //
+        // ============================================ //
+        function generarCardHTML(p, index) {
+            const pid = String(p.id);
+            const tiempo = calcularTiempoTranscurrido(pedidosTimers[pid] || Date.now());
+            const retrasado = tiempo.retrasado && p.estado !== 'listo';
             
-            const totalRetrasos = Object.keys(retrasosNotificados).length;
-            document.getElementById('retrasadosCount').textContent = totalRetrasos;
+            const itemsHTML = (p.items || []).map(i => `
+                <li class="order-item">
+                    <span class="item-nombre">
+                        <span class="emoji">${i.emoji || '🍽️'}</span>
+                        ${i.nombre}
+                        ${i.sabor ? `<span class="sabor-badge-cocina">🍗 ${i.sabor}</span>` : ''}
+                    </span>
+                    <span class="item-cantidad">x${i.cantidad}</span>
+                </li>
+            `).join('');
             
-            if (totalRetrasos > 0) {
-                document.getElementById('retrasadosBadge').classList.add('alerta-retraso');
+            let tipoDisplay = '';
+            if (p.cliente?.tipoPedido === 'mesa') {
+                tipoDisplay = `🪑 Mesa <span class="mesa-num">${p.cliente?.mesa || '?'}</span>`;
+            } else if (p.cliente?.tipoPedido === 'delivery') {
+                tipoDisplay = '🚀 Delivery';
             } else {
-                document.getElementById('retrasadosBadge').classList.remove('alerta-retraso');
+                tipoDisplay = '🛵 Para Llevar';
             }
+            
+            const estadoClass = retrasado ? 'retrasado' : p.estado;
+            
+            return `
+                <div class="order-card ${estadoClass}" data-id="${pid}">
+                    <div class="order-card-content">
+                        <div class="order-card-header">
+                            <h3>${tipoDisplay}</h3>
+                            ${retrasado ? 
+                                '<span class="badge-retrasado">⏰ RETRASADO</span>' : 
+                                `<span class="order-badge badge-${p.estado}">${p.estado.toUpperCase()}</span>`
+                            }
+                        </div>
+                        <div class="timer-container ${retrasado ? 'retrasado' : ''}">
+                            <span class="timer-label">⏱️ Tiempo</span>
+                            <div>
+                                <span class="timer-value">${String(tiempo.minutos).padStart(2,'0')}:${String(tiempo.segundos).padStart(2,'0')}</span>
+                                ${retrasado ? `<span class="timer-exceso">(+${String(tiempo.excesoMinutos).padStart(2,'0')}:${String(tiempo.excesoSegundos).padStart(2,'0')})</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="customer-info-mini">
+                            <span>👤 ${p.cliente?.nombre || 'Cliente'}</span>
+                            ${p.cliente?.telefono ? `<span>📞 ${p.cliente.telefono}</span>` : ''}
+                            ${p.cliente?.direccion ? `<span>📍 ${p.cliente.direccion}</span>` : ''}
+                        </div>
+                        <ul class="order-items">${itemsHTML}</ul>
+                    </div>
+                    <div class="order-actions">
+                        ${p.estado === 'nuevo' ? `
+                            <button class="btn-action btn-start" onclick="cambiarEstado('${pid}','preparando')">▶ Iniciar</button>
+                            <button class="btn-action btn-reject" onclick="rechazarPedido('${pid}')">✕ Rechazar</button>
+                        ` : ''}
+                        ${p.estado === 'preparando' ? `
+                            <button class="btn-action btn-ready" onclick="cambiarEstado('${pid}','listo')">✅ Listo</button>
+                        ` : ''}
+                        ${p.estado === 'listo' ? `
+                            <button class="btn-action btn-deliver" onclick="entregarPedido('${pid}')">🚀 Entregar</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
         }
 
-        async function renderizar() {
-            const pedidos = await getPedidosOnline();
-            const idsActuales = pedidos.map(p => String(p.id));
-            
-            Object.keys(pedidosTimers).forEach(id => {
-                if (!idsActuales.includes(id)) {
-                    detenerAlarma(id);
-                    delete pedidosTimers[id];
-                    delete retrasosNotificados[id];
-                    delete nuevosNotificados[id];
-                }
-            });
-            guardarTimers();
-            
-            const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
+        // ============================================ //
+        // ACTUALIZACIÓN - CORREGIDA                    //
+        // ============================================ //
+        function actualizarGridDiferencial(nuevosPedidos) {
             const grid = document.getElementById('ordersGrid');
             
-            verificarNuevosPedidos(activos);
+            // Si no hay pedidos, mostrar estado vacío
+            if (nuevosPedidos.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="emoji">🍽️</span>
+                        <h2>¡Cocina en Espera!</h2>
+                        <p>Todos los pedidos están listos y entregados</p>
+                        <p style="font-size:0.75rem;margin-top:8px;color:var(--text-muted);">Esperando nuevos pedidos...</p>
+                    </div>
+                `;
+                orderElementsCache.clear();
+                previousOrders = [];
+                return;
+            }
             
-            activos.forEach(p => {
-                const pid = String(p.id);
-                if (!pedidosTimers[pid] && p.estado !== 'listo') {
-                    pedidosTimers[pid] = Date.now();
-                    guardarTimers();
+            // Si hay pedidos, eliminar empty state si existe
+            const emptyState = grid.querySelector('.empty-state');
+            if (emptyState) {
+                grid.innerHTML = '';
+                orderElementsCache.clear();
+            }
+            
+            // Crear mapa de pedidos nuevos
+            const nuevosMap = new Map();
+            nuevosPedidos.forEach(p => nuevosMap.set(String(p.id), p));
+            
+            // Eliminar tarjetas que ya no existen
+            grid.querySelectorAll('.order-card').forEach(card => {
+                const id = card.getAttribute('data-id');
+                if (id && !nuevosMap.has(id)) {
+                    orderElementsCache.delete(id);
+                    card.remove();
                 }
             });
             
-            document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
-            document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
-            document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
+            // Actualizar o crear tarjetas
+            nuevosPedidos.forEach((pedido, index) => {
+                const id = String(pedido.id);
+                const existingCard = orderElementsCache.get(id);
+                
+                // Verificar que la tarjeta en caché sigue en el DOM
+                if (existingCard && !existingCard.parentNode) {
+                    orderElementsCache.delete(id);
+                }
+                
+                const cardInCache = orderElementsCache.get(id);
+                
+                if (cardInCache && cardInCache.parentNode) {
+                    // Actualizar tarjeta existente
+                    const nuevoHTML = generarCardHTML(pedido, index);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = nuevoHTML;
+                    const nuevoElemento = tempDiv.firstElementChild;
+                    actualizarCardDiferencial(cardInCache, nuevoElemento);
+                } else {
+                    // Crear nueva tarjeta
+                    const nuevoHTML = generarCardHTML(pedido, index);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = nuevoHTML;
+                    const nuevoElemento = tempDiv.firstElementChild;
+                    
+                    // Insertar en la posición correcta
+                    const children = Array.from(grid.children);
+                    const referencia = children[index] || null;
+                    
+                    if (referencia) {
+                        grid.insertBefore(nuevoElemento, referencia);
+                    } else {
+                        grid.appendChild(nuevoElemento);
+                    }
+                    
+                    orderElementsCache.set(id, nuevoElemento);
+                }
+            });
             
-            if (activos.length === 0) { 
-                grid.innerHTML = `<div class="empty-state"><span class="emoji">❄️🍳</span><h2>Cocina en Espera</h2><p>Todos los pedidos están completados</p></div>`; 
-                return; 
+            previousOrders = nuevosPedidos;
+        }
+
+        function actualizarCardDiferencial(existing, nuevo) {
+            if (existing.className !== nuevo.className) {
+                existing.className = nuevo.className;
             }
             
-            activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+            const secciones = [
+                '.order-card-header',
+                '.timer-container',
+                '.customer-info-mini',
+                '.order-items',
+                '.order-actions'
+            ];
             
-            grid.innerHTML = activos.map(p => {
-                const pid = String(p.id);
-                const tiempo = calcularTiempoTranscurrido(pedidosTimers[pid] || Date.now());
-                const retrasado = tiempo.retrasado && p.estado !== 'listo';
+            secciones.forEach(selector => {
+                const oldEl = existing.querySelector(selector);
+                const newEl = nuevo.querySelector(selector);
+                if (oldEl && newEl && oldEl.outerHTML !== newEl.outerHTML) {
+                    oldEl.outerHTML = newEl.outerHTML;
+                }
+            });
+        }
+
+        // ============================================ //
+        // RENDER PRINCIPAL - CORREGIDO                 //
+        // ============================================ //
+        async function renderizar() {
+            try {
+                const pedidos = await getPedidosOnline();
+                const idsActuales = pedidos.map(p => String(p.id));
                 
-                const itemsHTML = (p.items || []).map(i => `
-                    <li class="order-item">
-                        <span class="item-nombre">${i.emoji || '🍽️'} ${i.nombre}</span>
-                        <span class="item-cantidad">x${i.cantidad}</span>
-                    </li>
-                `).join('');
+                // Limpiar timers huérfanos
+                Object.keys(pedidosTimers).forEach(id => {
+                    if (!idsActuales.includes(id)) {
+                        detenerAlarma(id);
+                        delete pedidosTimers[id];
+                        delete retrasosNotificados[id];
+                        delete nuevosNotificados[id];
+                    }
+                });
+                guardarTimers();
                 
-                return `
-                    <div class="order-card ${retrasado ? 'retrasado' : p.estado}" data-id="${pid}">
-                        <div class="order-card-content">
-                            <div class="order-card-header">
-                                <h3>${p.cliente?.tipoPedido === 'mesa' ? '🪑 Mesa ' + p.cliente?.mesa : p.cliente?.tipoPedido === 'delivery' ? '🚀 Delivery' : '🛵 Para Llevar'}</h3>
-                                ${retrasado ? '<span class="badge-retrasado">⏰ RETRASADO</span>' : `<span class="order-badge badge-${p.estado}">${p.estado.toUpperCase()}</span>`}
-                            </div>
-                            <div class="timer-container ${retrasado ? 'retrasado' : ''}">
-                                <span class="timer-label">⏱️ Tiempo</span>
-                                <div>
-                                    <span class="timer-value">${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')}</span>
-                                    ${retrasado ? `<span class="timer-exceso">(+${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')})</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="customer-info-mini">
-                                <span>👤 ${p.cliente?.nombre || 'Cliente'}</span>
-                                ${p.cliente?.telefono ? `<span>📞 ${p.cliente.telefono}</span>` : ''}
-                            </div>
-                            <ul class="order-items">${itemsHTML}</ul>
-                        </div>
-                        <div class="order-actions">
-                            ${p.estado === 'nuevo' ? `
-                                <button class="btn-action btn-start" onclick="cambiarEstado('${pid}','preparando')">▶ Iniciar</button>
-                                <button class="btn-action btn-reject" onclick="rechazarPedido('${pid}')">✕ Rechazar</button>
-                            ` : ''}
-                            ${p.estado === 'preparando' ? `
-                                <button class="btn-action btn-ready" onclick="cambiarEstado('${pid}','listo')">✅ Listo</button>
-                            ` : ''}
-                            ${p.estado === 'listo' ? `
-                                <button class="btn-action btn-deliver" onclick="entregarPedido('${pid}')">🚀 Entregar</button>
-                            ` : ''}
-                        </div>
-                    </div>`;
-            }).join('');
+                // Filtrar pedidos activos
+                const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
+                
+                // Verificar nuevos pedidos
+                activos.forEach(p => {
+                    const pid = String(p.id);
+                    if (p.estado === 'nuevo' && !nuevosNotificados[pid]) {
+                        nuevosNotificados[pid] = Date.now();
+                        guardarTimers();
+                        sonidoDing();
+                        const tipo = p.cliente?.tipoPedido === 'mesa' ? 'Mesa ' + p.cliente?.mesa : p.cliente?.tipoPedido || 'Cliente';
+                        mostrarAlerta(`🆕 ¡Nuevo pedido! ${tipo}`);
+                    }
+                });
+                
+                // Inicializar timers
+                activos.forEach(p => {
+                    const pid = String(p.id);
+                    if (!pedidosTimers[pid] && p.estado !== 'listo') {
+                        pedidosTimers[pid] = Date.now();
+                        guardarTimers();
+                    }
+                });
+                
+                // Actualizar estadísticas
+                document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
+                document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
+                document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
+                
+                // Verificar retrasos
+                const retrasadosActuales = {};
+                Object.keys(pedidosTimers).forEach(id => {
+                    const timestamp = pedidosTimers[id];
+                    const tiempo = calcularTiempoTranscurrido(timestamp);
+                    if (tiempo.retrasado) {
+                        retrasadosActuales[id] = true;
+                        if (!retrasosNotificados[id]) {
+                            retrasosNotificados[id] = Date.now();
+                            guardarTimers();
+                            iniciarAlarmaRetraso(id);
+                            mostrarAlerta(`⏰ ¡PEDIDO RETRASADO! +${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')} min`);
+                        }
+                    }
+                });
+                
+                // Limpiar retrasos
+                Object.keys(retrasosNotificados).forEach(id => {
+                    if (!retrasadosActuales[id]) {
+                        delete retrasosNotificados[id];
+                        detenerAlarma(id);
+                        guardarTimers();
+                    }
+                });
+                
+                const totalRetrasos = Object.keys(retrasosNotificados).length;
+                document.getElementById('retrasadosCount').textContent = totalRetrasos;
+                const retrasadosBadge = document.getElementById('retrasadosBadge');
+                if (totalRetrasos > 0) {
+                    retrasadosBadge.classList.add('alerta-retraso');
+                } else {
+                    retrasadosBadge.classList.remove('alerta-retraso');
+                }
+                
+                // Ordenar y actualizar grid
+                activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+                actualizarGridDiferencial(activos);
+                
+            } catch (error) {
+                console.error('Error al renderizar:', error);
+            }
+        }
+
+        function actualizarTemporizadores() {
+            const grid = document.getElementById('ordersGrid');
+            if (!grid || grid.querySelector('.empty-state')) return;
             
-            verificarRetrasos();
+            grid.querySelectorAll('.order-card').forEach(card => {
+                const id = card.getAttribute('data-id');
+                if (id && pedidosTimers[id]) {
+                    const tiempo = calcularTiempoTranscurrido(pedidosTimers[id]);
+                    const retrasado = tiempo.retrasado;
+                    
+                    const timerContainer = card.querySelector('.timer-container');
+                    const timerValue = card.querySelector('.timer-value');
+                    
+                    if (timerValue) {
+                        const nuevoTexto = `${String(tiempo.minutos).padStart(2,'0')}:${String(tiempo.segundos).padStart(2,'0')}`;
+                        if (timerValue.textContent !== nuevoTexto) {
+                            timerValue.textContent = nuevoTexto;
+                        }
+                    }
+                    
+                    if (timerContainer) {
+                        const excesoSpan = timerContainer.querySelector('.timer-exceso');
+                        if (retrasado) {
+                            if (!timerContainer.classList.contains('retrasado')) {
+                                timerContainer.classList.add('retrasado');
+                            }
+                            if (excesoSpan) {
+                                const excesoText = `(+${String(tiempo.excesoMinutos).padStart(2,'0')}:${String(tiempo.excesoSegundos).padStart(2,'0')})`;
+                                if (excesoSpan.textContent !== excesoText) {
+                                    excesoSpan.textContent = excesoText;
+                                }
+                            }
+                        } else {
+                            if (timerContainer.classList.contains('retrasado')) {
+                                timerContainer.classList.remove('retrasado');
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         document.addEventListener('click', function initAudio() {
@@ -881,45 +1421,8 @@
             document.removeEventListener('click', initAudio);
         }, { once: true });
 
-        function actualizarTemporizadores() {
-            document.querySelectorAll('.order-card').forEach(card => {
-                const id = card.getAttribute('data-id');
-                if (id && pedidosTimers[id]) {
-                    const tiempo = calcularTiempoTranscurrido(pedidosTimers[id]);
-                    const retrasado = tiempo.retrasado;
-                    
-                    const timerContainer = card.querySelector('.timer-container');
-                    const timerValue = card.querySelector('.timer-value');
-                    
-                    if (timerValue) {
-                        timerValue.innerHTML = `${tiempo.minutos}:${String(tiempo.segundos).padStart(2,'0')}`;
-                        if (retrasado && timerContainer) {
-                            const excesoSpan = timerContainer.querySelector('.timer-exceso');
-                            if (excesoSpan) {
-                                excesoSpan.textContent = `(+${tiempo.excesoMinutos}:${String(tiempo.excesoSegundos).padStart(2,'0')})`;
-                            }
-                        }
-                    }
-                    
-                    if (retrasado && !card.classList.contains('retrasado')) {
-                        card.classList.add('retrasado');
-                        const badgeContainer = card.querySelector('.order-card-header');
-                        if (badgeContainer && !card.querySelector('.badge-retrasado')) {
-                            const oldBadge = card.querySelector('.order-badge');
-                            if (oldBadge) oldBadge.remove();
-                            const newBadge = document.createElement('span');
-                            newBadge.className = 'badge-retrasado';
-                            newBadge.textContent = '⏰ RETRASADO';
-                            badgeContainer.appendChild(newBadge);
-                        }
-                        if (timerContainer) timerContainer.classList.add('retrasado');
-                    }
-                }
-            });
-        }
-        
         setInterval(actualizarTemporizadores, 1000);
-        setInterval(renderizar, 5000);
+        setInterval(renderizar, 10000);
         renderizar();
     </script>
 </body>

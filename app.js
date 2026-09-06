@@ -1273,7 +1273,89 @@ document.addEventListener('DOMContentLoaded', function() {
         headerMesas.appendChild(btn);
     }
 });
+// ============================================ //
+// FUNCIÓN PARA GUARDAR PEDIDOS Y SINCRONIZAR   //
+// ============================================ //
 
+function guardarPedidoYNotificar(pedido) {
+    // 1. Guardar en localStorage
+    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    pedidosLocal.unshift(pedido);
+    localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+    
+    // 2. Guardar también en una clave específica para cocina
+    const pedidosCocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
+    pedidosCocina.unshift(pedido);
+    localStorage.setItem('cocina_pedidos', JSON.stringify(pedidosCocina));
+    
+    // 3. Disparar evento para notificar a otras pestañas
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'marketpos_pedidos_online',
+        newValue: JSON.stringify(pedidosLocal)
+    }));
+    
+    // 4. Disparar evento personalizado para notificar en la misma página
+    const event = new CustomEvent('nuevoPedido', { detail: pedido });
+    window.dispatchEvent(event);
+    
+    return true;
+}
+
+// Modificar la función enviarACocinaPOS para usar guardarPedidoYNotificar
+async function enviarACocinaPOS() {
+    if (cartPOS.length === 0) { 
+        mostrarNotificacion('⚠️ Agregue productos al carrito');
+        return; 
+    }
+    
+    const mesa = document.getElementById('mesaInputPOS').value || '1';
+    const total = cartPOS.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    const pedido = { 
+        id: 'ped_' + Date.now(),
+        cliente: { 
+            nombre: 'Mesero', 
+            mesa: mesa, 
+            tipoPedido: tipoPedidoActual 
+        }, 
+        items: cartPOS.map(i => ({ 
+            id: i.id, 
+            nombre: i.nombre, 
+            precio: i.precio, 
+            emoji: i.emoji, 
+            cantidad: i.cantidad, 
+            sabor: i.sabor || null 
+        })), 
+        total,
+        fecha: new Date().toISOString(),
+        timestamp: Date.now(),
+        estado: 'nuevo'
+    };
+    
+    // Guardar en API (si existe)
+    try { 
+        await fetch('/api/pedidos', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(pedido) 
+        }); 
+    } catch(e) {}
+    
+    // Guardar localmente y notificar
+    guardarPedidoYNotificar(pedido);
+    
+    // Actualizar mesas
+    const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+    const mesaObj = mesasLocal.find(m => m.numero === parseInt(mesa));
+    if (mesaObj) { 
+        mesaObj.estado = 'ocupada'; 
+        mesaObj.orden = pedido.items; 
+    }
+    localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
+    
+    mostrarNotificacion('✅ Pedido enviado a cocina - Mesa ' + mesa);
+    cartPOS = []; 
+    renderCartPOS();
+}
 // Exponer funciones globalmente
 window.addToCartPOS = addToCartPOS;
 window.cobrarPOS = cobrarPOS;

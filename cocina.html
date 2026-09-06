@@ -7,55 +7,65 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ============================================ */
-        /* ROOT — Sistema de diseño profesional         */
+        /* ROOT — Sistema de diseño TITO'S RESTAURANT  */
         /* ============================================ */
         :root {
-            --primary-900: #0a1628;
-            --primary-800: #0f1f3a;
-            --primary-700: #162d4d;
-            --primary-600: #1d3d66;
-            --primary-500: #2a5298;
-            --primary-400: #3b6bb5;
-            --primary-300: #5a8fd4;
-            --primary-200: #8ab5e5;
-            --primary-100: #bdd7f2;
+            /* Colores principales - Estilo Tito's */
+            --primary-900: #0b0a0a;
+            --primary-800: #141212;
+            --primary-700: #1a1614;
+            --primary-600: #2d241f;
+            --primary-500: #1f1a17;
+            --primary-400: #3d322b;
+            --primary-300: #5a4a3f;
+            --primary-200: #8a7a6e;
+            --primary-100: #b7a69a;
             
-            --accent-600: #d97706;
-            --accent-500: #f59e0b;
-            --accent-400: #fbbf24;
-            --accent-300: #fcd34d;
+            /* Acentos - Naranja fuego */
+            --accent-600: #d35400;
+            --accent-500: #e67e22;
+            --accent-400: #f39c12;
+            --accent-300: #f5b041;
             
-            --success-600: #059669;
-            --success-500: #10b981;
-            --success-400: #34d399;
+            /* Éxito - Verde oscuro */
+            --success-600: #1a6e3a;
+            --success-500: #27ae60;
+            --success-400: #52be80;
             
-            --danger-600: #dc2626;
-            --danger-500: #ef4444;
-            --danger-400: #f87171;
+            /* Peligro - Rojo fuego */
+            --danger-600: #922b21;
+            --danger-500: #e74c3c;
+            --danger-400: #ec7063;
             
-            --bg-primary: #0a1628;
-            --bg-secondary: #0f1f3a;
-            --bg-card: #162d4d;
-            --bg-elevated: #1d3d66;
+            /* Fondos */
+            --bg-primary: #0b0a0a;
+            --bg-secondary: #141212;
+            --bg-card: #1a1614;
+            --bg-elevated: #2d241f;
             
-            --text-primary: #f0f4f8;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
+            /* Textos */
+            --text-primary: #f5ede4;
+            --text-secondary: #b7a69a;
+            --text-muted: #8a7a6e;
             
-            --border: #1d3d66;
-            --border-light: #2a5298;
+            /* Bordes */
+            --border: #2d241f;
+            --border-light: #3d322b;
             
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
-            --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
-            --shadow-glow: 0 0 60px rgba(42, 82, 152, 0.15);
+            /* Sombras */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 60px rgba(230, 126, 34, 0.08);
             
+            /* Radios */
             --radius-sm: 6px;
             --radius: 10px;
             --radius-lg: 14px;
             --radius-xl: 18px;
             --radius-2xl: 22px;
             
+            /* Transiciones */
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-fast: all 0.15s ease;
         }
@@ -69,8 +79,8 @@
             padding: 20px; 
             color: var(--text-primary);
             background-image: 
-                radial-gradient(ellipse at 20% 20%, rgba(42, 82, 152, 0.06), transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(245, 158, 11, 0.03), transparent 50%);
+                radial-gradient(ellipse at 20% 20%, rgba(230, 126, 34, 0.04), transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(243, 156, 18, 0.03), transparent 50%);
             position: relative;
         }
 
@@ -78,7 +88,7 @@
             content: '';
             position: fixed;
             inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e67e22' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 0;
         }
@@ -105,8 +115,8 @@
             flex-shrink: 0; 
             flex-wrap: wrap; 
             gap: 16px; 
-            border: 1px solid rgba(42, 82, 152, 0.25); 
-            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(230, 126, 34, 0.2); 
+            box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.03);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
@@ -119,7 +129,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-500), var(--primary-400), var(--accent-500), transparent);
+            background: linear-gradient(90deg, transparent, var(--accent-500), var(--accent-400), var(--accent-500), transparent);
             opacity: 0.7;
             animation: shimmer 3s ease-in-out infinite;
         }
@@ -144,7 +154,7 @@
 
         .header-logo .icon {
             font-size: 1.8rem;
-            filter: drop-shadow(0 0 20px rgba(42, 82, 152, 0.2));
+            filter: drop-shadow(0 0 20px rgba(230, 126, 34, 0.15));
         }
 
         .header-title {
@@ -157,7 +167,7 @@
             font-size: 1.3rem;
             font-weight: 900;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            background: linear-gradient(135deg, #f5ede4, var(--accent-400));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -177,12 +187,12 @@
             align-items: center;
             gap: 8px;
             padding: 4px 16px 4px 12px;
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.15);
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.2);
             border-radius: 40px;
             font-size: 0.6rem;
             font-weight: 700;
-            color: var(--success-400);
+            color: var(--success-500);
             letter-spacing: 0.5px;
         }
 
@@ -192,7 +202,7 @@
             border-radius: 50%;
             background: var(--success-500);
             animation: pulse-dot 2s infinite;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 10px rgba(39, 174, 96, 0.3);
         }
 
         @keyframes pulse-dot {
@@ -226,7 +236,7 @@
             left: 20%;
             right: 20%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-400), transparent);
+            background: linear-gradient(90deg, transparent, var(--accent-400), transparent);
             opacity: 0;
             transition: var(--transition);
         }
@@ -244,7 +254,7 @@
         .stat-badge.alerta-retraso { 
             border-color: var(--danger-500); 
             animation: pulse-border 1.5s infinite; 
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.08);
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.08);
         }
 
         .stat-badge.alerta-retraso .stat-number {
@@ -252,8 +262,8 @@
         }
 
         @keyframes pulse-border { 
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.1); } 
-            50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.1); } 
+            50% { box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); } 
         }
 
         .stat-number { 
@@ -265,10 +275,10 @@
             transition: var(--transition);
         }
 
-        .stat-badge:nth-child(1) .stat-number { color: var(--danger-400); }
-        .stat-badge:nth-child(2) .stat-number { color: var(--accent-400); }
-        .stat-badge:nth-child(3) .stat-number { color: var(--danger-400); }
-        .stat-badge:nth-child(4) .stat-number { color: var(--success-400); }
+        .stat-badge:nth-child(1) .stat-number { color: var(--danger-500); }
+        .stat-badge:nth-child(2) .stat-number { color: var(--accent-500); }
+        .stat-badge:nth-child(3) .stat-number { color: var(--danger-500); }
+        .stat-badge:nth-child(4) .stat-number { color: var(--success-500); }
 
         .stat-label { 
             font-size: 0.55rem; 
@@ -292,7 +302,7 @@
         .orders-grid::-webkit-scrollbar { width: 6px; }
         .orders-grid::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: 4px; }
         .orders-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; transition: var(--transition); }
-        .orders-grid::-webkit-scrollbar-thumb:hover { background: var(--primary-400); }
+        .orders-grid::-webkit-scrollbar-thumb:hover { background: var(--accent-500); }
 
         /* ORDER CARD */
         .order-card { 
@@ -332,7 +342,7 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+            background: linear-gradient(90deg, transparent, var(--accent-500), transparent);
             opacity: 0;
             transition: var(--transition);
         }
@@ -346,7 +356,7 @@
 
         .order-card.nuevo { 
             border-left-color: var(--danger-500); 
-            background: linear-gradient(135deg, var(--bg-card), rgba(239, 68, 68, 0.04));
+            background: linear-gradient(135deg, var(--bg-card), rgba(231, 76, 60, 0.04));
         }
 
         .order-card.nuevo::before {
@@ -355,17 +365,17 @@
             top: -6px;
             right: 14px;
             font-size: 1.1rem;
-            filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.2));
+            filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.2));
         }
 
         .order-card.preparando { 
             border-left-color: var(--accent-500);
-            background: linear-gradient(135deg, var(--bg-card), rgba(245, 158, 11, 0.03));
+            background: linear-gradient(135deg, var(--bg-card), rgba(230, 126, 34, 0.04));
         }
 
         .order-card.listo { 
             border-left-color: var(--success-500);
-            background: linear-gradient(135deg, var(--bg-card), rgba(16, 185, 129, 0.03));
+            background: linear-gradient(135deg, var(--bg-card), rgba(39, 174, 96, 0.04));
             opacity: 0.92;
         }
 
@@ -375,19 +385,19 @@
             top: -6px;
             right: 14px;
             font-size: 1.1rem;
-            filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.2));
+            filter: drop-shadow(0 0 10px rgba(39, 174, 96, 0.2));
         }
 
         .order-card.retrasado { 
             border-left-color: var(--danger-500) !important; 
-            box-shadow: 0 0 40px rgba(239, 68, 68, 0.06), var(--shadow-sm); 
+            box-shadow: 0 0 40px rgba(231, 76, 60, 0.08), var(--shadow-sm); 
             animation: cardPulse 2.5s infinite;
-            background: linear-gradient(135deg, var(--bg-card), rgba(239, 68, 68, 0.06));
+            background: linear-gradient(135deg, var(--bg-card), rgba(231, 76, 60, 0.06));
         }
 
         @keyframes cardPulse { 
-            0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.04), var(--shadow-sm); } 
-            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.1), var(--shadow-md); } 
+            0%, 100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.04), var(--shadow-sm); } 
+            50% { box-shadow: 0 0 40px rgba(231, 76, 60, 0.12), var(--shadow-md); } 
         }
 
         .order-card-content { 
@@ -446,27 +456,27 @@
 
         .badge-nuevo { 
             background: linear-gradient(135deg, var(--danger-500), var(--danger-600));
-            color: white; 
-            box-shadow: 0 2px 12px rgba(239, 68, 68, 0.25);
+            color: #fefcf8; 
+            box-shadow: 0 2px 12px rgba(231, 76, 60, 0.25);
         }
 
         .badge-preparando { 
             background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
-            color: white; 
-            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.2);
+            color: #fefcf8; 
+            box-shadow: 0 2px 12px rgba(230, 126, 34, 0.2);
         }
 
         .badge-listo { 
             background: linear-gradient(135deg, var(--success-500), var(--success-600));
-            color: white; 
-            box-shadow: 0 2px 12px rgba(16, 185, 129, 0.2);
+            color: #fefcf8; 
+            box-shadow: 0 2px 12px rgba(39, 174, 96, 0.2);
         }
 
         .badge-retrasado { 
             background: linear-gradient(135deg, var(--danger-500), var(--danger-600));
-            color: white; 
+            color: #fefcf8; 
             animation: badgeBlink 0.8s infinite; 
-            box-shadow: 0 2px 20px rgba(239, 68, 68, 0.35);
+            box-shadow: 0 2px 20px rgba(231, 76, 60, 0.35);
         }
 
         @keyframes badgeBlink { 
@@ -491,8 +501,8 @@
 
         .timer-container:hover { border-color: var(--border-light); }
         .timer-container.retrasado { 
-            background: rgba(239, 68, 68, 0.06); 
-            border-color: rgba(239, 68, 68, 0.2);
+            background: rgba(231, 76, 60, 0.06); 
+            border-color: rgba(231, 76, 60, 0.2);
         }
 
         .timer-label {
@@ -512,7 +522,7 @@
         }
 
         .timer-container.retrasado .timer-value { 
-            color: var(--danger-400); 
+            color: var(--danger-500); 
             animation: timerBlink 1s infinite;
         }
 
@@ -522,7 +532,7 @@
         }
 
         .timer-exceso {
-            color: var(--danger-400);
+            color: var(--danger-500);
             font-size: 0.65rem;
             margin-left: 6px;
             font-weight: 700;
@@ -550,21 +560,23 @@
             font-weight: 500;
         }
 
-        /* ITEMS */
+        /* ============================================ */
+        /* ITEMS - CON SABORES EN NUEVA LÍNEA          */
+        /* ============================================ */
+
         .order-items { 
             list-style: none; 
             margin-bottom: 4px; 
         }
 
-        .order-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 7px 12px; 
-            background: var(--bg-secondary); 
-            border-radius: var(--radius); 
-            margin-bottom: 4px; 
-            font-size: 0.82rem; 
+        .order-item {
+            display: flex;
+            flex-direction: column;
+            padding: 7px 12px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            margin-bottom: 4px;
+            font-size: 0.82rem;
             transition: var(--transition-fast);
             border-left: 2px solid transparent;
         }
@@ -572,43 +584,91 @@
         .order-item:hover {
             background: var(--bg-elevated);
             border-left-color: var(--accent-400);
-            transform: translateX(2px);
         }
 
-        .item-nombre { 
-            font-weight: 600; 
-            color: var(--text-primary); 
+        /* Fila superior: nombre + cantidad */
+        .order-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .order-item .item-nombre {
+            font-weight: 600;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 6px;
             flex-wrap: wrap;
         }
 
-        .item-nombre .emoji { font-size: 1rem; }
-
-        /* BADGE DE SABOR EN COCINA */
-        .sabor-badge-cocina {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
-            color: var(--accent-300);
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            white-space: nowrap;
-            letter-spacing: 0.3px;
+        .order-item .item-nombre .emoji {
+            font-size: 1rem;
         }
 
-        .item-cantidad { 
-            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-            color: white; 
-            padding: 1px 10px; 
-            border-radius: 40px; 
-            font-weight: 800; 
-            font-size: 0.65rem; 
+        .order-item .item-cantidad {
+            background: linear-gradient(135deg, var(--accent-600), var(--accent-500));
+            color: #fefcf8;
+            padding: 1px 10px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 0.65rem;
             min-width: 28px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(42, 82, 152, 0.2);
+            box-shadow: 0 2px 8px rgba(230, 126, 34, 0.2);
+            flex-shrink: 0;
+        }
+
+        /* ============================================ */
+        /* SABORES - FORMATO DISCRETO EN NUEVA LÍNEA   */
+        /* ============================================ */
+
+        /* Contenedor de sabores (nueva línea) */
+        .order-item .sabores-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px 6px;
+            margin-top: 3px;
+            padding-left: 28px;
+            width: 100%;
+        }
+
+        /* Badge de sabor - ESTILO DISCRETO */
+        .order-item .sabor-badge-cocina {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 400;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            transition: var(--transition-fast);
+        }
+
+        .order-item .sabor-badge-cocina:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+        }
+
+        /* Separador entre sabores (coma) */
+        .order-item .sabor-badge-cocina:not(:last-child)::after {
+            content: ',';
+            color: var(--text-muted);
+            opacity: 0.3;
+            margin-left: 1px;
+        }
+
+        /* Quitar el emoji de pollo de los sabores */
+        .order-item .sabor-badge-cocina .sabor-emoji {
+            display: none;
+        }
+
+        .order-item .sabor-badge-cocina .emoji {
+            display: none;
         }
 
         /* ACTIONS */
@@ -641,7 +701,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
             opacity: 0;
             transition: var(--transition);
         }
@@ -649,27 +709,27 @@
         .btn-action:hover::after { opacity: 1; }
         .btn-action:hover { 
             transform: translateY(-2px); 
-            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
         }
         .btn-action:active { transform: scale(0.96); }
 
         .btn-start { 
             background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
-            color: white; 
+            color: #fefcf8; 
         }
-        .btn-start:hover { box-shadow: 0 4px 24px rgba(245, 158, 11, 0.3); }
+        .btn-start:hover { box-shadow: 0 4px 24px rgba(230, 126, 34, 0.3); }
 
         .btn-ready { 
             background: linear-gradient(135deg, var(--success-500), var(--success-600));
-            color: white; 
+            color: #fefcf8; 
         }
-        .btn-ready:hover { box-shadow: 0 4px 24px rgba(16, 185, 129, 0.3); }
+        .btn-ready:hover { box-shadow: 0 4px 24px rgba(39, 174, 96, 0.3); }
 
         .btn-deliver { 
-            background: linear-gradient(135deg, var(--primary-400), var(--primary-500));
-            color: white; 
+            background: linear-gradient(135deg, var(--accent-400), var(--accent-500));
+            color: #fefcf8; 
         }
-        .btn-deliver:hover { box-shadow: 0 4px 24px rgba(42, 82, 152, 0.3); }
+        .btn-deliver:hover { box-shadow: 0 4px 24px rgba(243, 156, 18, 0.3); }
 
         .btn-reject { 
             background: var(--bg-elevated); 
@@ -678,9 +738,9 @@
         }
         .btn-reject:hover {
             background: var(--danger-500);
-            color: white;
+            color: #fefcf8;
             border-color: var(--danger-500);
-            box-shadow: 0 4px 24px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 4px 24px rgba(231, 76, 60, 0.3);
         }
 
         /* EMPTY STATE */
@@ -733,14 +793,14 @@
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(10px);
-            background: rgba(22, 45, 77, 0.9);
+            background: rgba(26, 22, 20, 0.9);
         }
 
         .sound-btn:hover { 
             background: var(--accent-500); 
             border-color: var(--accent-500);
             transform: scale(1.08) rotate(-5deg);
-            box-shadow: 0 4px 32px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 32px rgba(230, 126, 34, 0.3);
         }
         .sound-btn:active { transform: scale(0.92); }
 
@@ -761,7 +821,7 @@
             box-shadow: var(--shadow-lg); 
             border-left: 4px solid var(--accent-500);
             backdrop-filter: blur(16px);
-            background: rgba(15, 31, 58, 0.95);
+            background: rgba(20, 18, 18, 0.95);
             border: 1px solid var(--border);
             max-width: 90%;
         }
@@ -818,7 +878,15 @@
             .timer-value { font-size: 0.95rem; }
             .customer-info-mini { font-size: 0.6rem; padding: 6px 10px; gap: 8px; }
             .order-card.nuevo::before, .order-card.listo::before { font-size: 1rem; top: -4px; right: 10px; }
-            .sabor-badge-cocina { font-size: 0.55rem; padding: 1px 8px; }
+            
+            .order-item .sabores-container {
+                padding-left: 22px;
+                gap: 2px 4px;
+            }
+            .order-item .sabor-badge-cocina {
+                font-size: 0.5rem;
+                padding: 0 6px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -845,7 +913,15 @@
             .empty-state h2 { font-size: 1.1rem; }
             .sound-btn { width: 38px; height: 38px; font-size: 0.9rem; bottom: 12px; right: 12px; }
             .alerta-flotante { padding: 8px 16px; font-size: 0.65rem; top: 8px; border-radius: 20px; }
-            .sabor-badge-cocina { font-size: 0.5rem; padding: 1px 6px; }
+            
+            .order-item .sabores-container {
+                padding-left: 18px;
+                gap: 2px 3px;
+            }
+            .order-item .sabor-badge-cocina {
+                font-size: 0.45rem;
+                padding: 0 4px;
+            }
         }
     </style>
 </head>
@@ -1110,16 +1186,62 @@
             const tiempo = calcularTiempoTranscurrido(pedidosTimers[pid] || Date.now());
             const retrasado = tiempo.retrasado && p.estado !== 'listo';
             
-            const itemsHTML = (p.items || []).map(i => `
-                <li class="order-item">
-                    <span class="item-nombre">
-                        <span class="emoji">${i.emoji || '🍽️'}</span>
-                        ${i.nombre}
-                        ${i.sabor ? `<span class="sabor-badge-cocina">🍗 ${i.sabor}</span>` : ''}
-                    </span>
-                    <span class="item-cantidad">x${i.cantidad}</span>
-                </li>
-            `).join('');
+            const itemsHTML = (p.items || []).map(i => {
+                // Procesar sabores - separar por coma si son múltiples
+                let saboresHTML = '';
+                let tieneMultiplesSabores = false;
+                
+                if (i.sabor) {
+                    // Separar sabores por coma
+                    const sabores = i.sabor.split(',').map(s => s.trim());
+                    if (sabores.length > 1) {
+                        tieneMultiplesSabores = true;
+                        // Múltiples sabores - mostrar en nueva línea
+                        saboresHTML = `
+                            <div class="sabores-container">
+                                ${sabores.map(sabor => 
+                                    `<span class="sabor-badge-cocina">${sabor}</span>`
+                                ).join('')}
+                            </div>
+                        `;
+                    } else {
+                        // Un solo sabor - mostrarlo junto al nombre
+                        saboresHTML = `
+                            <span class="sabor-badge-cocina">${sabores[0]}</span>
+                        `;
+                    }
+                }
+                
+                // Si hay sabores múltiples, usar estructura con top y container
+                if (tieneMultiplesSabores) {
+                    return `
+                        <li class="order-item">
+                            <div class="order-item-top">
+                                <span class="item-nombre">
+                                    <span class="emoji">${i.emoji || '🍽️'}</span>
+                                    ${i.nombre}
+                                </span>
+                                <span class="item-cantidad">x${i.cantidad}</span>
+                            </div>
+                            ${saboresHTML}
+                        </li>
+                    `;
+                } else {
+                    // Un solo sabor o sin sabor
+                    return `
+                        <li class="order-item">
+                            <div class="order-item-top">
+                                <span class="item-nombre">
+                                    <span class="emoji">${i.emoji || '🍽️'}</span>
+                                    ${i.nombre}
+                                    ${i.sabor && i.sabor.split(',').length === 1 ? saboresHTML : ''}
+                                </span>
+                                <span class="item-cantidad">x${i.cantidad}</span>
+                            </div>
+                        </li>
+                    `;
+                }
+            }).join('');
             
             let tipoDisplay = '';
             if (p.cliente?.tipoPedido === 'mesa') {
@@ -1173,12 +1295,11 @@
         }
 
         // ============================================ //
-        // ACTUALIZACIÓN - CORREGIDA                    //
+        // ACTUALIZACIÓN                                //
         // ============================================ //
         function actualizarGridDiferencial(nuevosPedidos) {
             const grid = document.getElementById('ordersGrid');
             
-            // Si no hay pedidos, mostrar estado vacío
             if (nuevosPedidos.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state">
@@ -1193,18 +1314,15 @@
                 return;
             }
             
-            // Si hay pedidos, eliminar empty state si existe
             const emptyState = grid.querySelector('.empty-state');
             if (emptyState) {
                 grid.innerHTML = '';
                 orderElementsCache.clear();
             }
             
-            // Crear mapa de pedidos nuevos
             const nuevosMap = new Map();
             nuevosPedidos.forEach(p => nuevosMap.set(String(p.id), p));
             
-            // Eliminar tarjetas que ya no existen
             grid.querySelectorAll('.order-card').forEach(card => {
                 const id = card.getAttribute('data-id');
                 if (id && !nuevosMap.has(id)) {
@@ -1213,33 +1331,22 @@
                 }
             });
             
-            // Actualizar o crear tarjetas
             nuevosPedidos.forEach((pedido, index) => {
                 const id = String(pedido.id);
                 const existingCard = orderElementsCache.get(id);
                 
-                // Verificar que la tarjeta en caché sigue en el DOM
-                if (existingCard && !existingCard.parentNode) {
-                    orderElementsCache.delete(id);
-                }
-                
-                const cardInCache = orderElementsCache.get(id);
-                
-                if (cardInCache && cardInCache.parentNode) {
-                    // Actualizar tarjeta existente
+                if (existingCard && existingCard.parentNode) {
                     const nuevoHTML = generarCardHTML(pedido, index);
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = nuevoHTML;
                     const nuevoElemento = tempDiv.firstElementChild;
-                    actualizarCardDiferencial(cardInCache, nuevoElemento);
+                    actualizarCardDiferencial(existingCard, nuevoElemento);
                 } else {
-                    // Crear nueva tarjeta
                     const nuevoHTML = generarCardHTML(pedido, index);
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = nuevoHTML;
                     const nuevoElemento = tempDiv.firstElementChild;
                     
-                    // Insertar en la posición correcta
                     const children = Array.from(grid.children);
                     const referencia = children[index] || null;
                     
@@ -1279,14 +1386,13 @@
         }
 
         // ============================================ //
-        // RENDER PRINCIPAL - CORREGIDO                 //
+        // RENDER PRINCIPAL                             //
         // ============================================ //
         async function renderizar() {
             try {
                 const pedidos = await getPedidosOnline();
                 const idsActuales = pedidos.map(p => String(p.id));
                 
-                // Limpiar timers huérfanos
                 Object.keys(pedidosTimers).forEach(id => {
                     if (!idsActuales.includes(id)) {
                         detenerAlarma(id);
@@ -1297,10 +1403,8 @@
                 });
                 guardarTimers();
                 
-                // Filtrar pedidos activos
                 const activos = pedidos.filter(p => ['nuevo', 'preparando', 'listo'].includes(p.estado));
                 
-                // Verificar nuevos pedidos
                 activos.forEach(p => {
                     const pid = String(p.id);
                     if (p.estado === 'nuevo' && !nuevosNotificados[pid]) {
@@ -1312,7 +1416,6 @@
                     }
                 });
                 
-                // Inicializar timers
                 activos.forEach(p => {
                     const pid = String(p.id);
                     if (!pedidosTimers[pid] && p.estado !== 'listo') {
@@ -1321,12 +1424,10 @@
                     }
                 });
                 
-                // Actualizar estadísticas
                 document.getElementById('pendientesCount').textContent = activos.filter(p => p.estado === 'nuevo').length;
                 document.getElementById('preparandoCount').textContent = activos.filter(p => p.estado === 'preparando').length;
                 document.getElementById('listosCount').textContent = activos.filter(p => p.estado === 'listo').length;
                 
-                // Verificar retrasos
                 const retrasadosActuales = {};
                 Object.keys(pedidosTimers).forEach(id => {
                     const timestamp = pedidosTimers[id];
@@ -1342,7 +1443,6 @@
                     }
                 });
                 
-                // Limpiar retrasos
                 Object.keys(retrasosNotificados).forEach(id => {
                     if (!retrasadosActuales[id]) {
                         delete retrasosNotificados[id];
@@ -1360,7 +1460,6 @@
                     retrasadosBadge.classList.remove('alerta-retraso');
                 }
                 
-                // Ordenar y actualizar grid
                 activos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
                 actualizarGridDiferencial(activos);
                 

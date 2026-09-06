@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0b0a0a">
+    <title>TITO BURGER · Ventas Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="ventas.css">
+</head>
+<body>
+    <div class="dashboard-premium">
+        
+        <!-- HEADER -->
+        <header class="header-premium">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-fire">🔥</span>
+                    <span class="logo-text">TITO<span>BURGER</span></span>
+                </div>
+                <div class="header-status">
+                    <span class="dot"></span>
+                    <span>En línea</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-date" id="fechaActual"></div>
+                <div class="header-time" id="horaActual"></div>
+            </div>
+        </header>
+
+        <!-- MÉTRICAS PRINCIPALES -->
+        <div class="metricas-grid">
+            <div class="metrica-card">
+                <div class="metrica-icono" style="background:linear-gradient(135deg,#e67e22,#f39c12);">
+                    <span>💰</span>
+                </div>
+                <div class="metrica-info">
+                    <span class="metrica-label">Ventas Hoy</span>
+                    <span class="metrica-valor" id="ventasHoy">$0.00</span>
+                </div>
+                <div class="metrica-tendencia up" id="tendenciaVentas">
+                    <span>↑ 0%</span>
+                </div>
+            </div>
+
+            <div class="metrica-card">
+                <div class="metrica-icono" style="background:linear-gradient(135deg,#27ae60,#2ecc71);">
+                    <span>📦</span>
+                </div>
+                <div class="metrica-info">
+                    <span class="metrica-label">Pedidos</span>
+                    <span class="metrica-valor" id="totalPedidos">0</span>
+                </div>
+                <div class="metrica-tendencia up" id="tendenciaPedidos">
+                    <span>↑ 0%</span>
+                </div>
+            </div>
+
+            <div class="metrica-card">
+                <div class="metrica-icono" style="background:linear-gradient(135deg,#3498db,#5dade2);">
+                    <span>🪑</span>
+                </div>
+                <div class="metrica-info">
+                    <span class="metrica-label">En Mesa</span>
+                    <span class="metrica-valor" id="ventasMesa">$0.00</span>
+                </div>
+                <div class="metrica-tendencia up" id="tendenciaMesa">
+                    <span>↑ 0%</span>
+                </div>
+            </div>
+
+            <div class="metrica-card">
+                <div class="metrica-icono" style="background:linear-gradient(135deg,#9b59b6,#af7ac5);">
+                    <span>🛵</span>
+                </div>
+                <div class="metrica-info">
+                    <span class="metrica-label">Para Llevar</span>
+                    <span class="metrica-valor" id="ventasLlevar">$0.00</span>
+                </div>
+                <div class="metrica-tendencia down" id="tendenciaLlevar">
+                    <span>↓ 0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICO Y TOP PRODUCTOS -->
+        <div class="dashboard-grid">
+            
+            <!-- GRÁFICO DE VENTAS -->
+            <div class="card grafico-card">
+                <div class="card-header">
+                    <h3>📊 Ventas de la Semana</h3>
+                    <div class="card-actions">
+                        <button class="btn-chart active" onclick="cambiarGrafico(7)">7 días</button>
+                        <button class="btn-chart" onclick="cambiarGrafico(15)">15 días</button>
+                        <button class="btn-chart" onclick="cambiarGrafico(30)">30 días</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ventasChart"></canvas>
+                </div>
+            </div>
+
+            <!-- TOP PRODUCTOS -->
+            <div class="card top-card">
+                <div class="card-header">
+                    <h3>🏆 Más Vendidos</h3>
+                    <span class="card-badge">Hoy</span>
+                </div>
+                <div class="top-list" id="topProductos">
+                    <!-- Generado por JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RESUMEN DEL DÍA -->
+        <div class="resumen-dia">
+            <div class="resumen-item">
+                <span class="resumen-icon">🕐</span>
+                <div>
+                    <span class="resumen-label">Hora pico</span>
+                    <span class="resumen-valor" id="horaPico">--:--</span>
+                </div>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-icon">📈</span>
+                <div>
+                    <span class="resumen-label">Ticket promedio</span>
+                    <span class="resumen-valor" id="ticketPromedio">$0.00</span>
+                </div>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-icon">⭐</span>
+                <div>
+                    <span class="resumen-label">Producto más vendido</span>
+                    <span class="resumen-valor" id="productoTop">--</span>
+                </div>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-icon">💳</span>
+                <div>
+                    <span class="resumen-label">Total ventas</span>
+                    <span class="resumen-valor" id="totalGeneral">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLA DE VENTAS RECIENTES -->
+        <div class="card tabla-card">
+            <div class="card-header">
+                <h3>📋 Últimas Ventas</h3>
+                <button class="btn-export" onclick="exportarVentas()">📊 Exportar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Hora</th>
+                            <th>Tipo</th>
+                            <th>Cliente</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVentas">
+                        <!-- Generado por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BOTÓN ACTUALIZAR -->
+        <button class="btn-flotante" onclick="actualizarDashboard()">
+            <span>🔄</span> Actualizar
+        </button>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="ventas.js"></script>
+</body>
+</html>

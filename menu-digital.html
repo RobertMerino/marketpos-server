@@ -3,142 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TITO BURGER · Menú</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#0b0a0a">
+    <title>Tito's Restaurant · Menú Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="menu-digital.css">
 </head>
 <body>
-    <div class="app-premium">
-        
-        <!-- HEADER HERO -->
-        <div class="hero-header">
-            <div class="hero-content">
-                <div class="hero-badge">🔥 AL CARBÓN 🔥</div>
-                <h1 class="hero-title">TITO BURGER</h1>
-                <p class="hero-subtitle">Hamburguesas · Cortes · Parrilla</p>
-                <div class="hero-info">
-                    <span>🕐 10-30 min</span>
-                    <span>⭐ 4.8</span>
-                    <span>📍 Av. Principal</span>
+    <!-- ============================================ -->
+    <!-- PANTALLA DE BIENVENIDA                        -->
+    <!-- ============================================ -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-bg"></div>
+        <div class="welcome-content">
+            <div class="welcome-logo">
+                <div class="welcome-fire">🔥</div>
+            </div>
+            <h1 class="welcome-title">TITO'S <span>RESTAURANT</span></h1>
+            <p class="welcome-subtitle">Hamburguesas · Cortes · Parrilla</p>
+            <div class="welcome-divider">
+                <span class="divider-line"></span>
+                <span class="divider-icon">✦</span>
+                <span class="divider-line"></span>
+            </div>
+            <p class="welcome-desc">Bienvenido a nuestra carta digital.<br>Descubre el auténtico sabor al carbón.</p>
+            <div class="welcome-buttons">
+                <button class="welcome-btn primary" onclick="showMenu()">
+                    <span>📋</span> VER MENÚ
+                </button>
+                <button class="welcome-btn secondary" onclick="openOrderForm()">
+                    <span>📲</span> REALIZAR PEDIDO
+                </button>
+            </div>
+            <div class="welcome-footer">
+                <span>🔥 Al carbón · 100% fresco</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FORMULARIO DE PEDIDO                         -->
+    <!-- ============================================ -->
+    <div class="order-form-overlay" id="orderFormOverlay">
+        <div class="order-form-modal">
+            <button class="order-form-close" onclick="closeOrderForm()">✕</button>
+            
+            <div class="order-form-header">
+                <div class="order-form-icon">📝</div>
+                <h2>Realizar Pedido</h2>
+                <p>Completa tus datos para comenzar</p>
+            </div>
+
+            <form class="order-form" id="orderForm" onsubmit="submitOrderForm(event)">
+                <!-- Tipo de pedido -->
+                <div class="form-section">
+                    <label class="form-label">¿Cómo quieres tu pedido?</label>
+                    <div class="form-type-grid">
+                        <div class="form-type-option active" data-type="mesa" onclick="selectOrderType('mesa', this)">
+                            <span>🪑</span>
+                            <strong>En Mesa</strong>
+                            <small>Come en el restaurante</small>
+                        </div>
+                        <div class="form-type-option" data-type="llevar" onclick="selectOrderType('llevar', this)">
+                            <span>🛵</span>
+                            <strong>Para Llevar</strong>
+                            <small>Pide y pasa a retirar</small>
+                        </div>
+                        <div class="form-type-option" data-type="delivery" onclick="selectOrderType('delivery', this)">
+                            <span>🚀</span>
+                            <strong>Delivery</strong>
+                            <small>Llevamos a tu casa</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos dinámicos -->
+                <div class="form-fields" id="formFields">
+                    <div class="form-group" id="mesaGroup">
+                        <label class="form-label">Número de mesa</label>
+                        <input type="number" id="formMesa" placeholder="Ej: 5" class="form-input" min="1" max="20">
+                    </div>
+                    <div class="form-group" id="nombreGroup" style="display:none;">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" id="formNombre" placeholder="Tu nombre" class="form-input">
+                    </div>
+                    <div class="form-group" id="telefonoGroup" style="display:none;">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" id="formTelefono" placeholder="099 999 9999" class="form-input">
+                    </div>
+                    <div class="form-group" id="direccionGroup" style="display:none;">
+                        <label class="form-label">Dirección de entrega</label>
+                        <input type="text" id="formDireccion" placeholder="Calle, número, referencia" class="form-input">
+                    </div>
+                </div>
+
+                <button type="submit" class="form-submit-btn">
+                    🍔 IR AL MENÚ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HEADER FIJO                                  -->
+    <!-- ============================================ -->
+    <header class="header" id="header" style="display:none;">
+        <nav class="nav">
+            <a href="#" class="logo" onclick="showWelcome()">
+                <div class="logo-fire">🔥</div>
+                TITO´S<span>RESTAURANT</span>
+            </a>
+            <button class="cart-btn" id="openCart" onclick="goToCart()">
+                🛒
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- HERO CON IMAGEN DE FONDO DIFUMINADA          -->
+    <!-- ============================================ -->
+    <section class="hero-small" id="heroSection" style="display:none;">
+        <div class="hero-bg"></div>
+        <div class="hero-small-content">
+            <div class="hero-badge">🔥 AL CARBÓN 🔥</div>
+            <h1>MENÚ <span>DIGITAL</span></h1>
+            <p id="clienteSaludo">Elige lo que más se te antoje</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- TIPO DE PEDIDO (barra superior)              -->
+    <!-- ============================================ -->
+    <section class="order-section" id="orderSection" style="display:none;">
+        <div class="container">
+            <div class="order-type-mini">
+                <span class="order-type-label">📋 Pedido:</span>
+                <span class="order-type-badge" id="tipoPedidoBadge">🪑 En Mesa</span>
+                <span class="order-type-badge" id="clienteBadge">👤 Cliente</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CATEGORÍAS Y MENÚ                            -->
+    <!-- ============================================ -->
+    <section class="menu-section" id="menuSection" style="display:none;">
+        <div class="container">
+            <div class="categories" id="categoriesContainer">
+                <!-- Generado por JS -->
+            </div>
+
+            <div class="menu-grid" id="productsGrid">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CARRITO FLOTANTE                             -->
+    <!-- ============================================ -->
+    <div class="cart-float" id="cartFloat" onclick="goToCart()" style="display:none;">
+        <span class="cart-float-count" id="cartFloatCount">0</span>
+        <span>Ver pedido</span>
+        <span class="cart-float-total" id="cartFloatTotal">$0.00</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MODAL CARRITO                                -->
+    <!-- ============================================ -->
+    <div class="cart-overlay" id="cartOverlay">
+        <div class="cart-panel">
+            <div class="cart-header">
+                <div>
+                    <strong>Tu pedido</strong>
+                    <div style="font-size:11px;color:#777">TITO´S RESTAURANT</div>
+                </div>
+                <button class="close-cart" id="closeCart">✕</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <div class="empty-cart">
+                    <div>🍽️</div>
+                    <strong>Tu carrito está vacío</strong>
+                    <p style="font-size:13px;margin-top:5px;color:var(--text-light);">Agrega algo delicioso.</p>
                 </div>
             </div>
-        </div>
-
-        <!-- TIPO DE PEDIDO -->
-        <div class="order-type-section">
-            <h3 class="section-label">¿Cómo quieres tu pedido?</h3>
-            <div class="type-selector">
-                <button class="type-option active" onclick="selectType('mesa', this)">
-                    <span class="type-icon">🪑</span>
-                    <span class="type-name">En Mesa</span>
-                </button>
-                <button class="type-option" onclick="selectType('llevar', this)">
-                    <span class="type-icon">🛵</span>
-                    <span class="type-name">Recoger</span>
-                </button>
-                <button class="type-option" onclick="selectType('delivery', this)">
-                    <span class="type-icon">🚀</span>
-                    <span class="type-name">Delivery</span>
-                </button>
-            </div>
-            <div class="type-fields" id="typeFields">
-                <input type="number" id="typeMesa" placeholder="Número de mesa" class="input-premium">
-                <input type="text" id="typeNombre" placeholder="Su nombre" class="input-premium" style="display:none;">
-                <input type="tel" id="typeTelefono" placeholder="Teléfono" class="input-premium" style="display:none;">
-                <input type="text" id="typeDireccion" placeholder="Dirección de entrega" class="input-premium" style="display:none;">
-            </div>
-        </div>
-
-        <!-- CATEGORÍAS -->
-        <div class="categories-row" id="categoriesContainer"></div>
-
-        <!-- PRODUCTOS -->
-        <div class="products-feed" id="productsGrid"></div>
-
-        <!-- CARRITO FLOTANTE -->
-        <div class="cart-float" id="cartFloat" onclick="goToCart()" style="display:none;">
-            <span class="cart-float-count" id="cartFloatCount">0</span>
-            <span>Ver pedido</span>
-            <span class="cart-float-total" id="cartFloatTotal">$0.00</span>
-        </div>
-
-        <!-- MODAL CARRITO -->
-        <div class="modal-overlay" id="modalCart" style="display:none;">
-            <div class="modal-cart-premium">
-                <button onclick="closeCart()" class="modal-close-btn">✕</button>
-                <h3>🔥 Tu Pedido</h3>
-                <div id="cartItems"></div>
-                <div class="cart-total-line">
-                    <span>TOTAL</span>
+            <div class="cart-footer">
+                <div class="total-line">
+                    <span>Total</span>
                     <strong id="cartTotal">$0.00</strong>
                 </div>
-                <button class="btn-confirm" onclick="confirmOrder()">CONFIRMAR PEDIDO</button>
+                <button class="checkout-btn" onclick="confirmOrder()">📲 CONFIRMAR PEDIDO</button>
             </div>
         </div>
+    </div>
 
-        <!-- MODAL CONFIRMACIÓN -->
-        <div class="modal-overlay" id="modalConfirm" style="display:none;">
-            <div class="modal-confirm-premium">
-                <span class="confirm-icon">🔥</span>
-                <h2>¡Pedido Recibido!</h2>
-                <p>Tu pedido está siendo preparado</p>
-                <div id="confirmDetails"></div>
-                <button class="btn-confirm" onclick="closeConfirm()">ENTENDIDO</button>
+    <!-- ============================================ -->
+    <!-- MODAL SABORES                                -->
+    <!-- ============================================ -->
+    <div class="modal-sabores" id="modalSabores" style="display:none;">
+        <div class="modal-sabores-content">
+            <div class="modal-header">
+                <h3>🍗 Selecciona los sabores</h3>
+                <button class="close-modal" onclick="closeSaborModal()">&times;</button>
+            </div>
+            <div class="sabores-info" id="saboresInfo"></div>
+            <div class="sabores-grid" id="saboresGrid">
+                <div class="sabor-card" data-sabor="BBQ" data-id="1">
+                    <span class="sabor-emoji">🍖</span>
+                    <span class="sabor-nombre">BBQ</span>
+                    <span class="sabor-check">✓</span>
+                </div>
+                <div class="sabor-card" data-sabor="BBQ Picante" data-id="2">
+                    <span class="sabor-emoji">🌶️</span>
+                    <span class="sabor-nombre">BBQ Picante</span>
+                    <span class="sabor-check">✓</span>
+                </div>
+                <div class="sabor-card" data-sabor="Mostaza y Miel" data-id="3">
+                    <span class="sabor-emoji">🍯</span>
+                    <span class="sabor-nombre">Mostaza y Miel</span>
+                    <span class="sabor-check">✓</span>
+                </div>
+                <div class="sabor-card" data-sabor="Maracuyá" data-id="4">
+                    <span class="sabor-emoji">🥭</span>
+                    <span class="sabor-nombre">Maracuyá</span>
+                    <span class="sabor-check">✓</span>
+                </div>
+                <div class="sabor-card" data-sabor="Parmesano" data-id="5">
+                    <span class="sabor-emoji">🧀</span>
+                    <span class="sabor-nombre">Parmesano</span>
+                    <span class="sabor-check">✓</span>
+                </div>
+            </div>
+            <div class="selected-sabores" id="selectedSaboresContainer">
+                <label>📋 Sabores seleccionados:</label>
+                <div id="selectedSaboresList"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancelar" onclick="closeSaborModal()">Cancelar</button>
+                <button class="btn-aceptar" onclick="confirmarSabores()">Aceptar ✓</button>
             </div>
         </div>
     </div>
-<!-- Modal de selección de sabores para alitas -->
-<div id="modalSabores" class="modal-sabores" style="display: none;">
-    <div class="modal-sabores-content">
-        <div class="modal-header">
-            <h3>🍗 Selecciona los sabores para tus alitas</h3>
-            <button class="close-modal" onclick="closeSaborModal()">&times;</button>
-        </div>
-        
-        <div class="sabores-grid" id="saboresGrid">
-            <div class="sabor-card" data-sabor="BBQ" data-id="1">
-                <div class="sabor-emoji">🍖</div>
-                <div class="sabor-nombre">BBQ</div>
-                <div class="sabor-desc">Clásica barbacoa ahumada</div>
-                <div class="sabor-check">✓</div>
+
+    <!-- ============================================ -->
+    <!-- MODAL DE CONFIRMACIÓN DE PEDIDO              -->
+    <!-- ============================================ -->
+    <div class="modal-confirmacion" id="modalConfirmacion">
+        <div class="modal-confirmacion-content">
+            <div class="confirmacion-icon">🔥</div>
+            <h2>¡Gracias por tu pedido!</h2>
+            <p>Tu pedido está siendo preparado con el mejor sabor al carbón.</p>
+            <div class="confirmacion-detalles" id="confirmacionDetalles">
+                <div class="detalle-item">
+                    <span>📋 Pedido:</span>
+                    <span id="confirmTipo">🪑 En Mesa</span>
+                </div>
+                <div class="detalle-item">
+                    <span>👤 Cliente:</span>
+                    <span id="confirmCliente">Cliente</span>
+                </div>
+                <div class="detalle-item">
+                    <span>🍔 Items:</span>
+                    <span id="confirmItems">0</span>
+                </div>
+                <div class="detalle-item total">
+                    <span>💰 Total:</span>
+                    <span id="confirmTotal">$0.00</span>
+                </div>
             </div>
-            <div class="sabor-card" data-sabor="BBQ Picante" data-id="2">
-                <div class="sabor-emoji">🌶️</div>
-                <div class="sabor-nombre">BBQ Picante</div>
-                <div class="sabor-desc">Barbacoa con toque picante</div>
-                <div class="sabor-check">✓</div>
-            </div>
-            <div class="sabor-card" data-sabor="Mostaza y Miel" data-id="3">
-                <div class="sabor-emoji">🍯</div>
-                <div class="sabor-nombre">Mostaza y Miel</div>
-                <div class="sabor-desc">Dulce y suave</div>
-                <div class="sabor-check">✓</div>
-            </div>
-            <div class="sabor-card" data-sabor="Maracuyá" data-id="4">
-                <div class="sabor-emoji">🥭</div>
-                <div class="sabor-nombre">Maracuyá</div>
-                <div class="sabor-desc">Agridulce tropical</div>
-                <div class="sabor-check">✓</div>
-            </div>
-            <div class="sabor-card" data-sabor="Parmesano" data-id="5">
-                <div class="sabor-emoji">🧀</div>
-                <div class="sabor-nombre">Parmesano</div>
-                <div class="sabor-desc">Queso parmesano crujiente</div>
-                <div class="sabor-check">✓</div>
-            </div>
-        </div>
-        
-        <div class="selected-sabores">
-            <label>📋 Sabores seleccionados:</label>
-            <div id="selectedSaboresList" class="selected-list"></div>
-        </div>
-        
-        <div class="modal-buttons">
-            <button class="btn-cancelar" onclick="closeSaborModal()">Cancelar</button>
-            <button class="btn-aceptar" onclick="confirmarSabores()">Aceptar ✓</button>
+            <button class="btn-confirmacion" onclick="cerrarConfirmacion()">
+                ✅ ¡Excelente!
+            </button>
+            <p class="confirmacion-sub">TITO'S RESTAURANT · Hamburguesas al Carbón</p>
         </div>
     </div>
-</div>
+
     <script src="menu-digital.js"></script>
 </body>
 </html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0b0a0a">
+    <title>TITO BURGER · Dashboard Producción</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="dashboard-app">
+        
+        <!-- HEADER -->
+        <div class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-fire">🔥</span>
+                    <span class="logo-text">TITO<span>BURGER</span></span>
+                </div>
+                <div class="header-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Producción en línea</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-date" id="currentDate"></div>
+                <div class="header-time" id="currentTime"></div>
+                <button class="btn-refresh" onclick="actualizarDashboard()">🔄</button>
+            </div>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalProductos">0</span>
+                    <span class="stat-label">Total Productos</span>
+                </div>
+                <div class="stat-trend up" id="trendTotal">
+                    <span>↑ 0%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏷️</div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalUnidades">0</span>
+                    <span class="stat-label">Unidades en Stock</span>
+                </div>
+                <div class="stat-trend up" id="trendUnidades">
+                    <span>↑ 0%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-info">
+                    <span class="stat-number" id="totalProduccionHoy">0</span>
+                    <span class="stat-label">Producido Hoy</span>
+                </div>
+                <div class="stat-trend up" id="trendHoy">
+                    <span>↑ 0%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-info">
+                    <span class="stat-number" id="ultimaActualizacion">--</span>
+                    <span class="stat-label">Última Actualización</span>
+                </div>
+                <div class="stat-trend">
+                    <span>🔄</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICOS Y SECCIONES -->
+        <div class="dashboard-grid">
+            
+            <!-- GRÁFICO DE PRODUCCIÓN -->
+            <div class="card chart-card">
+                <div class="card-header">
+                    <h3>📊 Producción por Producto</h3>
+                    <div class="card-actions">
+                        <button class="btn-chart active" data-period="hoy">Hoy</button>
+                        <button class="btn-chart" data-period="semana">Semana</button>
+                        <button class="btn-chart" data-period="mes">Mes</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="produccionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- PRODUCTOS EN STOCK -->
+            <div class="card top-products">
+                <div class="card-header">
+                    <h3>🏷️ Stock de Productos</h3>
+                    <span class="card-badge">Inventario</span>
+                </div>
+                <div class="top-products-list" id="stockProducts">
+                    <!-- Generado por JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TABLA DE MOVIMIENTOS -->
+        <div class="card production-table">
+            <div class="card-header">
+                <h3>📋 Movimientos de Inventario</h3>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn-add-production" onclick="abrirModalProduccion()">
+                        ➕ Agregar Stock
+                    </button>
+                    <button class="btn-add-production btn-secondary" onclick="abrirModalConsumo()">
+                        ➖ Consumir Stock
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Tipo</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="movimientosTableBody">
+                        <!-- Generado por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- MODAL AGREGAR PRODUCCIÓN (STOCK)             -->
+        <!-- ============================================ -->
+        <div class="modal-overlay" id="modalProduccion" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>➕ Agregar Stock</h3>
+                    <button class="modal-close" onclick="cerrarModalProduccion()">✕</button>
+                </div>
+                <form id="formProduccion" onsubmit="guardarProduccion(event)">
+                    <div class="form-group">
+                        <label>Producto</label>
+                        <select id="productoSelect" class="form-control" required>
+                            <option value="">Selecciona un producto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad a agregar</label>
+                        <input type="number" id="cantidadInput" class="form-control" placeholder="Ej: 20" min="1" required>
+                        <small style="color:var(--text-light);font-size:0.65rem;">Se sumará al stock existente</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo</label>
+                        <select id="motivoSelect" class="form-control">
+                            <option value="produccion">🏭 Producción</option>
+                            <option value="compra">🛒 Compra a proveedor</option>
+                            <option value="devolucion">🔄 Devolución</option>
+                            <option value="ajuste">📝 Ajuste de inventario</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="observacionesInput" class="form-control" rows="2" placeholder="Notas adicionales..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="cerrarModalProduccion()">Cancelar</button>
+                        <button type="submit" class="btn-save">💾 Agregar Stock</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- MODAL CONSUMIR STOCK                         -->
+        <!-- ============================================ -->
+        <div class="modal-overlay" id="modalConsumo" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>➖ Consumir Stock</h3>
+                    <button class="modal-close" onclick="cerrarModalConsumo()">✕</button>
+                </div>
+                <form id="formConsumo" onsubmit="guardarConsumo(event)">
+                    <div class="form-group">
+                        <label>Producto</label>
+                        <select id="productoConsumoSelect" class="form-control" required>
+                            <option value="">Selecciona un producto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad a consumir</label>
+                        <input type="number" id="cantidadConsumoInput" class="form-control" placeholder="Ej: 5" min="1" required>
+                        <small style="color:var(--text-light);font-size:0.65rem;">Se restará del stock disponible</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo</label>
+                        <select id="motivoConsumoSelect" class="form-control">
+                            <option value="venta">🛍️ Venta</option>
+                            <option value="merma">🗑️ Merma</option>
+                            <option value="traslado">🚚 Traslado</option>
+                            <option value="ajuste">📝 Ajuste de inventario</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="observacionesConsumoInput" class="form-control" rows="2" placeholder="Notas adicionales..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="cerrarModalConsumo()">Cancelar</button>
+                        <button type="submit" class="btn-save btn-danger">⚠️ Consumir Stock</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- MODAL EDITAR MOVIMIENTO                      -->
+        <!-- ============================================ -->
+        <div class="modal-overlay" id="modalEditarMovimiento" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>✏️ Editar Movimiento</h3>
+                    <button class="modal-close" onclick="cerrarModalEditar()">✕</button>
+                </div>
+                <form id="formEditarMovimiento" onsubmit="actualizarMovimiento(event)">
+                    <input type="hidden" id="editarId">
+                    <div class="form-group">
+                        <label>Producto</label>
+                        <select id="editarProducto" class="form-control" required>
+                            <option value="">Selecciona un producto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" id="editarCantidad" class="form-control" placeholder="Ej: 10" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo</label>
+                        <select id="editarMotivo" class="form-control">
+                            <option value="produccion">🏭 Producción</option>
+                            <option value="compra">🛒 Compra</option>
+                            <option value="devolucion">🔄 Devolución</option>
+                            <option value="venta">🛍️ Venta</option>
+                            <option value="merma">🗑️ Merma</option>
+                            <option value="traslado">🚚 Traslado</option>
+                            <option value="ajuste">📝 Ajuste</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="editarObservaciones" class="form-control" rows="2" placeholder="Notas adicionales..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
+                        <button type="submit" class="btn-save">💾 Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

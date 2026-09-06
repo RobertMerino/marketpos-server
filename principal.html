@@ -1,619 +1,2471 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITO BURGER | Las mejores hamburguesas</title>
-    <meta name="description" content="TITO BURGER - Hamburguesas artesanales, cortes, alitas y mucho más. ¡El sabor que mereces!">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
-    <style>
-        :root {
-            --bg: #0d0d0d;
-            --surface: #1a1a1a;
-            --surface2: #252525;
-            --gold: #f4b841;
-            --gold-light: #ffe082;
-            --text: #f0f0f0;
-            --text-secondary: #b0b0b0;
-            --accent: #e63946;
-            --accent-hover: #ff4d5a;
-            --green: #4caf84;
-            --radius: 20px;
-            --radius-sm: 12px;
-            --shadow: 0 8px 32px rgba(0,0,0,0.5);
-            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --max-width: 1200px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0b">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<title>Tito's Restaurant | Hamburguesas al Carbón</title>
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+<style>
+/* =========================================================
+   VARIABLES
+========================================================= */
+:root {
+    --bg: #080808;
+    --bg2: #111111;
+    --card: #151515;
+    --card2: #1c1c1c;
+    --text: #ffffff;
+    --muted: #a7a7a7;
+    --red: #e6391f;
+    --orange: #ff7b00;
+    --yellow: #ffb000;
+    --border: rgba(255,255,255,.08);
+    --shadow: 0 20px 50px rgba(0,0,0,.45);
+    --radius: 20px;
+}
 
-        /* ========== NAVBAR ========== */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(13,13,13,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 0 24px;
-        }
-        .nav-inner {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.3rem;
-            letter-spacing: -0.3px;
-        }
-        .nav-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--accent);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 4px 15px rgba(230,57,70,0.4);
-        }
-        .nav-links {
-            display: flex;
-            gap: 24px;
-            list-style: none;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: var(--transition);
-            letter-spacing: 0.2px;
-        }
-        .nav-links a:hover { color: var(--gold); }
-        .nav-cta {
-            background: var(--accent);
-            color: #fff !important;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 700 !important;
-            transition: var(--transition);
-        }
-        .nav-cta:hover {
-            background: var(--accent-hover) !important;
-            color: #fff !important;
-            box-shadow: 0 6px 20px rgba(230,57,70,0.4);
-        }
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-        .hamburger span {
-            width: 28px;
-            height: 3px;
-            background: #fff;
-            border-radius: 3px;
-            transition: var(--transition);
-        }
+/* =========================================================
+   RESET
+========================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* ========== HERO ========== */
-        .hero {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 60px 24px 40px;
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        .hero-content {
-            flex: 1 1 400px;
-        }
-        .hero-badge {
-            display: inline-block;
-            background: rgba(244,184,65,0.15);
-            color: var(--gold-light);
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-        .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
-        }
-        .hero-title span {
-            color: var(--gold);
-        }
-        .hero-text {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 480px;
-            margin-bottom: 28px;
-        }
-        .hero-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .btn-primary, .btn-secondary {
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: none;
-        }
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            box-shadow: 0 8px 25px rgba(230,57,70,0.5);
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background: transparent;
-            color: #fff;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        .btn-secondary:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        .hero-image {
-            flex: 1 1 350px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .hero-burger {
-            font-size: clamp(8rem, 15vw, 14rem);
-            filter: drop-shadow(0 20px 40px rgba(244,184,65,0.3));
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
+html {
+    scroll-behavior: smooth;
+}
 
-        /* ========== CATEGORIES STRIP ========== */
-        .categories-strip {
-            background: var(--surface);
-            border-top: 1px solid rgba(255,255,255,0.04);
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        .categories-strip::-webkit-scrollbar { display: none; }
-        .categories-inner {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            display: flex;
-            gap: 8px;
-            padding: 14px 24px;
-        }
-        .cat-chip {
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: var(--transition);
-            background: var(--surface2);
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-            letter-spacing: 0.2px;
-        }
-        .cat-chip:hover { background: #333; color: #ddd; }
-        .cat-chip.active {
-            background: var(--gold);
-            color: #1a1a1a;
-            font-weight: 700;
-            box-shadow: 0 4px 14px rgba(244,184,65,0.3);
-        }
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
 
-        /* ========== MENU SECTION ========== */
-        .menu-section {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 50px 24px;
-        }
-        .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .section-label {
-            color: var(--gold);
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-        .section-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            margin-top: 6px;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 16px;
-        }
-        .product-card {
-            background: var(--surface2);
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            transition: var(--transition);
-            border: 1px solid transparent;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-        }
-        .product-card:hover {
-            border-color: rgba(255,255,255,0.12);
-            background: #2d2d2d;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-        }
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(244,184,65,0.08) 0%, transparent 70%);
-            border-radius: 50%;
-            transition: var(--transition);
-        }
-        .product-card:hover::before {
-            top: -30%;
-            right: -30%;
-            width: 180px;
-            height: 180px;
-        }
-        .product-emoji {
-            font-size: 3rem;
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
-        }
-        .product-info { z-index: 1; }
-        .product-name {
-            font-weight: 800;
-            font-size: 1.05rem;
-            letter-spacing: -0.2px;
-        }
-        .product-desc {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        .product-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1;
-        }
-        .product-price {
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: var(--gold-light);
-        }
-        .btn-add {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-add:hover {
-            background: var(--accent-hover);
-            transform: scale(1.1);
-        }
+body.no-scroll {
+    overflow: hidden;
+}
 
-        /* ========== POWER MEALS ========== */
-        .power-section {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 0 24px 60px;
-        }
-        .power-divider {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 28px;
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .power-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255,255,255,0.08);
-        }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
-        /* ========== FOOTER ========== */
-        .site-footer {
-            background: var(--surface);
-            border-top: 1px solid rgba(255,255,255,0.06);
-            padding: 40px 24px 20px;
-            text-align: center;
-        }
-        .footer-inner {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            flex-wrap: wrap;
-            list-style: none;
-        }
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: var(--transition);
-        }
-        .footer-links a:hover { color: var(--gold); }
-        .footer-copy {
-            color: #555;
-            font-size: 0.8rem;
-        }
-        .footer-copy span { color: var(--accent); }
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
 
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hamburger { display: flex; }
-            .hero { padding: 40px 20px 30px; text-align: center; }
-            .hero-content { flex: 1 1 100%; }
-            .hero-text { margin: 0 auto 28px; }
-            .hero-buttons { justify-content: center; }
-            .hero-image { display: none; }
-            .section-title { font-size: 1.6rem; }
-        }
-    </style>
+button {
+    cursor: pointer;
+    border: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background: #090909;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--red), var(--orange));
+    border-radius: 10px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 76px;
+    z-index: 1000;
+    transition: .3s;
+    border-bottom: 1px solid transparent;
+}
+
+.header.scrolled {
+    background: rgba(8,8,8,.94);
+    backdrop-filter: blur(14px);
+    border-bottom-color: var(--border);
+}
+
+.nav {
+    max-width: 1200px;
+    height: 100%;
+    margin: auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo-fire {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    box-shadow: 0 0 25px rgba(255,90,0,.3);
+}
+
+.logo span {
+    color: var(--orange);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: #ddd;
+    font-size: 14px;
+    font-weight: 700;
+    transition: .25s;
+}
+
+.nav-links a:hover {
+    color: var(--orange);
+}
+
+.cart-btn {
+    position: relative;
+    background: #191919;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    border: 1px solid var(--border);
+    transition: .25s;
+}
+
+.cart-btn:hover {
+    background: var(--red);
+    transform: scale(1.05);
+}
+
+.cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    background: var(--orange);
+    color: #111;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    color: white;
+    font-size: 27px;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+.hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,.94) 0%, rgba(0,0,0,.72) 45%, rgba(0,0,0,.35) 100%),
+        url("https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1800&q=90")
+        center/cover;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 70% 50%, rgba(255,83,0,.17), transparent 30%),
+        linear-gradient(0deg, #080808 0%, transparent 18%);
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 100%;
+    margin: auto;
+    padding: 130px 20px 80px;
+}
+
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,91,0,.12);
+    border: 1px solid rgba(255,123,0,.35);
+    color: #ffb36b;
+    padding: 8px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 22px;
+}
+
+.hero h1 {
+    max-width: 720px;
+    font-size: clamp(55px, 8vw, 100px);
+    line-height: .88;
+    text-transform: uppercase;
+    font-weight: 1000;
+    letter-spacing: -5px;
+}
+
+.hero h1 span {
+    color: var(--orange);
+    text-shadow: 0 0 35px rgba(255,90,0,.3);
+}
+
+.hero p {
+    max-width: 570px;
+    margin: 28px 0;
+    color: #c9c9c9;
+    font-size: 18px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 13px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 15px 23px;
+    border-radius: 10px;
+    font-weight: 900;
+    font-size: 14px;
+    transition: .25s;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    color: white;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    box-shadow: 0 10px 30px rgba(230,57,31,.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(230,57,31,.35);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: white;
+    color: #111;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 25px;
+}
+
+.stat span {
+    color: #929292;
+    font-size: 12px;
+}
+
+/* =========================================================
+   GENERAL
+========================================================= */
+.section {
+    padding: 100px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.section-head {
+    margin-bottom: 40px;
+}
+
+.section-kicker {
+    color: var(--orange);
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: clamp(35px, 5vw, 58px);
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+}
+
+.section-description {
+    color: var(--muted);
+    max-width: 600px;
+    margin-top: 15px;
+}
+
+/* =========================================================
+   FEATURES
+========================================================= */
+.features {
+    background: #0d0d0d;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.feature {
+    padding: 30px;
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: .3s;
+}
+
+.feature:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,123,0,.3);
+}
+
+.feature-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: rgba(255,90,0,.1);
+    font-size: 25px;
+    margin-bottom: 18px;
+}
+
+.feature h3 {
+    margin-bottom: 7px;
+}
+
+.feature p {
+    color: #8f8f8f;
+    font-size: 14px;
+}
+
+/* =========================================================
+   MENU
+========================================================= */
+.menu-section {
+    background: var(--bg);
+}
+
+.categories {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.category-btn {
+    background: #151515;
+    border: 1px solid var(--border);
+    color: #aaa;
+    padding: 10px 17px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.category-btn.active,
+.category-btn:hover {
+    color: white;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    border-color: transparent;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.product {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: var(--radius);
+    transition: .3s;
+}
+
+.product:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--shadow);
+    border-color: rgba(255,123,0,.25);
+}
+
+.product-image {
+    height: 235px;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .5s;
+}
+
+.product:hover .product-image img {
+    transform: scale(1.07);
+}
+
+.product-badge {
+    position: absolute;
+    top: 13px;
+    left: 13px;
+    background: var(--orange);
+    color: #111;
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-info h3 {
+    font-size: 21px;
+    margin-bottom: 7px;
+}
+
+.product-info p {
+    color: #929292;
+    font-size: 13px;
+    min-height: 42px;
+}
+
+.product-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 17px;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.add-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: white;
+    font-size: 23px;
+    transition: .2s;
+}
+
+.add-btn:hover {
+    transform: rotate(90deg) scale(1.08);
+}
+
+/* =========================================================
+   ABOUT
+========================================================= */
+.about {
+    background: #0d0d0d;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 70px;
+    align-items: center;
+}
+
+.about-image {
+    height: 520px;
+    border-radius: 25px;
+    overflow: hidden;
+    position: relative;
+}
+
+.about-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-image::after {
+    content: "100% AL CARBÓN";
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    padding: 12px 17px;
+    background: rgba(0,0,0,.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px;
+    font-weight: 900;
+    font-size: 12px;
+}
+
+.about-text p {
+    color: #aaa;
+    margin: 20px 0;
+}
+
+.about-list {
+    list-style: none;
+    display: grid;
+    gap: 13px;
+    margin: 25px 0;
+}
+
+.about-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.check {
+    color: var(--orange);
+}
+
+/* =========================================================
+   GALLERY
+========================================================= */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr .8fr;
+    grid-template-rows: 240px 240px;
+    gap: 12px;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: 15px;
+    position: relative;
+}
+
+.gallery-item:first-child {
+    grid-row: span 2;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .5s;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.08);
+}
+
+.gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,.7));
+    opacity: .7;
+}
+
+/* =========================================================
+   CTA
+========================================================= */
+.cta {
+    padding: 100px 20px;
+}
+
+.cta-box {
+    max-width: 1200px;
+    margin: auto;
+    padding: 70px 40px;
+    border-radius: 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, rgba(230,57,31,.9), rgba(255,123,0,.9)),
+        url("https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=1500&q=80")
+        center/cover;
+}
+
+.cta-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.28);
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cta h2 {
+    font-size: clamp(35px, 5vw, 60px);
+    line-height: .95;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.cta p {
+    margin-bottom: 25px;
+    color: rgba(255,255,255,.85);
+}
+
+/* =========================================================
+   CONTACT
+========================================================= */
+.contact {
+    background: #0d0d0d;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.contact-card {
+    padding: 30px;
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+}
+
+.contact-card h3 {
+    margin-bottom: 20px;
+}
+
+.contact-row {
+    display: flex;
+    gap: 14px;
+    margin: 20px 0;
+}
+
+.contact-icon {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255,90,0,.1);
+}
+
+.contact-row span {
+    color: #929292;
+    font-size: 13px;
+    display: block;
+}
+
+.contact-row strong {
+    font-size: 15px;
+}
+
+.map {
+    min-height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.445), rgba(0, 0, 0, 0.445)),
+        url("https://images.unsplash.com/photo-1524666041070-9c8766c9a7b5?auto=format&fit=crop&w=1200&q=80")
+        center/cover;
+    display: grid;
+    place-items: center;
+}
+
+.map-inner {
+    text-align: center;
+}
+
+.map-inner div {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+.footer {
+    padding: 50px 20px 25px;
+    background: #070707;
+    border-top: 1px solid var(--border);
+}
+
+.footer-grid {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 50px;
+}
+
+.footer-brand p {
+    color: #777;
+    max-width: 350px;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.footer h4 {
+    margin-bottom: 15px;
+}
+
+.footer ul {
+    list-style: none;
+}
+
+.footer li {
+    color: #777;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.footer li:hover {
+    color: var(--orange);
+}
+
+.copyright {
+    max-width: 1200px;
+    margin: 40px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: #555;
+    font-size: 12px;
+}
+
+/* =========================================================
+   CART
+========================================================= */
+.cart-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s;
+}
+
+.cart-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cart-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: min(430px, 100%);
+    height: 100%;
+    background: #101010;
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+    transition: .35s;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-overlay.open .cart-panel {
+    transform: translateX(0);
+}
+
+.cart-header {
+    height: 75px;
+    padding: 0 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-cart {
+    background: #1c1c1c;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 80px 20px;
+    color: #777;
+}
+
+.empty-cart div {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.cart-item {
+    display: flex;
+    gap: 13px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.cart-item-image {
+    width: 65px;
+    height: 65px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-info h4 {
+    font-size: 14px;
+}
+
+.cart-item-price {
+    color: var(--orange);
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 7px;
+}
+
+.quantity button {
+    width: 25px;
+    height: 25px;
+    border-radius: 6px;
+    background: #222;
+    color: white;
+}
+
+.remove {
+    background: none !important;
+    color: #777 !important;
+}
+
+.cart-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.total-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.total-line strong {
+    font-size: 25px;
+    color: var(--orange);
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+    background: #20b958;
+    font-weight: 900;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 25px;
+    transform: translate(-50%, 100px);
+    z-index: 4000;
+    background: #171717;
+    border: 1px solid var(--border);
+    padding: 13px 18px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: .3s;
+    font-size: 13px;
+}
+
+.toast.show {
+    transform: translate(-50%, 0);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media(max-width: 900px) {
+    .nav-links {
+        position: fixed;
+        top: 76px;
+        left: 0;
+        width: 100%;
+        padding: 25px;
+        background: #0c0c0c;
+        flex-direction: column;
+        gap: 20px;
+        transform: translateY(-150%);
+        transition: .3s;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .nav-links.open {
+        transform: translateY(0);
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-grid,
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .map {
+        min-height: 350px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media(max-width: 600px) {
+    .hero h1 {
+        letter-spacing: -3px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .hero-stats {
+        gap: 20px;
+    }
+
+    .stat strong {
+        font-size: 19px;
+    }
+
+    .products {
+        grid-template-columns: 1fr;
+    }
+
+    .product-image {
+        height: 250px;
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 220px 180px 180px;
+    }
+
+    .gallery-item:first-child {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 75px 17px;
+    }
+}
+
+/* =========================================================
+   FORMULARIO DEL CLIENTE
+========================================================= */
+
+.customer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+
+    background: rgba(0,0,0,.78);
+    backdrop-filter: blur(8px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: .3s;
+}
+
+.customer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.customer-modal {
+    position: relative;
+
+    width: min(500px, 100%);
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    padding: 35px;
+
+    background: #111;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.7);
+
+    transform: translateY(30px) scale(.97);
+
+    transition: .3s;
+}
+
+.customer-overlay.open .customer-modal {
+    transform: translateY(0) scale(1);
+}
+
+.close-customer {
+    position: absolute;
+
+    top: 17px;
+    right: 17px;
+
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+
+    background: #222;
+    color: white;
+
+    font-size: 15px;
+
+    transition: .2s;
+}
+
+.close-customer:hover {
+    background: var(--red);
+}
+
+.customer-icon {
+    width: 60px;
+    height: 60px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--red),
+            var(--orange)
+        );
+
+    font-size: 28px;
+
+    margin-bottom: 18px;
+}
+
+.customer-modal h2 {
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.customer-description {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 19px;
+}
+
+.form-group label {
+    display: block;
+
+    color: #ddd;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    background: #1a1a1a;
+
+    color: white;
+
+    outline: none;
+
+    transition: .2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--orange);
+
+    box-shadow:
+        0 0 0 3px rgba(255,123,0,.08);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.order-options {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+.order-option {
+    position: relative;
+
+    cursor: pointer;
+
+    padding: 15px;
+
+    background: #191919;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 12px;
+
+    transition: .2s;
+}
+
+.order-option:hover {
+    border-color: rgba(255,123,0,.4);
+}
+
+.order-option input {
+    position: absolute;
+
+    opacity: 0;
+}
+
+.order-option:has(input:checked) {
+    border-color: var(--orange);
+
+    background: rgba(255,123,0,.08);
+}
+
+.order-option span {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    font-size: 20px;
+}
+
+.order-option strong {
+    font-size: 13px;
+}
+
+.order-option small {
+    color: #777;
+
+    font-size: 10px;
+}
+
+.send-order-btn {
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1fbd5b,
+            #13a94c
+        );
+
+    color: white;
+
+    font-weight: 900;
+
+    transition: .25s;
+}
+
+.send-order-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(20,180,80,.2);
+}
+
+@media(max-width:500px) {
+
+    .customer-modal {
+        padding: 25px 20px;
+    }
+
+    .order-options {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
 
-    <!-- ==================== NAVBAR ==================== -->
-    <nav class="navbar">
-        <div class="nav-inner">
-            <a href="#" class="nav-logo">
-                <div class="nav-logo-icon">🍔</div>
-                TITO BURGER
-            </a>
-            <ul class="nav-links">
-                <li><a href="#menu">Menú</a></li>
-                <li><a href="#promos">Promos</a></li>
-                <li><a href="#ubicacion">Ubicación</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-                <li><a href="#ordenar" class="nav-cta">🛒 Ordenar Ahora</a></li>
-            </ul>
-            <button class="hamburger" aria-label="Menú">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
+<!-- =======================================================
+     HEADER
+======================================================= -->
+<header class="header" id="header">
+    <nav class="nav">
 
-    <!-- ==================== HERO ==================== -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">🔥 Nuevo</div>
-            <h1 class="hero-title">El <span>sabor</span> que<br>te mereces</h1>
-            <p class="hero-text">
-                Hamburguesas artesanales, cortes premium, alitas crujientes y mucho más. 
-                Ingredientes frescos, recetas únicas y el mismo amor de siempre.
-            </p>
-            <div class="hero-buttons">
-                <a href="#menu" class="btn-primary">🍔 Ver Menú</a>
-                <a href="#promos" class="btn-secondary">⭐ Promos</a>
+        <a href="#inicio" class="logo">
+            <div class="logo-fire">🔥</div>
+            TITO´S<span>RESTAURANT</span>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#menu">Menú</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#galeria">Galería</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+
+        <div style="display:flex;align-items:center;gap:10px">
+            <span  id="openCart" ></span> 
+                
+                
+            
+
+            <button class="menu-toggle" id="menuToggle">☰</button>
+        </div>
+
+    </nav>
+</header>
+
+<!-- =======================================================
+     HERO
+======================================================= -->
+<section class="hero" id="inicio">
+
+    <div class="hero-content">
+
+        <div class="hero-tag">
+            🔥 Hamburguesas hechas al carbón
+        </div>
+
+        <h1>
+            SABOR<br>
+            <span>QUE ARDE.</span>
+        </h1>
+
+        <p>
+            Carne jugosa, pan artesanal y el auténtico sabor
+            de la parrilla. No hacemos hamburguesas normales.
+            Hacemos hamburguesas al carbón.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#menu" class="btn btn-primary">
+                🍔 VER MENÚ
+            </a>
+
+            <a href="menu-digital.html"
+               target="_blank"
+               class="btn btn-secondary">
+                📲 PEDIR AHORA
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat">
+                <strong>100%</strong>
+                <span>CARBÓN</span>
+            </div>
+
+            <div class="stat">
+                <strong>4.9 ★</strong>
+                <span>CLIENTES</span>
+            </div>
+
+            <div class="stat">
+                <strong>10+</strong>
+                <span>HAMBURGUESAS</span>
             </div>
         </div>
-        <div class="hero-image">
-            <div class="hero-burger">🍔</div>
-        </div>
-    </section>
 
-    <!-- ==================== CATEGORIES ==================== -->
-    <div class="categories-strip" id="menu">
-        <div class="categories-inner">
-            <span class="cat-chip active">🍔 BURGERS</span>
-            <span class="cat-chip">🥩 CORTES</span>
-            <span class="cat-chip">🍗 ALITAS</span>
-            <span class="cat-chip">🔥 PARRILLA</span>
-            <span class="cat-chip">⭐ PROMOS</span>
-            <span class="cat-chip">➕ EXTRAS</span>
-            <span class="cat-chip">🥤 BEBIDAS</span>
+    </div>
+</section>
+
+<!-- =======================================================
+     FEATURES
+======================================================= -->
+<section class="section features">
+
+    <div class="container feature-grid">
+
+        <div class="feature">
+            <div class="feature-icon">🔥</div>
+            <h3>Al carbón</h3>
+            <p>
+                Cocinamos nuestra carne directamente sobre
+                carbón para conseguir ese sabor ahumado.
+            </p>
         </div>
+
+        <div class="feature">
+            <div class="feature-icon">🥩</div>
+            <h3>Carne fresca</h3>
+            <p>
+                Seleccionamos ingredientes de calidad para
+                preparar cada hamburguesa al momento.
+            </p>
+        </div>
+
+        <div class="feature">
+            <div class="feature-icon">🍔</div>
+            <h3>Pan artesanal</h3>
+            <p>
+                Pan suave, tostado en parrilla y preparado
+                para combinar perfectamente con nuestra carne.
+            </p>
+        </div>
+
     </div>
 
-    <!-- ==================== MENÚ PRINCIPAL ==================== -->
-    <section class="menu-section">
-        <div class="section-header">
-            <div class="section-label">Nuestro Menú</div>
-            <h2 class="section-title">Los Favoritos</h2>
+</section>
+
+<!-- =======================================================
+     MENU
+======================================================= -->
+<section class="section menu-section" id="menu">
+
+    <div class="container">
+
+        <div class="section-head">
+            <div class="section-kicker">Nuestro menú</div>
+
+            <h2 class="section-title">
+                ELIGE TU<br>
+                <span style="color:var(--orange)">FAVORITA.</span>
+            </h2>
+
+            <p class="section-description">
+                Todo se prepara al momento. Elige tu hamburguesa,
+                agrégala al carrito y realiza tu pedido.
+            </p>
         </div>
-        <div class="products-grid">
 
-            <!-- TITO BURGER -->
-            <div class="product-card">
-                <div class="product-emoji">🍔</div>
-                <div class="product-info">
-                    <div class="product-name">TITO BURGER</div>
-                    <div class="product-desc">La especialidad de la casa: carne 180g, queso cheddar, panceta y salsa secreta.</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">$4.99</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
-                </div>
-            </div>
+        <div class="categories">
+            <button class="category-btn active" data-category="all">
+                Todo
+            </button>
 
-            <!-- HAWAII -->
-            <div class="product-card">
-                <div class="product-emoji">🍍</div>
-                <div class="product-info">
-                    <div class="product-name">HAWAII</div>
-                    <div class="product-desc">Piña caramelizada, jamón ahumado, queso mozzarella y salsa BBQ.</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">$3.75</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
-                </div>
-            </div>
+            <button class="category-btn" data-category="burgers">
+                🍔 Hamburguesas
+            </button>
 
-            <!-- THE BIG BOSS -->
-            <div class="product-card">
-                <div class="product-emoji">👑</div>
-                <div class="product-info">
-                    <div class="product-name">THE BIG BOSS</div>
-                    <div class="product-desc">Doble carne, doble queso, cebolla crispy y aderezo especial.</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">$5.50</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
-                </div>
-            </div>
+            <button class="category-btn" data-category="alitas">
+                🍔 Alitas
+            </button>
 
-            <!-- PARRILLERA -->
-            <div class="product-card">
-                <div class="product-emoji">🥓</div>
-                <div class="product-info">
-                    <div class="product-name">PARRILLERA</div>
-                    <div class="product-desc">Estilo argentino: chimichurri, provoleta y morrón asado.</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">$3.95</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
-                </div>
-            </div>
+            <button class="category-btn" data-category="combos">
+                🍟 Combos
+            </button>
+
+            <button class="category-btn" data-category="extras">
+                🧀 Extras
+            </button>
+
+            <button class="category-btn" data-category="drinks">
+                🥤 Bebidas
+            </button>
         </div>
-    </section>
 
-    <!-- ==================== POWER MEALS ==================== -->
-    <section class="power-section" id="promos">
-        <div class="power-divider">⚡ Power Meals</div>
-        <div class="products-grid">
+        <div class="products" id="products">
 
-            <!-- HULK -->
-            <div class="product-card">
-                <div class="product-emoji">💪</div>
+            <!-- BURGER 1 -->
+            <article class="product" data-category="burgers">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=85"
+                        alt="Brasa Clásica"
+                    >
+
+                    <span class="product-badge">Popular</span>
+                </div>
+
                 <div class="product-info">
-                    <div class="product-name">HULK</div>
-                    <div class="product-desc">Proteína pura: 360g de carne, espinaca, palta y huevo. ¡Monstruoso!</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">$6.99</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
-                </div>
-            </div>
+                    <h3>Brasa Clásica</h3>
 
-            <!-- CLÁSICA + PAPAS (1) -->
-            <div class="product-card">
-                <div class="product-emoji">🍟</div>
-                <div class="product-info">
-                    <div class="product-name">CLÁSICA + PAPAS</div>
-                    <div class="product-desc">Combo individual: clásica 120g + papas fritas + gaseosa.</div>
-                </div>
-                <div class="product-footer">
-                    <span class="product-price">$2.50</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
-                </div>
-            </div>
+                    <p>
+                        Carne al carbón, queso cheddar,
+                        lechuga, tomate y salsa de la casa.
+                    </p>
 
-            <!-- CLÁSICA + PAPAS (2) -->
-            <div class="product-card">
-                <div class="product-emoji">🍟</div>
+                    <div class="product-bottom">
+                        <span class="price">$6.50</span>
+<a href="menu-digital.html"> 
+                        <button class="add-btn"
+                            data-name="Brasa Clásica"
+                            data-price="6.50"
+                            data-image="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=85">
+                            +
+                        </button>
+</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- BURGER 2 -->
+            <article class="product" data-category="burgers">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=800&q=85"
+                        alt="Brasa Doble"
+                    >
+
+                    <span class="product-badge">🔥 Favorita</span>
+                </div>
+
                 <div class="product-info">
-                    <div class="product-name">CLÁSICA + PAPAS</div>
-                    <div class="product-desc">Combo grande: clásica 180g + papas grandes + gaseosa 500ml.</div>
+                    <h3>Brasa Doble</h3>
+
+                    <p>
+                        Doble carne al carbón, doble cheddar,
+                        tocino crujiente y salsa BBQ.
+                    </p>
+
+                    <div class="product-bottom">
+                        <span class="price">$8.90</span>
+<a href="menu-digital.html"> 
+                        <button class="add-btn"
+                            data-name="Brasa Doble"
+                            data-price="8.90"
+                            data-image="https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=800&q=85">
+                            +
+                        </button>
+</a>
+                    </div>
                 </div>
-                <div class="product-footer">
-                    <span class="product-price">$2.99</span>
-                    <button class="btn-add" aria-label="Agregar">+</button>
+            </article>
+
+            <!-- BURGER 3 -->
+            <article class="product" data-category="burgers">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=800&q=85"
+                        alt="BBQ Bacon"
+                    >
                 </div>
-            </div>
+
+                <div class="product-info">
+                    <h3>BBQ Bacon</h3>
+
+                    <p>
+                        Carne al carbón, queso cheddar,
+                        tocino, cebolla caramelizada y BBQ.
+                    </p>
+
+                    <div class="product-bottom">
+                        <span class="price">$7.90</span>
+<a href="menu-digital.html">    
+                        <button class="add-btn"
+                            data-name="BBQ Bacon"
+                            data-price="7.90"
+                            data-image="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=800&q=85">
+                            +
+                        </button>
+                    </a>
+                    </div>
+                </div>
+            </article>
+             <!-- ALITAS 1 -->
+            <article class="product" data-category="alitas">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=800&q=85"
+                        alt="BBQ Bacon"
+                    >
+                </div>
+
+                <div class="product-info">
+                    <h3>BBQ Bacon</h3>
+
+                    <p>
+                        Carne al carbón, queso cheddar,
+                        tocino, cebolla caramelizada y BBQ.
+                    </p>
+
+                    <div class="product-bottom">
+                        <span class="price">$7.90</span>
+<a href="menu-digital.html">
+                        <button class="add-btn"
+                            data-name="BBQ Bacon"
+                            data-price="7.90"
+                            data-image="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=800&q=85">
+                            +
+                        </button>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- COMBO 1 -->
+            <article class="product" data-category="combos">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85"
+                        alt="Combo Brasa"
+                    >
+
+                    <span class="product-badge">Combo</span>
+                </div>
+
+                <div class="product-info">
+                    <h3>Combo Brasa</h3>
+
+                    <p>
+                        Brasa Clásica + papas fritas +
+                        bebida fría.
+                    </p>
+
+                    <div class="product-bottom">
+                        <span class="price">$9.50</span>
+<a href="menu-digital.html">
+                        <button class="add-btn"
+                            data-name="Combo Brasa"
+                            data-price="9.50"
+                            data-image="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85">
+                            
+                            +
+                        </button>
+</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- COMBO 2 -->
+            <article class="product" data-category="combos">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=85"
+                        alt="Combo Doble"
+                    >
+                </div>
+
+                <div class="product-info">
+                    <h3>Combo Doble</h3>
+
+                    <p>
+                        Brasa Doble + papas grandes +
+                        bebida de 500 ml.
+                    </p>
+
+                    <div class="product-bottom">
+                        <span class="price">$12.50</span>
+<a href="menu-digital.html">
+                        <button class="add-btn"
+                            data-name="Combo Doble"
+                            data-price="12.50"
+                            data-image="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=85">
+                            +
+                        </button>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- EXTRA -->
+            <article class="product" data-category="extras">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=85"
+                        alt="Papas Brasa"
+                    >
+                </div>
+
+                <div class="product-info">
+                    <h3>Papas Brasa</h3>
+
+                    <p>
+                        Papas crujientes con salsa especial
+                        de la casa.
+                    </p>
+
+                    <div class="product-bottom">
+
+                        <span class="price">$3.00</span>
+<a href="menu-digital.html">
+                        <button class="add-btn"
+                            data-name="Papas Brasa"
+                            data-price="3.00"
+                            data-image="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=85">
+                            +
+                        </button>
+                         </a>
+                    </div>
+                   
+                </div>
+            </article>
+
+            <!-- BEBIDA -->
+            <article class="product" data-category="drinks">
+
+                <div class="product-image">
+                    <img
+                        src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=85"
+                        alt="Bebida fría"
+                    >
+                </div>
+
+                <div class="product-info">
+                    <h3>Bebida Fría</h3>
+
+                    <p>
+                        Gaseosa fría para acompañar tu
+                        hamburguesa.
+                    </p>
+
+                    <div class="product-bottom" >
+                       <a href="menu-digital.html">
+                        <span class="price">$1.50</span>
+
+                        <button class="add-btn"
+                            data-name="Bebida Fría"
+                            data-price="1.50"
+                            data-image="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=85">
+                            +
+</a>
+                        </button>
+                    </div>
+                </div>
+            </article>
+
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ==================== FOOTER ==================== -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="nav-logo" style="justify-content: center;">
-                <div class="nav-logo-icon">🍔</div>
-                TITO BURGER
+<!-- =======================================================
+     ABOUT
+======================================================= -->
+<section class="section about" id="nosotros">
+
+    <div class="container about-grid">
+
+        <div class="about-image">
+            <img
+                src="https://images.unsplash.com/photo-1521305916504-4a1121188589?auto=format&fit=crop&w=1000&q=85"
+                alt="Hamburguesa preparada al carbón">
+        </div>
+
+        <div class="about-text">
+
+            <div class="section-kicker">
+                Nuestra historia
             </div>
-            <ul class="footer-links">
-                <li><a href="#">Menú</a></li>
-                <li><a href="#">Promos</a></li>
-                <li><a href="#">Ubicación</a></li>
-                <li><a href="#">Contacto</a></li>
-                <li><a href="#">Términos</a></li>
+
+            <h2 class="section-title">
+                NO ES SOLO<br>
+                <span style="color:var(--orange)">UNA BURGER.</span>
+            </h2>
+
+            <p>
+                En Tito's Restaurant creemos que una buena hamburguesa
+                comienza con fuego real.
+            </p>
+
+            <p>
+                Seleccionamos carne fresca, ingredientes de calidad
+                y cocinamos cada hamburguesa directamente sobre
+                carbón para conseguir un sabor ahumado único.
+            </p>
+
+            <ul class="about-list">
+                <li><span class="check">✓</span> Carne preparada al momento</li>
+                <li><span class="check">✓</span> Cocción 100% al carbón</li>
+                <li><span class="check">✓</span> Ingredientes frescos</li>
+                <li><span class="check">✓</span> Salsas de la casa</li>
             </ul>
-            <p class="footer-copy">© 2026 <span>❤️</span> TITO BURGER. Todos los derechos reservados.</p>
+
+            <a href="#menu" class="btn btn-primary">
+                🍔 PROBAR AHORA
+            </a>
+
         </div>
-    </footer>
+
+    </div>
+</section>
+
+<!-- =======================================================
+     GALLERY
+======================================================= -->
+<section class="section" id="galeria">
+
+    <div class="container">
+
+        <div class="section-head">
+            <div class="section-kicker">Galería</div>
+
+            <h2 class="section-title">
+                MIRA LO QUE<br>
+                <span style="color:var(--orange)">ESTÁ ARDIENDO.</span>
+            </h2>
+        </div>
+
+        <div class="gallery-grid">
+
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1000&q=85">
+                <div class="gallery-overlay"></div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=800&q=85">
+                <div class="gallery-overlay"></div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=800&q=85">
+                <div class="gallery-overlay"></div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=85">
+                <div class="gallery-overlay"></div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=85">
+                <div class="gallery-overlay"></div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- =======================================================
+     CTA
+======================================================= -->
+<section class="cta">
+
+    <div class="cta-box">
+
+        <div class="cta-content">
+
+            <h2>
+                ¿YA TE<br>
+                DIO HAMBRE?
+            </h2>
+            <p>
+                El fuego está encendido. Solo falta tu pedido.
+            </p>
+<button type="button" class="btn btn-secondary" onclick="abrirCustomerModal()" >
+    <a  href="menu-digital.html">
+  🔥 PEDIR AHORA
+    </a>
+  
+</button>
+    </div>
+
+</section>
+
+<!-- =======================================================
+     CONTACT
+======================================================= -->
+<section class="section contact" id="contacto">
+
+    <div class="container">
+
+        <div class="section-head">
+            <div class="section-kicker">Encuéntranos</div>
+
+            <h2 class="section-title">
+                VEN A<br>
+                <span style="color:var(--orange)">TITO'S.</span>
+            </h2>
+        </div>
+
+        <div class="contact-grid">
+
+            <div class="contact-card">
+
+                <h3>Información</h3>
+
+                <div class="contact-row">
+                    <div class="contact-icon">📍</div>
+                    <div>
+                        <span>Dirección</span>
+                        <strong>Av. Principal y Calle Central</strong>
+                    </div>
+                </div>
+
+                <div class="contact-row">
+                    <div class="contact-icon">📞</div>
+                    <div>
+                        <span>Teléfono</span>
+                        <strong>099 999 9999</strong>
+                    </div>
+                </div>
+
+                <div class="contact-row">
+                    <div class="contact-icon">🕐</div>
+                    <div>
+                        <span>Horario</span>
+                        <strong>Martes - Domingo · 17:00 - 23:00</strong>
+                    </div>
+                </div>
+
+                <div class="contact-row">
+                    <div class="contact-icon">📲</div>
+                    <div>
+                        <span>Pedidos</span>
+                        <strong>WhatsApp disponible</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="map">
+
+                <div class="map-inner">
+                    <div>📍</div>
+
+                    <h3>Estamos aquí</h3>
+
+                    <p style="color:#aaa;margin:5px 0 18px">
+                        Ambato, Ecuador
+                    </p>
+
+                    <a
+                        href="https://www.google.com/maps/search/?api=1&query=Ambato,Ecuador"
+                        target="_blank"
+                        class="btn btn-primary">
+                        ABRIR MAPA
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     FOOTER
+======================================================= -->
+<footer class="footer">
+
+    <div class="footer-grid">
+
+        <div class="footer-brand">
+
+            <div class="logo">
+                <div class="logo-fire">🔥</div>
+                TITO´S<span>RESTAURANT</span>
+            </div>
+
+            <p>
+                Hamburguesas hechas al carbón,
+                ingredientes frescos y mucho fuego.
+            </p>
+
+        </div>
+
+        <div>
+            <h4>Menú</h4>
+
+            <ul>
+                <li><a href="#menu">Hamburguesas</a></li>
+                <li><a href="#menu">Combos</a></li>
+                <li><a href="#menu">Extras</a></li>
+                <li><a href="#menu">Bebidas</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Información</h4>
+
+            <ul>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#galeria">Galería</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="#inicio">Inicio</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="copyright">
+        © 2026 TITO´S RESTAURANT · Hamburguesas al Carbón · Todos los derechos reservados.
+    </div>
+
+</footer>
+
+<!-- =======================================================
+     DATOS DEL CLIENTE
+======================================================= -->
+<div class="customer-overlay" id="customerOverlay">
+
+    <div class="customer-modal">
+
+        <button class="close-customer" id="closeCustomer">✕</button>
+
+     </div>
+
+</div>
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     CART
+======================================================= -->
+<div class="cart-overlay" id="cartOverlay">
+
+    <div class="cart-panel">
+
+        <div class="cart-header">
+            <div>
+                <strong>Tu pedido</strong>
+                <div style="font-size:11px;color:#777">
+                    TITO´S RESTAURANT
+                </div>
+            </div>
+
+            <button class="close-cart" id="closeCart">
+                ✕
+            </button>
+        </div>
+
+        <div class="cart-items" id="cartItems">
+
+            <div class="empty-cart">
+                <div>🍔</div>
+                <strong>Tu carrito está vacío</strong>
+                <p style="font-size:13px;margin-top:5px">
+                    Agrega algo delicioso.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="cart-footer">
+
+            <div class="total-line">
+                <span>Total</span>
+                <strong id="cartTotal">$0.00</strong>
+            </div>
+
+            <button class="checkout-btn" id="checkout">
+                📲 PEDIR ADOMIMICIO
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    Producto agregado al carrito 🔥
+</div>
+
+<script>
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let cart = JSON.parse(localStorage.getItem("brasaCart")) || [];
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const cartCount = document.getElementById("cartCount");
+const cartItems = document.getElementById("cartItems");
+const cartTotal = document.getElementById("cartTotal");
+const cartOverlay = document.getElementById("cartOverlay");
+const openCart = document.getElementById("openCart");
+const closeCart = document.getElementById("closeCart");
+const toast = document.getElementById("toast");
+const header = document.getElementById("header");
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+
+/* =========================================================
+   GUARDAR CARRITO
+========================================================= */
+
+function saveCart() {
+    localStorage.setItem("brasaCart", JSON.stringify(cart));
+}
+
+/* =========================================================
+   ACTUALIZAR CARRITO
+========================================================= */
+
+function updateCart() {
+
+    const totalItems = cart.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+    );
+
+    const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+    );
+
+    cartCount.textContent = totalItems;
+    cartTotal.textContent = "$" + total.toFixed(2);
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML = `
+            <div class="empty-cart">
+                <div>🍔</div>
+                <strong>Tu carrito está vacío</strong>
+                <p style="font-size:13px;margin-top:5px">
+                    Agrega algo delicioso.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    cartItems.innerHTML = "";
+
+    cart.forEach((item, index) => {
+
+        const element = document.createElement("div");
+
+        element.className = "cart-item";
+
+        element.innerHTML = `
+            <img
+                src="${item.image}"
+                class="cart-item-image"
+                alt="${item.name}"
+            >
+
+            <div class="cart-item-info">
+
+                <h4>${item.name}</h4>
+
+                <div class="cart-item-price">
+                    $${(item.price * item.quantity).toFixed(2)}
+                </div>
+
+                <div class="quantity">
+
+                    <button onclick="changeQuantity(${index}, -1)">
+                        −
+                    </button>
+
+                    <span>${item.quantity}</span>
+
+                    <button onclick="changeQuantity(${index}, 1)">
+                        +
+                    </button>
+
+                    <button
+                        class="remove"
+                        onclick="removeItem(${index})">
+                        🗑
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        cartItems.appendChild(element);
+    });
+}
+
+/* =========================================================
+   AGREGAR PRODUCTO
+========================================================= */
+
+function addToCart(name, price, image) {
+
+    const existing = cart.find(
+        item => item.name === name
+    );
+
+    if (existing) {
+        existing.quantity++;
+    } else {
+        cart.push({
+            name,
+            price,
+            image,
+            quantity: 1
+        });
+    }
+
+    saveCart();
+    updateCart();
+    showToast(`${name} agregado 🔥`);
+}
+
+/* =========================================================
+   CANTIDAD
+========================================================= */
+
+function changeQuantity(index, amount) {
+
+    cart[index].quantity += amount;
+
+    if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+    }
+
+    saveCart();
+    updateCart();
+}
+
+/* =========================================================
+   ELIMINAR
+========================================================= */
+
+function removeItem(index) {
+
+    const removed = cart[index].name;
+
+    cart.splice(index, 1);
+
+    saveCart();
+    updateCart();
+
+    showToast(`${removed} eliminado`);
+}
+
+/* =========================================================
+   BOTONES AGREGAR
+========================================================= */
+
+document.querySelectorAll(".add-btn").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const name = button.dataset.name;
+        const price = Number(button.dataset.price);
+        const image = button.dataset.image;
+
+        addToCart(name, price, image);
+
+    });
+
+});
+
+/* =========================================================
+   FILTROS DEL MENÚ
+========================================================= */
+
+document.querySelectorAll(".category-btn").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document
+            .querySelectorAll(".category-btn")
+            .forEach(btn => btn.classList.remove("active"));
+
+        button.classList.add("active");
+
+        const category = button.dataset.category;
+
+        document
+            .querySelectorAll(".product")
+            .forEach(product => {
+
+                if (
+                    category === "all" ||
+                    product.dataset.category === category
+                ) {
+                    product.style.display = "";
+                } else {
+                    product.style.display = "none";
+                }
+
+            });
+
+    });
+
+});
+
+/* =========================================================
+   ABRIR CARRITO
+========================================================= */
+
+openCart.addEventListener("click", () => {
+
+    cartOverlay.classList.add("open");
+    document.body.classList.add("no-scroll");
+
+});
+
+/* =========================================================
+   CERRAR CARRITO
+========================================================= */
+
+closeCart.addEventListener("click", closeCartPanel);
+
+cartOverlay.addEventListener("click", event => {
+
+    if (event.target === cartOverlay) {
+        closeCartPanel();
+    }
+
+});
+
+function closeCartPanel() {
+
+    cartOverlay.classList.remove("open");
+    document.body.classList.remove("no-scroll");
+
+}
+
+
+
+/* =========================================================
+   MENÚ MÓVIL
+========================================================= */
+
+menuToggle.addEventListener("click", () => {
+
+    navLinks.classList.toggle("open");
+
+});
+
+document.querySelectorAll(".nav-links a").forEach(link => {
+
+    link.addEventListener("click", () => {
+
+        navLinks.classList.remove("open");
+
+    });
+
+});
+
+/* =========================================================
+   HEADER AL HACER SCROLL
+========================================================= */
+
+window.addEventListener("scroll", () => {
+
+    if (window.scrollY > 30) {
+        header.classList.add("scrolled");
+    } else {
+        header.classList.remove("scrolled");
+    }
+
+});
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function showToast(message) {
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+/* =========================================================
+   ANIMACIÓN DE ENTRADA
+========================================================= */
+
+const observer = new IntersectionObserver(
+    entries => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+
+            }
+
+        });
+
+    },
+    {
+        threshold: .12
+    }
+);
+
+document
+    .querySelectorAll(
+        ".feature, .product, .about-image, .about-text, .gallery-item, .contact-card"
+    )
+    .forEach(element => {
+
+        element.style.opacity = "0";
+        element.style.transform = "translateY(25px)";
+        element.style.transition =
+            "opacity .7s ease, transform .7s ease";
+
+        observer.observe(element);
+
+    });
+
+/* =========================================================
+   INICIALIZAR
+========================================================= */
+
+updateCart();
+
+</script>
 
 </body>
 </html>
+

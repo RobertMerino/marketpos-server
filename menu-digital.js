@@ -1,395 +1,89 @@
-// ============================================ //
-// VARIABLES GLOBALES                           //
-// ============================================ //
 let cart = [];
-let activeCategory = 'entradas';
+let activeCategory = 'hamburguesas';
+let mesaActual = '1';
+let modoEdicion = false;
 let selectedType = 'mesa';
-let clienteData = null;
 
-// Variables para sabores
+// Variables globales para sabores
 let saborSeleccionado = [];
 let currentProduct = null;
-let maxSaboresPermitidos = 0;
-let minSaboresPermitidos = 1;
 
-// ============================================ //
-// FUNCIÓN PARA VERIFICAR STOCK                 //
-// ============================================ //
-function verificarStock(productoNombre, cantidadSolicitada) {
-    const inventarioGuardado = localStorage.getItem('tito_inventario');
-    if (!inventarioGuardado) {
-        return { disponible: true, stock: 999 };
-    }
-    
-    const inventario = JSON.parse(inventarioGuardado);
-    const stockDisponible = inventario[productoNombre] || 0;
-    
-    if (cantidadSolicitada > stockDisponible) {
-        return { 
-            disponible: false, 
-            stock: stockDisponible,
-            faltante: cantidadSolicitada - stockDisponible
-        };
-    }
-    
-    return { disponible: true, stock: stockDisponible };
-}
+const urlParams = new URLSearchParams(window.location.search);
+mesaActual = urlParams.get('mesa') || '1';
 
-// ============================================ //
-// FUNCIÓN PARA MOSTRAR ALERTA DE STOCK         //
-// ============================================ //
-function mostrarAlertaStock(productoNombre) {
-    const overlay = document.createElement('div');
-    overlay.className = 'stock-alert-overlay';
-    overlay.id = 'stockAlertOverlay';
-    
-    const modal = document.createElement('div');
-    modal.className = 'stock-alert-modal';
-    modal.innerHTML = `
-        <div class="stock-alert-icon">😔</div>
-        <h3>¡Lo sentimos!</h3>
-        <p>No disponemos de <strong>${productoNombre}</strong> en este momento.</p>
-        <p class="stock-alert-sub">Mil disculpas por las molestias.</p>
-        <button class="stock-alert-btn" onclick="cerrarAlertaStock()">Entendido</button>
-    `;
-    
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    document.body.classList.add('no-scroll');
-    
-    if (navigator.vibrate) navigator.vibrate(50);
-}
-
-function cerrarAlertaStock() {
-    const overlay = document.getElementById('stockAlertOverlay');
-    if (overlay) {
-        overlay.classList.add('closing');
-        setTimeout(() => {
-            overlay.remove();
-            document.body.classList.remove('no-scroll');
-        }, 300);
-    }
-}
-
-// ============================================ //
-// DATOS DEL MENÚ                               //
-// ============================================ //
 const categories = [
-    { key: 'entradas', label: '🥣 Entradas' },
-    { key: 'sopas', label: '🍲 Sopas' },
-    { key: 'hamburguesas', label: '🍔 Hamburguesas' },
+    { key: 'hamburguesas', label: '🍔 Burgers' },
     { key: 'cortes', label: '🥩 Cortes' },
     { key: 'alitas', label: '🍗 Alitas' },
     { key: 'parrilla', label: '🔥 Parrilla' },
+    { key: 'promociones', label: '⭐ Promos' },
     { key: 'extras', label: '➕ Extras' },
     { key: 'bebidas', label: '🥤 Bebidas' }
 ];
 
 function getMenuData() {
     return [
-        // ENTRADAS
-        { 
-            id: 1, 
-            nombre: "LOCRITO", 
-            precio: 8.20, 
-            categoria: "entradas", 
-            emoji: "🥣", 
-            img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200", 
-            desc: "Tradicional sopa de papas con aguacate y queso fresco, ideal para nostalgia.",
-            subcategoria: "SOPAS"
-        },
-        { 
-            id: 2, 
-            nombre: "GULASH HÚNGARO", 
-            precio: 10.76, 
-            categoria: "entradas", 
-            emoji: "🍲", 
-            img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200", 
-            desc: "Estofado húngaro de cocción lenta con crema agrícola, servido con arroz blanco.",
-            subcategoria: "SOPAS"
-        },
-        
-        // SOPAS
-        { 
-            id: 3, 
-            nombre: "CREMA DE CAMARONES", 
-            precio: 9.50, 
-            categoria: "sopas", 
-            emoji: "🍤", 
-            img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200", 
-            desc: "Sopa cremosa de camarones con un toque de jengibre y coco.",
-            subcategoria: "SOPAS"
-        },
-        { 
-            id: 4, 
-            nombre: "SOPA DE TORTILLA", 
-            precio: 7.80, 
-            categoria: "sopas", 
-            emoji: "🌮", 
-            img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200", 
-            desc: "Caldo de pollo con tortilla frita, aguacate, queso y crema.",
-            subcategoria: "SOPAS"
-        },
-        
-        // HAMBURGUESAS
-        { id: 5, nombre: "Brasa Clásica", precio: 6.50, categoria: "hamburguesas", emoji: "🍔", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=85", desc: "Carne al carbón, queso cheddar, lechuga, tomate y salsa de la casa." },
-        { id: 6, nombre: "Brasa Doble", precio: 8.90, categoria: "hamburguesas", emoji: "🔥", img: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?auto=format&fit=crop&w=800&q=85", desc: "Doble carne al carbón, doble cheddar, tocino crujiente y salsa BBQ." },
-        { id: 7, nombre: "BBQ Bacon", precio: 7.90, categoria: "hamburguesas", emoji: "🥓", img: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=800&q=85", desc: "Carne al carbón, queso cheddar, tocino, cebolla caramelizada y BBQ." },
-        
-        // ALITAS CON CONFIGURACIÓN DE SABORES
-        { 
-            id: 8, 
-            nombre: "4 ALITAS", 
-            precio: 6.00, 
-            categoria: "alitas", 
-            emoji: "🍗", 
-            img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", 
-            desc: "8 piezas · Elige 1-2 sabores",
-            piezas: 8,
-            saboresMin: 1,
-            saboresMax: 2
-        },
-        { 
-            id: 9, 
-            nombre: "8 ALITAS", 
-            precio: 10.00, 
-            categoria: "alitas", 
-            emoji: "🍗", 
-            img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", 
-            desc: "16 piezas · Elige 2-3 sabores",
-            piezas: 16,
-            saboresMin: 2,
-            saboresMax: 3
-        },
-        { 
-            id: 10, 
-            nombre: "12 ALITAS", 
-            precio: 14.00, 
-            categoria: "alitas", 
-            emoji: "🍗", 
-            img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", 
-            desc: "24 piezas · Elige 2-4 sabores",
-            piezas: 24,
-            saboresMin: 2,
-            saboresMax: 4
-        },
-        { 
-            id: 11, 
-            nombre: "15 ALITAS", 
-            precio: 16.00, 
-            categoria: "alitas", 
-            emoji: "🍗", 
-            img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", 
-            desc: "30 piezas · Elige 2-4 sabores",
-            piezas: 30,
-            saboresMin: 2,
-            saboresMax: 4
-        },
-        { 
-            id: 12, 
-            nombre: "20 ALITAS", 
-            precio: 21.00, 
-            categoria: "alitas", 
-            emoji: "🍗", 
-            img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", 
-            desc: "40 piezas · Elige 3-5 sabores",
-            piezas: 40,
-            saboresMin: 3,
-            saboresMax: 5
-        },
-        
-        // CORTES
-        { id: 13, nombre: "PICAÑA", precio: 10.00, categoria: "cortes", emoji: "🥩", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
-        { id: 14, nombre: "BIFE DE CHORIZO", precio: 10.00, categoria: "cortes", emoji: "🥩", img: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
-        
-        // PARRILLA
-        { id: 15, nombre: "SUPER PICADITA", precio: 7.00, categoria: "parrilla", emoji: "🎯", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200", desc: "Pollo, Lomo, Doble chorizo, Cuero, Chimichurri + Papas Tito" },
-        { id: 16, nombre: "PARRILLADA TITO", precio: 9.00, categoria: "parrilla", emoji: "🔥", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200", desc: "Pollo, Lomo, Chuleta, Triple Chorizo, Cuero, Ensalada, Chimichurri + Papas Tito" },
-        
-        // EXTRAS
-        { id: 17, nombre: "PAPAS TITO", precio: 1.50, categoria: "extras", emoji: "🍟", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "Papas fritas crujientes" },
-        { id: 18, nombre: "CHORIZO PAISA", precio: 1.50, categoria: "extras", emoji: "🌭", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "" },
-        { id: 19, nombre: "CARNE HAMBURGUESA", precio: 1.50, categoria: "extras", emoji: "🥩", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200", desc: "" },
-        
-        // BEBIDAS
-        { id: 20, nombre: "LIMONADA", precio: 2.50, categoria: "bebidas", emoji: "🍋", img: "https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=200", desc: "Natural" },
-        { id: 21, nombre: "COCA-COLA", precio: 1.50, categoria: "bebidas", emoji: "🥤", img: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200", desc: "" },
-        { id: 22, nombre: "AGUA", precio: 1.00, categoria: "bebidas", emoji: "💧", img: "https://images.unsplash.com/photo-1616118132534-381148898bb4?w=200", desc: "" }
+        { id: 1, nombre: "TITO BURGER", precio: 5.00, categoria: "hamburguesas", emoji: "🍔", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200", desc: "Carne, Queso cheddar, Cebolla caramelizada, Mayonesa Tito, Morrón asado, Mermelada de tocino + Papas Tito" },
+        { id: 2, nombre: "HAWAI", precio: 3.75, categoria: "hamburguesas", emoji: "🍍", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=200", desc: "Carne, Piña asada, Queso cheddar, Cebolla caramelizada, Mayonesa finas hierbas + Papas Tito" },
+        { id: 3, nombre: "THE BIG BOSS", precio: 5.50, categoria: "hamburguesas", emoji: "👑", img: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=200", desc: "Doble carne, Doble queso cheddar + Papas Tito" },
+        { id: 4, nombre: "PARRILLERA", precio: 3.95, categoria: "hamburguesas", emoji: "🥓", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=200", desc: "Carne, Chorizo paisa, Queso cheddar, Chimichurri + Papas Tito" },
+        { id: 5, nombre: "HULK", precio: 7.00, categoria: "hamburguesas", emoji: "💪", img: "https://images.unsplash.com/photo-1586816001966-79b736744398?w=200", desc: "Triple carne, Chorizo paisa, Triple queso cheddar + Papas Tito" },
+        { id: 6, nombre: "CLÁSICA", precio: 2.50, categoria: "hamburguesas", emoji: "🍔", img: "https://images.unsplash.com/photo-1561758033-7e924f619b47?w=200", desc: "Carne, Queso cheddar, Cebolla caramelizada, Mayonesa morrón" },
+        { id: 7, nombre: "CLÁSICA + PAPAS", precio: 3.00, categoria: "hamburguesas", emoji: "🍟", img: "https://images.unsplash.com/photo-1571091718765-18b5b145add?w=200", desc: "Clásica + Papas Tito" },
+        { id: 8, nombre: "PICAÑA", precio: 10.00, categoria: "cortes", emoji: "🥩", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
+        { id: 9, nombre: "BIFE DE CHORIZO", precio: 10.00, categoria: "cortes", emoji: "🥩", img: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
+        { id: 10, nombre: "RYBEYE", precio: 9.00, categoria: "cortes", emoji: "🥩", img: "https://images.unsplash.com/photo-1615937722923-67f6deaf2cc9?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
+        { id: 11, nombre: "T-BONE", precio: 10.00, categoria: "cortes", emoji: "🦴", img: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
+        { id: 12, nombre: "CORDERO", precio: 7.00, categoria: "cortes", emoji: "🐑", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=200", desc: "+ Chorizo, Ensalada, Chimichurri + Papas Tito" },
+        { id: 13, nombre: "LOMITO DE RES", precio: 5.00, categoria: "cortes", emoji: "🥩", img: "https://images.unsplash.com/photo-1558030006-450675393462?w=200", desc: "Jugoso Filete + Chorizo, Ensalada + Papas Tito" },
+        { id: 14, nombre: "POLLO A LA PARRILLA", precio: 4.50, categoria: "cortes", emoji: "🍗", img: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=200", desc: "Jugoso Filete + Chorizo, Ensalada + Papas Tito" },
+        { id: 15, nombre: "CHULETA DE CERDO", precio: 5.00, categoria: "cortes", emoji: "🐷", img: "https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200", desc: "Jugoso Filete + Chorizo, Ensalada + Papas Tito" },
+        { id: 16, nombre: "4 ALITAS (8)", precio: 6.00, categoria: "alitas", emoji: "🍗", img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", desc: "Papas Tito, Apio, Zanahoria. Sabores: BBQ, BBQ Picante, Mostaza y Miel, Maracuyá, Parmesano" },
+        { id: 17, nombre: "8 ALITAS (16)", precio: 10.00, categoria: "alitas", emoji: "🍗", img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", desc: "Papas Tito, Apio, Zanahoria. Sabores: BBQ, BBQ Picante, Mostaza y Miel, Maracuyá, Parmesano" },
+        { id: 18, nombre: "12 ALITAS (24)", precio: 14.00, categoria: "alitas", emoji: "🍗", img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", desc: "Papas Tito, Apio, Zanahoria. Sabores: BBQ, BBQ Picante, Mostaza y Miel, Maracuyá, Parmesano" },
+        { id: 19, nombre: "15 ALITAS (30)", precio: 16.00, categoria: "alitas", emoji: "🍗", img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", desc: "Papas Tito, Apio, Zanahoria. Sabores: BBQ, BBQ Picante, Mostaza y Miel, Maracuyá, Parmesano" },
+        { id: 20, nombre: "20 ALITAS (40)", precio: 21.00, categoria: "alitas", emoji: "🍗", img: "https://images.unsplash.com/photo-1605710379250-f332254b96de?w=200", desc: "Papas Tito, Apio, Zanahoria. Sabores: BBQ, BBQ Picante, Mostaza y Miel, Maracuyá, Parmesano" },
+        { id: 21, nombre: "SUPER PICADITA", precio: 7.00, categoria: "parrilla", emoji: "🎯", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200", desc: "Pollo, Lomo, Doble chorizo, Cuero, Chimichurri + Papas Tito" },
+        { id: 22, nombre: "PARRILLADA TITO", precio: 9.00, categoria: "parrilla", emoji: "🔥", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200", desc: "Pollo, Lomo, Chuleta, Triple Chorizo, Cuero, Ensalada, Chimichurri + Papas Tito" },
+        { id: 23, nombre: "COSTILLAS BBQ", precio: 7.00, categoria: "parrilla", emoji: "🍖", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200", desc: "Costilla especial bañada en salsa BBQ + Papas Tito" },
+        { id: 24, nombre: "PAPA CON CHILLY", precio: 4.50, categoria: "parrilla", emoji: "🧀", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "Queso mozarella, Frijoles, Carne Molida + Papas Tito" },
+        { id: 25, nombre: "CHORY PAPA", precio: 4.00, categoria: "parrilla", emoji: "🌭", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "Chorizo paisa, Chimichurri + Papas Tito" },
+        { id: 26, nombre: "CHORIPÁN", precio: 3.50, categoria: "parrilla", emoji: "🌭", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "Chorizo paisa, Chimichurri, Mayonesa morrón + Papas Tito" },
+        { id: 27, nombre: "KIT ESTRELLA", precio: 7.00, categoria: "promociones", emoji: "⭐", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200", desc: "Tito Burguer + Limonada + Papas Tito extra" },
+        { id: 28, nombre: "COMBO PAREJA", precio: 11.00, categoria: "promociones", emoji: "💑", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200", desc: "2 Hamburguesas + 2 Limonadas + Papas Tito" },
+        { id: 29, nombre: "COMBO COMPARTIR", precio: 14.00, categoria: "promociones", emoji: "🎉", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=200", desc: "Parrillada real + Jarra de limonada + Papas Tito" },
+        { id: 30, nombre: "COMBO FAMILIAR", precio: 16.00, categoria: "promociones", emoji: "👨‍👩‍👧‍👦", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200", desc: "3 Burguer + 3 Limonadas + Papas Tito" },
+        { id: 31, nombre: "PAPAS TITO", precio: 1.50, categoria: "extras", emoji: "🍟", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "" },
+        { id: 32, nombre: "CHORIZO NORMAL", precio: 1.00, categoria: "extras", emoji: "🌭", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "" },
+        { id: 33, nombre: "CHORIZO PAISA", precio: 1.50, categoria: "extras", emoji: "🌭", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "" },
+        { id: 34, nombre: "CARNE HAMBURGUESA", precio: 1.50, categoria: "extras", emoji: "🥩", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200", desc: "" },
+        { id: 35, nombre: "PIÑA", precio: 0.75, categoria: "extras", emoji: "🍍", img: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=200", desc: "" },
+        { id: 36, nombre: "CUERO", precio: 2.00, categoria: "extras", emoji: "🥓", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "" },
+        { id: 37, nombre: "ENSALADA", precio: 1.50, categoria: "extras", emoji: "🥗", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200", desc: "" },
+        { id: 38, nombre: "MAYONESA TITO", precio: 2.00, categoria: "extras", emoji: "🫙", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200", desc: "" },
+        { id: 39, nombre: "LIMONADA", precio: 2.50, categoria: "bebidas", emoji: "🍋", img: "https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=200", desc: "Natural" },
+        { id: 40, nombre: "JARRA LIMONADA", precio: 5.00, categoria: "bebidas", emoji: "🍋", img: "https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=200", desc: "" },
+        { id: 41, nombre: "COCA-COLA", precio: 1.50, categoria: "bebidas", emoji: "🥤", img: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200", desc: "" },
+        { id: 42, nombre: "AGUA", precio: 1.00, categoria: "bebidas", emoji: "💧", img: "https://images.unsplash.com/photo-1616118132534-381148898bb4?w=200", desc: "" }
     ];
 }
 
-// ============================================ //
-// FUNCIONES DE CARRITO                         //
-// ============================================ //
 function calculateTotal() { return cart.reduce((s, i) => s + i.precio * i.cantidad, 0); }
+function updateCartCount() { const el = document.getElementById('cartCount'); if (el) el.textContent = cart.reduce((s, i) => s + i.cantidad, 0); }
 
-function updateCartCount() { 
-    const el = document.getElementById('cartCount'); 
-    if (el) el.textContent = cart.reduce((s, i) => s + i.cantidad, 0); 
-}
-
-// ============================================ //
-// PANTALLA DE BIENVENIDA                        //
-// ============================================ //
-function showMenu() {
-    if (!clienteData) {
-        clienteData = {
-            tipo: 'mesa',
-            mesa: '1',
-            nombre: 'Cliente',
-            telefono: '',
-            direccion: ''
-        };
-        
-        document.getElementById('tipoPedidoBadge').textContent = '🪑 En Mesa';
-        document.getElementById('clienteBadge').textContent = '👤 Cliente';
-        document.getElementById('clienteSaludo').textContent = 'Elige lo que más se te antoje';
-    }
-    
-    const welcome = document.getElementById('welcomeScreen');
-    welcome.classList.add('hidden');
-    setTimeout(() => {
-        welcome.style.display = 'none';
-        document.getElementById('header').style.display = 'flex';
-        document.getElementById('heroSection').style.display = 'flex';
-        document.getElementById('orderSection').style.display = 'block';
-        document.getElementById('menuSection').style.display = 'block';
-        renderProducts();
-        updateCartFloat();
-        updateCartCount();
-    }, 600);
-}
-
-function showWelcome() {
-    cart = [];
-    clienteData = null;
-    selectedType = 'mesa';
-    activeCategory = 'entradas';
-    saborSeleccionado = [];
-    currentProduct = null;
-    
-    document.getElementById('header').style.display = 'none';
-    document.getElementById('heroSection').style.display = 'none';
-    document.getElementById('orderSection').style.display = 'none';
-    document.getElementById('menuSection').style.display = 'none';
-    document.getElementById('cartFloat').style.display = 'none';
-    
-    const welcome = document.getElementById('welcomeScreen');
-    welcome.style.display = 'flex';
-    welcome.classList.remove('hidden');
-    
-    updateCartCount();
-    updateCartFloat();
-    
-    document.getElementById('tipoPedidoBadge').textContent = '🪑 En Mesa';
-    document.getElementById('clienteBadge').textContent = '👤 Cliente';
-    document.getElementById('clienteSaludo').textContent = 'Elige lo que más se te antoje';
-    
-    document.getElementById('formMesa').value = '';
-    document.getElementById('formNombre').value = '';
-    document.getElementById('formTelefono').value = '';
-    document.getElementById('formDireccion').value = '';
-    
-    document.querySelectorAll('.form-type-option').forEach(o => o.classList.remove('active'));
-    document.querySelector('.form-type-option[data-type="mesa"]')?.classList.add('active');
-    document.getElementById('mesaGroup').style.display = 'block';
-    document.getElementById('nombreGroup').style.display = 'none';
-    document.getElementById('telefonoGroup').style.display = 'none';
-    document.getElementById('direccionGroup').style.display = 'none';
-    
-    closeCart();
-    closeSaborModal();
-    cerrarConfirmacion();
-    closeOrderForm();
-    
-    document.querySelectorAll('.category-btn').forEach(c => c.classList.remove('active'));
-    const firstCategory = document.querySelector('.category-btn');
-    if (firstCategory) firstCategory.classList.add('active');
-    
-    renderProducts();
-    
-    setTimeout(() => {
-        showToast('🔥 ¡Bienvenido de vuelta a TITO\'S RESTAURANT!');
-    }, 500);
-}
-
-// ============================================ //
-// FORMULARIO DE PEDIDO                         //
-// ============================================ //
-function openOrderForm() {
-    document.getElementById('orderFormOverlay').classList.add('open');
-    document.body.classList.add('no-scroll');
-}
-
-function closeOrderForm() {
-    document.getElementById('orderFormOverlay').classList.remove('open');
-    document.body.classList.remove('no-scroll');
-}
-
-function selectOrderType(type, el) {
-    selectedType = type;
-    document.querySelectorAll('.form-type-option').forEach(o => o.classList.remove('active'));
+function selectType(tipo, el) {
+    selectedType = tipo;
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
     el.classList.add('active');
-    
-    document.getElementById('mesaGroup').style.display = type === 'mesa' ? 'block' : 'none';
-    document.getElementById('nombreGroup').style.display = type !== 'mesa' ? 'block' : 'none';
-    document.getElementById('telefonoGroup').style.display = type !== 'mesa' ? 'block' : 'none';
-    document.getElementById('direccionGroup').style.display = type === 'delivery' ? 'block' : 'none';
+    document.getElementById('typeMesa').style.display = tipo === 'mesa' ? 'block' : 'none';
+    document.getElementById('typeNombre').style.display = tipo !== 'mesa' ? 'block' : 'none';
+    document.getElementById('typeTelefono').style.display = tipo !== 'mesa' ? 'block' : 'none';
+    document.getElementById('typeDireccion').style.display = tipo === 'delivery' ? 'block' : 'none';
 }
 
-function submitOrderForm(e) {
-    e.preventDefault();
-    
-    const tipo = selectedType;
-    const mesa = document.getElementById('formMesa').value;
-    const nombre = document.getElementById('formNombre').value;
-    const telefono = document.getElementById('formTelefono').value;
-    const direccion = document.getElementById('formDireccion').value;
-    
-    if (tipo === 'mesa' && !mesa) {
-        showToast('⚠️ Por favor ingresa el número de mesa');
-        return;
-    }
-    
-    if (tipo !== 'mesa') {
-        if (!nombre) {
-            showToast('⚠️ Por favor ingresa tu nombre');
-            return;
-        }
-        if (!telefono) {
-            showToast('⚠️ Por favor ingresa tu teléfono');
-            return;
-        }
-    }
-    
-    if (tipo === 'delivery' && !direccion) {
-        showToast('⚠️ Por favor ingresa la dirección de entrega');
-        return;
-    }
-    
-    clienteData = {
-        tipo,
-        mesa: mesa || null,
-        nombre: nombre || 'Cliente Mesa ' + mesa,
-        telefono: telefono || '',
-        direccion: direccion || ''
-    };
-    
-    const tipoLabels = { mesa: '🪑 En Mesa', llevar: '🛵 Para Llevar', delivery: '🚀 Delivery' };
-    document.getElementById('tipoPedidoBadge').textContent = tipoLabels[tipo];
-    document.getElementById('clienteBadge').textContent = '👤 ' + (nombre || 'Cliente Mesa ' + mesa);
-    document.getElementById('clienteSaludo').textContent = '¡Bienvenido ' + (nombre || 'Cliente') + '! Elige lo que más se te antoje';
-    
-    closeOrderForm();
-    showMenu();
-}
-
-// ============================================ //
-// FUNCIONES DEL MENÚ                            //
-// ============================================ //
 function changeCategory(cat, el) {
     activeCategory = cat;
-    document.querySelectorAll('.category-btn').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.cat-btn, .cat-pill, .cat-item').forEach(c => c.classList.remove('active'));
     if (el) el.classList.add('active');
     renderProducts();
 }
@@ -398,79 +92,37 @@ function renderProducts() {
     const products = getMenuData().filter(p => p.categoria === activeCategory);
     const grid = document.getElementById('productsGrid');
     if (!grid) return;
-    
-    const grouped = products.reduce((acc, item) => {
-        const key = item.subcategoria || 'Otros';
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(item);
-        return acc;
-    }, {});
-    
-    let html = '';
-    
-    Object.keys(grouped).forEach(subcat => {
-        const items = grouped[subcat];
-        html += `<div class="subcategory-title">${subcat}</div>`;
-        
-        items.forEach(p => {
-            html += `
-                <div class="menu-item">
-                    <div class="menu-item-header">
-                        <span class="menu-item-title">${p.emoji} ${p.nombre}</span>
-                        <span class="menu-item-price">$${p.precio.toFixed(2)}</span>
-                    </div>
-                    <hr class="menu-item-divider">
-                    <p class="menu-item-desc">${p.desc || 'Deliciosa opción'}</p>
-                    <div class="menu-item-actions">
-                        ${p.categoria === 'alitas' ? `<span class="menu-item-badge">🍗 ${p.piezas || ''} piezas</span>` : ''}
-                        <button class="btn-add-item" onclick="addToCart(${p.id})">+</button>
-                    </div>
-                </div>
-            `;
-        });
-    });
-    
-    grid.innerHTML = html;
+    grid.innerHTML = products.map(p => `
+        <div class="product-item" onclick="addToCart(${p.id})">
+            <img src="${p.img}" alt="${p.nombre}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;margin-right:10px;">
+            <div class="product-info">
+                <div class="product-name">${p.emoji} ${p.nombre}</div>
+                ${p.desc ? `<div class="product-desc">${p.desc}</div>` : ''}
+            </div>
+            <div class="product-price">$${p.precio.toFixed(2)}</div>
+            <button class="btn-add">+</button>
+        </div>
+    `).join('');
 }
 
-// ============================================ //
-// AGREGAR AL CARRITO CON VALIDACIÓN DE STOCK   //
-// ============================================ //
+// ==================== NUEVA FUNCIÓN addToCart CON MODAL VISUAL ====================
 function addToCart(id) {
     const p = getMenuData().find(x => x.id === id);
-    if (!p) return;
-    
-    const stockInfo = verificarStock(p.nombre, 1);
-    if (!stockInfo.disponible) {
-        mostrarAlertaStock(p.nombre);
-        return;
-    }
     
     if (p.categoria === 'alitas') {
         currentProduct = p;
-        maxSaboresPermitidos = p.saboresMax || 5;
-        minSaboresPermitidos = p.saboresMin || 1;
-        saborSeleccionado = [];
         openSaborModal();
     } else {
         agregarAlCarrito(p, null);
     }
 }
 
+// Función para agregar al carrito
 function agregarAlCarrito(p, saboresStr) {
     let sabor = saboresStr;
+    
     const nombreConSabor = sabor ? p.nombre + ' (' + sabor + ')' : p.nombre;
     const exist = cart.find(i => i.id === p.id && i.sabor === sabor);
-    
-    const cantidadActual = exist ? exist.cantidad : 0;
-    const nuevaCantidad = cantidadActual + 1;
-    
-    const stockInfo = verificarStock(p.nombre, nuevaCantidad);
-    if (!stockInfo.disponible) {
-        mostrarAlertaStock(p.nombre);
-        return;
-    }
-    
     if (exist) { 
         exist.cantidad++; 
     } else { 
@@ -479,60 +131,28 @@ function agregarAlCarrito(p, saboresStr) {
             nombre: nombreConSabor, 
             precio: p.precio, 
             emoji: p.emoji, 
-            img: p.img || 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200',
             cantidad: 1, 
-            sabor: sabor,
-            piezas: p.piezas || 0,
-            productoBase: p.nombre
+            sabor: sabor 
         }); 
     }
     updateCartFloat(); 
     updateCartCount();
-    showToast(`✅ ${p.nombre} agregado al carrito`);
     if (navigator.vibrate) navigator.vibrate(10);
 }
 
-// ============================================ //
-// MODAL DE SABORES                             //
-// ============================================ //
+// Funciones del modal de sabores
 function openSaborModal() {
     saborSeleccionado = [];
     document.querySelectorAll('.sabor-card').forEach(card => {
         card.classList.remove('selected');
     });
     updateSelectedList();
-    actualizarInfoSabores();
     document.getElementById('modalSabores').style.display = 'flex';
-    document.body.classList.add('no-scroll');
 }
 
 function closeSaborModal() {
     document.getElementById('modalSabores').style.display = 'none';
-    document.body.classList.remove('no-scroll');
     currentProduct = null;
-}
-
-function actualizarInfoSabores() {
-    const infoContainer = document.getElementById('saboresInfo');
-    if (!infoContainer) return;
-    
-    if (currentProduct) {
-        const piezas = currentProduct.piezas || 0;
-        const min = currentProduct.saboresMin || 1;
-        const max = currentProduct.saboresMax || 5;
-        const seleccionados = saborSeleccionado.length;
-        
-        let mensaje = `🍗 ${piezas} piezas · `;
-        if (min === max) {
-            mensaje += `Elige exactamente ${min} sabor${min > 1 ? 'es' : ''}`;
-        } else {
-            mensaje += `Elige de ${min} a ${max} sabores`;
-        }
-        mensaje += ` (${seleccionados} seleccionado${seleccionados !== 1 ? 's' : ''})`;
-        
-        infoContainer.textContent = mensaje;
-        infoContainer.style.color = seleccionados >= min && seleccionados <= max ? '#27ae60' : '#e67e22';
-    }
 }
 
 function updateSelectedList() {
@@ -540,7 +160,7 @@ function updateSelectedList() {
     if (!container) return;
     
     if (saborSeleccionado.length === 0) {
-        container.innerHTML = '<span style="color:var(--text-light);font-size:13px;">Ningún sabor seleccionado</span>';
+        container.innerHTML = '<span style="color:#999;">Ningún sabor seleccionado</span>';
         return;
     }
     
@@ -550,12 +170,11 @@ function updateSelectedList() {
             <span class="remove-sabor" onclick="removeSabor(${idx})">×</span>
         </span>
     `).join('');
-    
-    actualizarInfoSabores();
 }
 
 function removeSabor(index) {
     saborSeleccionado.splice(index, 1);
+    // Actualizar visual de las cards
     const saboresNombres = saborSeleccionado.map(s => s.nombre);
     document.querySelectorAll('.sabor-card').forEach(card => {
         const saborNombre = card.dataset.sabor;
@@ -571,386 +190,73 @@ function removeSabor(index) {
 function confirmarSabores() {
     if (!currentProduct) return;
     
-    const min = currentProduct.saboresMin || 1;
-    const max = currentProduct.saboresMax || 5;
-    const seleccionados = saborSeleccionado.length;
-    
-    if (seleccionados < min) {
-        showToast(`⚠️ Selecciona al menos ${min} sabor${min > 1 ? 'es' : ''} para tus alitas`);
+    if (saborSeleccionado.length === 0) {
+        alert('⚠️ Por favor selecciona al menos un sabor para tus alitas');
         return;
     }
     
-    if (seleccionados > max) {
-        showToast(`⚠️ Máximo ${max} sabor${max > 1 ? 'es' : ''} permitido${max > 1 ? 's' : ''}`);
-        return;
-    }
-    
+    // Convertir sabores seleccionados a string
     const saboresStr = saborSeleccionado.map(s => s.nombre).join(', ');
+    
+    // Agregar al carrito
     agregarAlCarrito(currentProduct, saboresStr);
+    
+    // Cerrar modal
     closeSaborModal();
 }
+// ==================== FIN NUEVAS FUNCIONES ====================
 
-// ============================================ //
-// CARRITO FLOTANTE Y MODAL                      //
-// ============================================ //
 function updateCartFloat() {
     const count = cart.reduce((s, i) => s + i.cantidad, 0);
     const total = calculateTotal();
     const floatEl = document.getElementById('cartFloat');
     if (!floatEl) return;
-    if (count > 0) { 
-        floatEl.style.display = 'flex'; 
-        document.getElementById('cartFloatCount').textContent = count; 
-        document.getElementById('cartFloatTotal').textContent = '$' + total.toFixed(2); 
-    } else { 
-        floatEl.style.display = 'none'; 
-    }
+    if (count > 0) { floatEl.style.display = 'flex'; document.getElementById('cartFloatCount').textContent = count; document.getElementById('cartFloatTotal').textContent = '$' + total.toFixed(2); }
+    else { floatEl.style.display = 'none'; }
 }
 
-function goToCart() { 
-    renderCartItems(); 
-    document.getElementById('cartOverlay').classList.add('open');
-    document.body.classList.add('no-scroll');
-}
-
-function closeCart() {
-    document.getElementById('cartOverlay').classList.remove('open');
-    document.body.classList.remove('no-scroll');
-}
+function goToCart() { renderCartItems(); document.getElementById('modalCart').style.display = 'flex'; }
+function closeCart() { document.getElementById('modalCart').style.display = 'none'; }
 
 function renderCartItems() {
     const total = calculateTotal();
     document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
     const itemsEl = document.getElementById('cartItems');
     if (!itemsEl) return;
-    if (cart.length === 0) { 
-        itemsEl.innerHTML = `
-            <div class="empty-cart">
-                <div>🍽️</div>
-                <strong>Tu carrito está vacío</strong>
-                <p style="font-size:13px;margin-top:5px;color:var(--text-light);">Agrega algo delicioso.</p>
-            </div>
-        `; 
-        return; 
-    }
+    if (cart.length === 0) { itemsEl.innerHTML = '<p style="text-align:center;color:#999;">Vacío</p>'; return; }
     itemsEl.innerHTML = cart.map((i, idx) => `
-        <div class="cart-item">
-            <img src="${i.img}" class="cart-item-image" alt="${i.nombre}">
-            <div class="cart-item-info">
-                <h4>${i.emoji} ${i.nombre}</h4>
-                ${i.sabor ? `<small style="color:var(--orange-light);font-size:11px;">🔥 ${i.sabor}</small>` : ''}
-                ${i.piezas ? `<small style="color:var(--text-light);font-size:10px;display:block;">🍗 ${i.piezas} piezas</small>` : ''}
-                <div class="cart-item-price">$${(i.precio * i.cantidad).toFixed(2)}</div>
-                <div class="quantity">
-                    <button onclick="cambiarCantidad(${idx}, -1)">−</button>
-                    <span>${i.cantidad}</span>
-                    <button onclick="cambiarCantidad(${idx}, 1)">+</button>
-                    <button class="remove" onclick="eliminarItem(${idx})">🗑</button>
-                </div>
+        <div class="cart-item-line">
+            <div><strong>${i.emoji} ${i.nombre}</strong>${i.sabor ? '<br><small style="color:#f59e0b;">🔥 ' + i.sabor + '</small>' : ''}<br><small>$${i.precio.toFixed(2)} c/u</small></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <button class="btn-qty" onclick="cart[${idx}].cantidad--; if(cart[${idx}].cantidad<=0)cart.splice(${idx},1);renderCartItems();updateCartFloat();updateCartCount();">−</button>
+                <span>${i.cantidad}</span>
+                <button class="btn-qty" onclick="cart[${idx}].cantidad++;renderCartItems();updateCartFloat();updateCartCount();">+</button>
             </div>
         </div>
     `).join('');
 }
 
-// ============================================ //
-// CAMBIAR CANTIDAD CON VALIDACIÓN DE STOCK     //
-// ============================================ //
-function cambiarCantidad(idx, delta) {
-    const item = cart[idx];
-    const nuevaCantidad = item.cantidad + delta;
-    
-    if (nuevaCantidad <= 0) {
-        cart.splice(idx, 1);
-        renderCartItems();
-        updateCartFloat();
-        updateCartCount();
-        return;
-    }
-    
-    const productoBase = item.productoBase || item.nombre;
-    const stockInfo = verificarStock(productoBase, nuevaCantidad);
-    
-    if (!stockInfo.disponible) {
-        mostrarAlertaStock(productoBase);
-        return;
-    }
-    
-    item.cantidad = nuevaCantidad;
-    renderCartItems();
-    updateCartFloat();
-    updateCartCount();
-}
-
-function eliminarItem(idx) {
-    const removed = cart[idx].nombre;
-    cart.splice(idx, 1);
-    renderCartItems();
-    updateCartFloat();
-    updateCartCount();
-    showToast(`${removed} eliminado`);
-}
-
-// ============================================ //
-// CONFIRMAR PEDIDO - GUARDA EN MARKETPOS      //
-// ============================================ //
-function confirmOrder() {
-    if (cart.length === 0) { 
-        showToast('⚠️ Agrega productos al carrito');
-        return; 
-    }
-    
-    // Verificar stock para todos los items
-    let stockInsuficiente = false;
-    let productoFaltante = '';
-    
-    for (const item of cart) {
-        const productoBase = item.productoBase || item.nombre;
-        const stockInfo = verificarStock(productoBase, item.cantidad);
-        
-        if (!stockInfo.disponible) {
-            stockInsuficiente = true;
-            productoFaltante = productoBase;
-            break;
-        }
-    }
-    
-    if (stockInsuficiente) {
-        mostrarAlertaStock(productoFaltante);
-        return;
-    }
-    
+async function confirmOrder() {
+    if (cart.length === 0) { alert('⚠️ Agrega productos'); return; }
     const total = calculateTotal();
+    const mesaNum = selectedType === 'mesa' ? document.getElementById('typeMesa')?.value || '1' : 'Delivery';
+    const nombre = selectedType === 'mesa' ? 'Cliente Mesa ' + mesaNum : document.getElementById('typeNombre')?.value || 'Cliente';
+    const pedido = { cliente: { nombre, mesa: mesaNum, tipoPedido: selectedType, telefono: document.getElementById('typeTelefono')?.value || '', direccion: document.getElementById('typeDireccion')?.value || '' }, items: cart.map(i => ({ id: i.id, nombre: i.nombre, precio: i.precio, emoji: i.emoji, cantidad: i.cantidad, sabor: i.sabor || '' })), total };
     
-    let clienteInfo = clienteData;
-    if (!clienteInfo) {
-        clienteInfo = {
-            tipo: 'mesa',
-            mesa: '1',
-            nombre: 'Cliente',
-            telefono: '',
-            direccion: ''
-        };
-    }
-    
-    // Obtener el número de mesa o "Llevar" según el tipo
-    let mesaNumero = clienteInfo.mesa || '1';
-    let nombreCliente = clienteInfo.nombre || 'Cliente';
-    
-    // Para tipo "llevar", no usar número de mesa
-    const tipoPedido = clienteInfo.tipo || 'mesa';
-    const mostrarMesa = tipoPedido === 'mesa' ? mesaNumero : 'Llevar';
-    
-    // Crear el pedido en el formato que espera la caja
-    const pedido = { 
-        id: 'ped_' + Date.now(),
-        cliente: { 
-            nombre: tipoPedido === 'mesa' ? 'Cliente Mesa ' + mesaNumero : nombreCliente,
-            mesa: tipoPedido === 'mesa' ? mesaNumero : 'Llevar',
-            tipoPedido: tipoPedido,
-            telefono: clienteInfo.telefono || '',
-            direccion: clienteInfo.direccion || ''
-        }, 
-        items: cart.map(i => ({ 
-            id: i.id, 
-            nombre: i.nombre, 
-            precio: i.precio, 
-            emoji: i.emoji, 
-            cantidad: i.cantidad, 
-            sabor: i.sabor || '',
-            piezas: i.piezas || 0,
-            productoBase: i.productoBase || i.nombre
-        })), 
-        total: total,
-        estado: 'nuevo',
-        fecha: new Date().toISOString(),
-        timestamp: Date.now(),
-        fuente: 'digital'
-    };
-    
-    // IMPORTANTE: Guardar en marketpos_pedidos_online para que la caja lo vea
+    try { await fetch('/api/pedidos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) }); } catch(e) {}
     const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    pedido.id = Date.now(); pedido.fecha = new Date().toISOString(); pedido.estado = 'nuevo';
+    pedidosLocal.unshift(pedido); localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+    if (selectedType === 'mesa') { const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]'); const mesa = mesasLocal.find(m => m.numero === parseInt(mesaNum)); if (mesa) { mesa.estado = 'ocupada'; mesa.orden = pedido.items; } localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); }
     
-    // Verificar si ya existe (evitar duplicados)
-    const existe = pedidosLocal.some(p => p.id === pedido.id);
-    if (!existe) {
-        pedidosLocal.unshift(pedido);
-        localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
-        
-        // También guardar en pedidos digitales específicos
-        const pedidosDigital = JSON.parse(localStorage.getItem('marketpos_pedidos_digital') || '[]');
-        pedidosDigital.unshift(pedido);
-        localStorage.setItem('marketpos_pedidos_digital', JSON.stringify(pedidosDigital));
-        
-        console.log('📦 Pedido guardado en marketpos_pedidos_online:', pedido);
-    }
-    
-    // SOLO si es MESA, actualizar estado de la mesa
-    if (tipoPedido === 'mesa') { 
-        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]'); 
-        const mesa = mesasLocal.find(m => m.numero === parseInt(mesaNumero)); 
-        if (mesa) { 
-            mesa.estado = 'ocupada'; 
-            mesa.orden = pedido.items; 
-        } 
-        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
-    }
-    
-    // Notificar a la caja que hay un nuevo pedido
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'marketpos_pedidos_online',
-        newValue: JSON.stringify(pedidosLocal)
-    }));
-    
-    // Mostrar mensaje según el tipo de pedido
-    let mensajeConfirmacion = '✅ ¡Pedido enviado a cocina!';
-    if (tipoPedido === 'llevar') {
-        mensajeConfirmacion = '🛵 ¡Pedido para llevar enviado a cocina! Estará listo para recoger.';
-    } else if (tipoPedido === 'delivery') {
-        mensajeConfirmacion = '🚀 ¡Pedido a domicilio enviado a cocina! Llegará pronto.';
-    }
-    
-    mostrarConfirmacion(pedido, clienteInfo, mensajeConfirmacion);
-    
-    // Descontar del stock después de confirmar
-    for (const item of cart) {
-        const productoBase = item.productoBase || item.nombre;
-        actualizarStock(productoBase, item.cantidad);
-    }
-    
-    cart = []; 
-    updateCartCount(); 
-    updateCartFloat();
-    closeCart();
+    alert('✅ Pedido enviado a cocina');
+    cart = []; updateCartCount(); updateCartFloat();
+    document.getElementById('modalCart').style.display = 'none';
     renderProducts();
 }
 
-// ============================================ //
-// FUNCIÓN PARA ACTUALIZAR STOCK                //
-// ============================================ //
-function actualizarStock(productoNombre, cantidad) {
-    const inventarioGuardado = localStorage.getItem('tito_inventario');
-    if (!inventarioGuardado) return false;
-    
-    const inventario = JSON.parse(inventarioGuardado);
-    const stockActual = inventario[productoNombre] || 0;
-    const nuevoStock = stockActual - cantidad;
-    
-    if (nuevoStock < 0) {
-        return false;
-    }
-    
-    inventario[productoNombre] = nuevoStock;
-    localStorage.setItem('tito_inventario', JSON.stringify(inventario));
-    
-    // Registrar movimiento
-    const movimientosGuardados = localStorage.getItem('tito_movimientos');
-    let movimientos = movimientosGuardados ? JSON.parse(movimientosGuardados) : [];
-    
-    const nuevoMovimiento = {
-        id: 'mov_' + Date.now(),
-        producto: productoNombre,
-        cantidad: cantidad,
-        tipo: 'venta',
-        motivo: 'venta',
-        observaciones: 'Pedido desde menú digital',
-        fecha: new Date().toLocaleString('es-ES', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric',
-            hour: '2-digit', 
-            minute: '2-digit' 
-        }),
-        timestamp: Date.now()
-    };
-    
-    movimientos.push(nuevoMovimiento);
-    localStorage.setItem('tito_movimientos', JSON.stringify(movimientos));
-    
-    // Registrar en producción
-    const produccionGuardada = localStorage.getItem('tito_produccion_data');
-    let produccion = produccionGuardada ? JSON.parse(produccionGuardada) : [];
-    
-    const registro = {
-        id: 'prod_' + Date.now(),
-        producto: productoNombre,
-        cantidad: cantidad,
-        estado: 'completado',
-        observaciones: 'Venta desde menú digital',
-        hora: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-        timestamp: Date.now(),
-        tipo: 'consumo'
-    };
-    produccion.push(registro);
-    if (produccion.length > 1000) produccion = produccion.slice(-1000);
-    localStorage.setItem('tito_produccion_data', JSON.stringify(produccion));
-    
-    return true;
-}
-
-// ============================================ //
-// MODAL DE CONFIRMACIÓN (AGRADECIMIENTO)      //
-// ============================================ //
-function mostrarConfirmacion(pedido, cliente, mensajeExtra) {
-    const modal = document.getElementById('modalConfirmacion');
-    if (!modal) return;
-    
-    const tipoLabels = { mesa: '🪑 En Mesa', llevar: '🛵 Para Llevar', delivery: '🚀 Delivery' };
-    document.getElementById('confirmTipo').textContent = tipoLabels[cliente.tipo] || '🪑 En Mesa';
-    document.getElementById('confirmCliente').textContent = cliente.nombre || 'Cliente';
-    document.getElementById('confirmItems').textContent = pedido.items.length;
-    document.getElementById('confirmTotal').textContent = '$' + pedido.total.toFixed(2);
-    
-    const pElement = modal.querySelector('p');
-    if (pElement && mensajeExtra) {
-        pElement.textContent = mensajeExtra || 'Tu pedido está siendo preparado con el mejor sabor al carbón.';
-    }
-    
-    modal.classList.add('show');
-    document.body.classList.add('no-scroll');
-    
-    if (navigator.vibrate) navigator.vibrate([50, 50, 100]);
-}
-
-function cerrarConfirmacion() {
-    const modal = document.getElementById('modalConfirmacion');
-    if (modal) {
-        modal.classList.remove('show');
-    }
-    document.body.classList.remove('no-scroll');
-    
-    showToast('🙏 ¡Gracias por confiar en TITO\'S RESTAURANT!');
-    
-    setTimeout(() => {
-        showWelcome();
-    }, 500);
-}
-
-// ============================================ //
-// TOAST                                        //
-// ============================================ //
-let toastTimer;
-
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3500);
-}
-
-// ============================================ //
-// INICIALIZACIÓN                                //
-// ============================================ //
+// Inicializar eventos del modal de sabores
 document.addEventListener('DOMContentLoaded', () => {
-    const categoriesContainer = document.getElementById('categoriesContainer');
-    if (categoriesContainer) {
-        categoriesContainer.innerHTML = categories.map(c => `
-            <button class="category-btn ${c.key === activeCategory ? 'active' : ''}" onclick="changeCategory('${c.key}', this)">${c.label}</button>
-        `).join('');
-    }
-    
     const saboresGrid = document.getElementById('saboresGrid');
     if (saboresGrid) {
         saboresGrid.addEventListener('click', (e) => {
@@ -958,16 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (saborCard) {
                 const sabor = saborCard.dataset.sabor;
                 const id = saborCard.dataset.id;
-                const max = maxSaboresPermitidos || 5;
                 
                 if (saborCard.classList.contains('selected')) {
                     saborCard.classList.remove('selected');
                     saborSeleccionado = saborSeleccionado.filter(s => s.nombre !== sabor);
                 } else {
-                    if (saborSeleccionado.length >= max) {
-                        showToast(`⚠️ Máximo ${max} sabor${max > 1 ? 'es' : ''} permitido${max > 1 ? 's' : ''}`);
-                        return;
-                    }
                     saborCard.classList.add('selected');
                     saborSeleccionado.push({ id: id, nombre: sabor });
                 }
@@ -976,337 +277,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    const modalSabores = document.getElementById('modalSabores');
-    if (modalSabores) {
-        modalSabores.addEventListener('click', (e) => {
-            if (e.target === modalSabores) {
+    // Cerrar modal al hacer clic fuera
+    const modal = document.getElementById('modalSabores');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
                 closeSaborModal();
             }
         });
     }
-    
-    document.getElementById('closeCart').addEventListener('click', closeCart);
-    document.getElementById('cartOverlay').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('cartOverlay')) {
-            closeCart();
-        }
-    });
-    
-    updateCartFloat();
-    updateCartCount();
-    renderProducts();
 });
 
-// ============================================ //
-// FUNCIONES PARA INTEGRACIÓN CON CAJA          //
-// ============================================ //
-
-// Función para obtener pedidos pendientes de llevar desde el menú digital
-function obtenerPedidosLlevarDigital() {
-    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-    return pedidosLocal.filter(p => 
-        p.fuente === 'digital' && 
-        p.cliente?.tipoPedido === 'llevar' && 
-        (p.estado === 'nuevo' || p.estado === 'preparando' || p.estado === 'listo')
-    );
-}
-
-// Función para marcar un pedido como listo para cobrar
-function marcarPedidoListo(pedidoId) {
-    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-    const pedido = pedidosLocal.find(p => p.id === pedidoId);
-    if (pedido) {
-        pedido.estado = 'listo';
-        localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
-        
-        window.dispatchEvent(new StorageEvent('storage', {
-            key: 'marketpos_pedidos_online',
-            newValue: JSON.stringify(pedidosLocal)
-        }));
-        
-        return true;
-    }
-    return false;
-}
-// ============================================ //
-// FUNCIONES PARA INTEGRACIÓN CON CAJA          //
-// ============================================ //
-
-// Sobrescribir la función confirmOrder para asegurar que se guarde correctamente
-const confirmOrderOriginal = confirmOrder;
-
-confirmOrder = function() {
-    if (cart.length === 0) { 
-        showToast('⚠️ Agrega productos al carrito');
-        return; 
-    }
-    
-    // Verificar stock para todos los items
-    let stockInsuficiente = false;
-    let productoFaltante = '';
-    
-    for (const item of cart) {
-        const productoBase = item.productoBase || item.nombre;
-        const stockInfo = verificarStock(productoBase, item.cantidad);
-        
-        if (!stockInfo.disponible) {
-            stockInsuficiente = true;
-            productoFaltante = productoBase;
-            break;
-        }
-    }
-    
-    if (stockInsuficiente) {
-        mostrarAlertaStock(productoFaltante);
-        return;
-    }
-    
-    const total = calculateTotal();
-    
-    let clienteInfo = clienteData;
-    if (!clienteInfo) {
-        clienteInfo = {
-            tipo: 'mesa',
-            mesa: '1',
-            nombre: 'Cliente',
-            telefono: '',
-            direccion: ''
-        };
-    }
-    
-    const pedido = { 
-        id: 'ped_' + Date.now(),
-        cliente: { 
-            nombre: clienteInfo.nombre || 'Cliente',
-            mesa: clienteInfo.tipo === 'mesa' ? (clienteInfo.mesa || '1') : 'Llevar',
-            tipoPedido: clienteInfo.tipo || 'mesa',
-            telefono: clienteInfo.telefono || '',
-            direccion: clienteInfo.direccion || ''
-        }, 
-        items: cart.map(i => ({ 
-            id: i.id, 
-            nombre: i.nombre, 
-            precio: i.precio, 
-            emoji: i.emoji, 
-            cantidad: i.cantidad, 
-            sabor: i.sabor || '',
-            piezas: i.piezas || 0,
-            productoBase: i.productoBase || i.nombre
-        })), 
-        total: total,
-        estado: 'nuevo',
-        fecha: new Date().toISOString(),
-        timestamp: Date.now(),
-        fuente: 'digital'
-    };
-    
-    // Guardar en marketpos_pedidos_online
-    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-    const existe = pedidosLocal.some(p => p.id === pedido.id);
-    if (!existe) {
-        pedidosLocal.unshift(pedido);
-        localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
-        
-        // Guardar en cocina_pedidos también
-        const pedidosCocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
-        pedidosCocina.unshift(pedido);
-        localStorage.setItem('cocina_pedidos', JSON.stringify(pedidosCocina));
-        
-        console.log('📦 Pedido digital guardado:', pedido);
-    }
-    
-    // Actualizar mesas SOLO si es tipo mesa
-    if (clienteInfo.tipo === 'mesa') { 
-        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]'); 
-        const mesa = mesasLocal.find(m => m.numero === parseInt(clienteInfo.mesa || '1')); 
-        if (mesa) { 
-            mesa.estado = 'ocupada'; 
-            mesa.orden = pedido.items; 
-        } 
-        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
-    }
-    
-    // Notificar a otras pestañas
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'marketpos_pedidos_online',
-        newValue: JSON.stringify(pedidosLocal)
-    }));
-    
-    // Notificar evento personalizado
-    window.dispatchEvent(new CustomEvent('nuevoPedido', { detail: pedido }));
-    
-    // Mostrar confirmación
-    let mensajeConfirmacion = '✅ ¡Pedido enviado a cocina!';
-    if (clienteInfo.tipo === 'llevar') {
-        mensajeConfirmacion = '🛵 ¡Pedido para llevar enviado a cocina! Estará listo para recoger.';
-    } else if (clienteInfo.tipo === 'delivery') {
-        mensajeConfirmacion = '🚀 ¡Pedido a domicilio enviado a cocina! Llegará pronto.';
-    }
-    
-    mostrarConfirmacion(pedido, clienteInfo, mensajeConfirmacion);
-    
-    // Descontar del stock
-    for (const item of cart) {
-        const productoBase = item.productoBase || item.nombre;
-        actualizarStock(productoBase, item.cantidad);
-    }
-    
-    cart = []; 
-    updateCartCount(); 
-    updateCartFloat();
-    closeCart();
-    renderProducts();
-    
-    console.log('✅ Pedido confirmado y guardado. Total pedidos:', pedidosLocal.length);
-};
-
-// Función para forzar la sincronización con la caja
-function sincronizarConCaja() {
-    const pedidos = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-    console.log('🔄 Sincronizando con caja. Pedidos totales:', pedidos.length);
-    
-    // Notificar a todas las pestañas
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'marketpos_pedidos_online',
-        newValue: JSON.stringify(pedidos)
-    }));
-    
-    showToast('🔄 Pedidos sincronizados con caja');
-}
-// ============================================ //
-// FUNCIÓN PARA GUARDAR PEDIDO EN MARKETPOS     //
-// ============================================ //
-
-function guardarPedidoEnMarketpos(pedido) {
-    // Guardar en marketpos_pedidos_online (lo que usa la caja)
-    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
-    pedidosLocal.unshift(pedido);
-    localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
-    
-    // También guardar en cocina_pedidos para la cocina
-    const pedidosCocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
-    pedidosCocina.unshift(pedido);
-    localStorage.setItem('cocina_pedidos', JSON.stringify(pedidosCocina));
-    
-    console.log('📦 Pedido guardado en marketpos_pedidos_online:', pedido);
-    console.log('📋 Total pedidos:', pedidosLocal.length);
-    
-    // Notificar a otras pestañas (para sincronización en tiempo real)
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'marketpos_pedidos_online',
-        newValue: JSON.stringify(pedidosLocal)
-    }));
-    
-    return true;
-}
-
-// Sobrescribir confirmOrder para usar el guardado correcto
-confirmOrder = function() {
-    if (cart.length === 0) { 
-        showToast('⚠️ Agrega productos al carrito');
-        return; 
-    }
-    
-    // Verificar stock para todos los items
-    let stockInsuficiente = false;
-    let productoFaltante = '';
-    
-    for (const item of cart) {
-        const productoBase = item.productoBase || item.nombre;
-        const stockInfo = verificarStock(productoBase, item.cantidad);
-        
-        if (!stockInfo.disponible) {
-            stockInsuficiente = true;
-            productoFaltante = productoBase;
-            break;
-        }
-    }
-    
-    if (stockInsuficiente) {
-        mostrarAlertaStock(productoFaltante);
-        return;
-    }
-    
-    const total = calculateTotal();
-    
-    let clienteInfo = clienteData;
-    if (!clienteInfo) {
-        clienteInfo = {
-            tipo: 'mesa',
-            mesa: '1',
-            nombre: 'Cliente',
-            telefono: '',
-            direccion: ''
-        };
-    }
-    
-    // Crear pedido en el formato que espera la caja
-    const pedido = { 
-        id: 'ped_' + Date.now(),
-        cliente: { 
-            nombre: clienteInfo.nombre || 'Cliente',
-            mesa: clienteInfo.tipo === 'mesa' ? (clienteInfo.mesa || '1') : 'Llevar',
-            tipoPedido: clienteInfo.tipo || 'mesa',
-            telefono: clienteInfo.telefono || '',
-            direccion: clienteInfo.direccion || ''
-        }, 
-        items: cart.map(i => ({ 
-            id: i.id, 
-            nombre: i.nombre, 
-            precio: i.precio, 
-            emoji: i.emoji, 
-            cantidad: i.cantidad, 
-            sabor: i.sabor || '',
-            piezas: i.piezas || 0,
-            productoBase: i.productoBase || i.nombre
-        })), 
-        total: total,
-        estado: 'nuevo',
-        fecha: new Date().toISOString(),
-        timestamp: Date.now(),
-        fuente: 'digital'
-    };
-    
-    // 🔥 GUARDAR EN MARKETPOS (como lo hace la caja)
-    guardarPedidoEnMarketpos(pedido);
-    
-    // Actualizar mesas SOLO si es tipo mesa
-    if (clienteInfo.tipo === 'mesa') { 
-        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]'); 
-        const mesa = mesasLocal.find(m => m.numero === parseInt(clienteInfo.mesa || '1')); 
-        if (mesa) { 
-            mesa.estado = 'ocupada'; 
-            mesa.orden = pedido.items; 
-        } 
-        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
-    }
-    
-    // Mostrar mensaje según el tipo de pedido
-    let mensajeConfirmacion = '✅ ¡Pedido enviado a cocina!';
-    if (clienteInfo.tipo === 'llevar') {
-        mensajeConfirmacion = '🛵 ¡Pedido para llevar enviado a cocina!';
-    } else if (clienteInfo.tipo === 'delivery') {
-        mensajeConfirmacion = '🚀 ¡Pedido a domicilio enviado a cocina!';
-    }
-    
-    mostrarConfirmacion(pedido, clienteInfo, mensajeConfirmacion);
-    
-    // Descontar del stock
-    for (const item of cart) {
-        const productoBase = item.productoBase || item.nombre;
-        actualizarStock(productoBase, item.cantidad);
-    }
-    
-    cart = []; 
-    updateCartCount(); 
-    updateCartFloat();
-    closeCart();
-    renderProducts();
-    
-    console.log('✅ Pedido confirmado y guardado correctamente');
-};
-// Exponer funciones globalmente
-window.sincronizarConCaja = sincronizarConCaja;
-// Exponer funciones para la caja
-window.obtenerPedidosLlevarDigital = obtenerPedidosLlevarDigital;
-window.marcarPedidoListo = marcarPedidoListo;
+document.getElementById('categoriesContainer').innerHTML = categories.map(c => `
+    <button class="cat-btn ${c.key === activeCategory ? 'active' : ''}" onclick="changeCategory('${c.key}', this)">${c.label}</button>
+`).join('');
+renderProducts();

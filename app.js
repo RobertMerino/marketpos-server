@@ -1356,6 +1356,57 @@ async function enviarACocinaPOS() {
     cartPOS = []; 
     renderCartPOS();
 }
+// ============================================ //
+// FUNCIONES PARA RECIBIR PEDIDOS DE TODAS      //
+// LAS FUENTES (MESERO, DIGITAL, COCINA)        //
+// ============================================ //
+
+// Escuchar eventos de nuevos pedidos
+window.addEventListener('nuevoPedido', function(e) {
+    console.log('📦 Nuevo pedido recibido en caja:', e.detail);
+    renderizarMesasPOS();
+});
+
+// Escuchar cambios en localStorage
+window.addEventListener('storage', function(e) {
+    if (e.key === 'marketpos_pedidos_online' || e.key === 'cocina_pedidos') {
+        console.log('🔄 Cambio detectado en pedidos desde:', e.key);
+        renderizarMesasPOS();
+    }
+});
+
+// Función para recargar todos los pedidos manualmente
+function recargarTodosLosPedidos() {
+    console.log('🔄 Recargando todos los pedidos...');
+    const pedidos = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    const cocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
+    console.log('📋 Pedidos en marketpos_pedidos_online:', pedidos.length);
+    console.log('📋 Pedidos en cocina_pedidos:', cocina.length);
+    renderizarMesasPOS();
+    mostrarNotificacion(`🔄 ${pedidos.length} pedidos cargados`);
+}
+
+// Exponer funciones globalmente
+window.recargarTodosLosPedidos = recargarTodosLosPedidos;
+window.renderizarMesasPOS = renderizarMesasPOS;
+
+// Agregar botón de recarga en la vista de mesas
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar si existe el botón de recarga
+    const headerMesas = document.querySelector('.mesas-view-header');
+    if (headerMesas) {
+        // Verificar si ya existe el botón
+        let btnRecarga = headerMesas.querySelector('.btn-recarga');
+        if (!btnRecarga) {
+            btnRecarga = document.createElement('button');
+            btnRecarga.className = 'btn-add-premium btn-recarga';
+            btnRecarga.innerHTML = '🔄 Recargar Pedidos';
+            btnRecarga.style.cssText = 'background:#e67e22; margin-left:10px;';
+            btnRecarga.onclick = recargarTodosLosPedidos;
+            headerMesas.appendChild(btnRecarga);
+        }
+    }
+});
 // Exponer funciones globalmente
 window.addToCartPOS = addToCartPOS;
 window.cobrarPOS = cobrarPOS;

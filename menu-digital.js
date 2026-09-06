@@ -1028,7 +1028,154 @@ function marcarPedidoListo(pedidoId) {
     }
     return false;
 }
+// ============================================ //
+// FUNCIONES PARA INTEGRACIÓN CON CAJA          //
+// ============================================ //
 
+// Sobrescribir la función confirmOrder para asegurar que se guarde correctamente
+const confirmOrderOriginal = confirmOrder;
+
+confirmOrder = function() {
+    if (cart.length === 0) { 
+        showToast('⚠️ Agrega productos al carrito');
+        return; 
+    }
+    
+    // Verificar stock para todos los items
+    let stockInsuficiente = false;
+    let productoFaltante = '';
+    
+    for (const item of cart) {
+        const productoBase = item.productoBase || item.nombre;
+        const stockInfo = verificarStock(productoBase, item.cantidad);
+        
+        if (!stockInfo.disponible) {
+            stockInsuficiente = true;
+            productoFaltante = productoBase;
+            break;
+        }
+    }
+    
+    if (stockInsuficiente) {
+        mostrarAlertaStock(productoFaltante);
+        return;
+    }
+    
+    const total = calculateTotal();
+    
+    let clienteInfo = clienteData;
+    if (!clienteInfo) {
+        clienteInfo = {
+            tipo: 'mesa',
+            mesa: '1',
+            nombre: 'Cliente',
+            telefono: '',
+            direccion: ''
+        };
+    }
+    
+    const pedido = { 
+        id: 'ped_' + Date.now(),
+        cliente: { 
+            nombre: clienteInfo.nombre || 'Cliente',
+            mesa: clienteInfo.tipo === 'mesa' ? (clienteInfo.mesa || '1') : 'Llevar',
+            tipoPedido: clienteInfo.tipo || 'mesa',
+            telefono: clienteInfo.telefono || '',
+            direccion: clienteInfo.direccion || ''
+        }, 
+        items: cart.map(i => ({ 
+            id: i.id, 
+            nombre: i.nombre, 
+            precio: i.precio, 
+            emoji: i.emoji, 
+            cantidad: i.cantidad, 
+            sabor: i.sabor || '',
+            piezas: i.piezas || 0,
+            productoBase: i.productoBase || i.nombre
+        })), 
+        total: total,
+        estado: 'nuevo',
+        fecha: new Date().toISOString(),
+        timestamp: Date.now(),
+        fuente: 'digital'
+    };
+    
+    // Guardar en marketpos_pedidos_online
+    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    const existe = pedidosLocal.some(p => p.id === pedido.id);
+    if (!existe) {
+        pedidosLocal.unshift(pedido);
+        localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+        
+        // Guardar en cocina_pedidos también
+        const pedidosCocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
+        pedidosCocina.unshift(pedido);
+        localStorage.setItem('cocina_pedidos', JSON.stringify(pedidosCocina));
+        
+        console.log('📦 Pedido digital guardado:', pedido);
+    }
+    
+    // Actualizar mesas SOLO si es tipo mesa
+    if (clienteInfo.tipo === 'mesa') { 
+        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]'); 
+        const mesa = mesasLocal.find(m => m.numero === parseInt(clienteInfo.mesa || '1')); 
+        if (mesa) { 
+            mesa.estado = 'ocupada'; 
+            mesa.orden = pedido.items; 
+        } 
+        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
+    }
+    
+    // Notificar a otras pestañas
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'marketpos_pedidos_online',
+        newValue: JSON.stringify(pedidosLocal)
+    }));
+    
+    // Notificar evento personalizado
+    window.dispatchEvent(new CustomEvent('nuevoPedido', { detail: pedido }));
+    
+    // Mostrar confirmación
+    let mensajeConfirmacion = '✅ ¡Pedido enviado a cocina!';
+    if (clienteInfo.tipo === 'llevar') {
+        mensajeConfirmacion = '🛵 ¡Pedido para llevar enviado a cocina! Estará listo para recoger.';
+    } else if (clienteInfo.tipo === 'delivery') {
+        mensajeConfirmacion = '🚀 ¡Pedido a domicilio enviado a cocina! Llegará pronto.';
+    }
+    
+    mostrarConfirmacion(pedido, clienteInfo, mensajeConfirmacion);
+    
+    // Descontar del stock
+    for (const item of cart) {
+        const productoBase = item.productoBase || item.nombre;
+        actualizarStock(productoBase, item.cantidad);
+    }
+    
+    cart = []; 
+    updateCartCount(); 
+    updateCartFloat();
+    closeCart();
+    renderProducts();
+    
+    console.log('✅ Pedido confirmado y guardado. Total pedidos:', pedidosLocal.length);
+};
+
+// Función para forzar la sincronización con la caja
+function sincronizarConCaja() {
+    const pedidos = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    console.log('🔄 Sincronizando con caja. Pedidos totales:', pedidos.length);
+    
+    // Notificar a todas las pestañas
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'marketpos_pedidos_online',
+        newValue: JSON.stringify(pedidos)
+    }));
+    
+    showToast('🔄 Pedidos sincronizados con caja');
+}
+
+// Exponer funciones globalmente
+window.sincronizarConCaja = sincronizarConCaja;
 // Exponer funciones para la caja
 window.obtenerPedidosLlevarDigital = obtenerPedidosLlevarDigital;
 window.marcarPedidoListo = marcarPedidoListo;

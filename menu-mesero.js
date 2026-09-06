@@ -676,3 +676,78 @@ confirmOrder = function() {
     updateCartFloat();
     window.location.href = 'mesero.html';
 };
+// ============================================ //
+// FUNCIÓN PARA GUARDAR PEDIDO EN MARKETPOS     //
+// ============================================ //
+
+function guardarPedidoEnMarketpos(pedido) {
+    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    pedidosLocal.unshift(pedido);
+    localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+    
+    const pedidosCocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
+    pedidosCocina.unshift(pedido);
+    localStorage.setItem('cocina_pedidos', JSON.stringify(pedidosCocina));
+    
+    console.log('📦 Pedido mesero guardado:', pedido);
+    
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'marketpos_pedidos_online',
+        newValue: JSON.stringify(pedidosLocal)
+    }));
+    
+    return true;
+}
+
+// Sobrescribir confirmOrder para usar el guardado correcto
+confirmOrder = function() {
+    if (cart.length === 0) {
+        showToast('⚠️ Agrega productos al carrito');
+        return;
+    }
+
+    const total = calculateTotal();
+    
+    // Crear pedido en el formato que espera la caja
+    const pedido = {
+        id: 'ped_' + Date.now(),
+        cliente: {
+            nombre: 'Mesero',
+            mesa: mesaActual,
+            tipoPedido: 'mesa'
+        },
+        items: cart.map(i => ({
+            id: i.id,
+            nombre: i.nombre,
+            precio: i.precio,
+            emoji: i.emoji,
+            cantidad: i.cantidad,
+            sabor: i.sabor || '',
+            piezas: i.piezas || 0,
+            productoBase: i.productoBase || i.nombre
+        })),
+        total: total,
+        estado: 'nuevo',
+        fecha: new Date().toISOString(),
+        timestamp: Date.now(),
+        fuente: 'mesero'
+    };
+
+    // 🔥 GUARDAR EN MARKETPOS
+    guardarPedidoEnMarketpos(pedido);
+
+    // Actualizar mesa
+    const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]');
+    const mesa = mesasLocal.find(m => m.numero === parseInt(mesaActual));
+    if (mesa) {
+        mesa.estado = 'ocupada';
+        mesa.orden = pedido.items;
+    }
+    localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal));
+
+    showToast('✅ Pedido enviado a cocina');
+    cart = [];
+    updateCartCount();
+    updateCartFloat();
+    window.location.href = 'mesero.html';
+};

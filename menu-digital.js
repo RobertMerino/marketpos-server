@@ -1173,7 +1173,138 @@ function sincronizarConCaja() {
     
     showToast('🔄 Pedidos sincronizados con caja');
 }
+// ============================================ //
+// FUNCIÓN PARA GUARDAR PEDIDO EN MARKETPOS     //
+// ============================================ //
 
+function guardarPedidoEnMarketpos(pedido) {
+    // Guardar en marketpos_pedidos_online (lo que usa la caja)
+    const pedidosLocal = JSON.parse(localStorage.getItem('marketpos_pedidos_online') || '[]');
+    pedidosLocal.unshift(pedido);
+    localStorage.setItem('marketpos_pedidos_online', JSON.stringify(pedidosLocal));
+    
+    // También guardar en cocina_pedidos para la cocina
+    const pedidosCocina = JSON.parse(localStorage.getItem('cocina_pedidos') || '[]');
+    pedidosCocina.unshift(pedido);
+    localStorage.setItem('cocina_pedidos', JSON.stringify(pedidosCocina));
+    
+    console.log('📦 Pedido guardado en marketpos_pedidos_online:', pedido);
+    console.log('📋 Total pedidos:', pedidosLocal.length);
+    
+    // Notificar a otras pestañas (para sincronización en tiempo real)
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'marketpos_pedidos_online',
+        newValue: JSON.stringify(pedidosLocal)
+    }));
+    
+    return true;
+}
+
+// Sobrescribir confirmOrder para usar el guardado correcto
+confirmOrder = function() {
+    if (cart.length === 0) { 
+        showToast('⚠️ Agrega productos al carrito');
+        return; 
+    }
+    
+    // Verificar stock para todos los items
+    let stockInsuficiente = false;
+    let productoFaltante = '';
+    
+    for (const item of cart) {
+        const productoBase = item.productoBase || item.nombre;
+        const stockInfo = verificarStock(productoBase, item.cantidad);
+        
+        if (!stockInfo.disponible) {
+            stockInsuficiente = true;
+            productoFaltante = productoBase;
+            break;
+        }
+    }
+    
+    if (stockInsuficiente) {
+        mostrarAlertaStock(productoFaltante);
+        return;
+    }
+    
+    const total = calculateTotal();
+    
+    let clienteInfo = clienteData;
+    if (!clienteInfo) {
+        clienteInfo = {
+            tipo: 'mesa',
+            mesa: '1',
+            nombre: 'Cliente',
+            telefono: '',
+            direccion: ''
+        };
+    }
+    
+    // Crear pedido en el formato que espera la caja
+    const pedido = { 
+        id: 'ped_' + Date.now(),
+        cliente: { 
+            nombre: clienteInfo.nombre || 'Cliente',
+            mesa: clienteInfo.tipo === 'mesa' ? (clienteInfo.mesa || '1') : 'Llevar',
+            tipoPedido: clienteInfo.tipo || 'mesa',
+            telefono: clienteInfo.telefono || '',
+            direccion: clienteInfo.direccion || ''
+        }, 
+        items: cart.map(i => ({ 
+            id: i.id, 
+            nombre: i.nombre, 
+            precio: i.precio, 
+            emoji: i.emoji, 
+            cantidad: i.cantidad, 
+            sabor: i.sabor || '',
+            piezas: i.piezas || 0,
+            productoBase: i.productoBase || i.nombre
+        })), 
+        total: total,
+        estado: 'nuevo',
+        fecha: new Date().toISOString(),
+        timestamp: Date.now(),
+        fuente: 'digital'
+    };
+    
+    // 🔥 GUARDAR EN MARKETPOS (como lo hace la caja)
+    guardarPedidoEnMarketpos(pedido);
+    
+    // Actualizar mesas SOLO si es tipo mesa
+    if (clienteInfo.tipo === 'mesa') { 
+        const mesasLocal = JSON.parse(localStorage.getItem('marketpos_mesas') || '[]'); 
+        const mesa = mesasLocal.find(m => m.numero === parseInt(clienteInfo.mesa || '1')); 
+        if (mesa) { 
+            mesa.estado = 'ocupada'; 
+            mesa.orden = pedido.items; 
+        } 
+        localStorage.setItem('marketpos_mesas', JSON.stringify(mesasLocal)); 
+    }
+    
+    // Mostrar mensaje según el tipo de pedido
+    let mensajeConfirmacion = '✅ ¡Pedido enviado a cocina!';
+    if (clienteInfo.tipo === 'llevar') {
+        mensajeConfirmacion = '🛵 ¡Pedido para llevar enviado a cocina!';
+    } else if (clienteInfo.tipo === 'delivery') {
+        mensajeConfirmacion = '🚀 ¡Pedido a domicilio enviado a cocina!';
+    }
+    
+    mostrarConfirmacion(pedido, clienteInfo, mensajeConfirmacion);
+    
+    // Descontar del stock
+    for (const item of cart) {
+        const productoBase = item.productoBase || item.nombre;
+        actualizarStock(productoBase, item.cantidad);
+    }
+    
+    cart = []; 
+    updateCartCount(); 
+    updateCartFloat();
+    closeCart();
+    renderProducts();
+    
+    console.log('✅ Pedido confirmado y guardado correctamente');
+};
 // Exponer funciones globalmente
 window.sincronizarConCaja = sincronizarConCaja;
 // Exponer funciones para la caja
